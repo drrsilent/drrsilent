@@ -141,12 +141,14 @@ export default function OpenGraphImage() {
               <div
                 style={{
                   display: 'flex',
-                  width: 10,
-                  height: 10,
-                  borderRadius: '50%',
-                  background: '#b8945c',
+                  fontSize: 24,
+                  lineHeight: 1,
+                  color: '#b8945c',
+                  textShadow: '0 0 18px rgba(184,148,92,0.28)',
                 }}
-              />
+              >
+                ★
+              </div>
               <div
                 style={{
                   display: 'flex',
