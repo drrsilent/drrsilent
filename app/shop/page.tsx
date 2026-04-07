@@ -86,18 +86,19 @@ export default function ShopPage({
 
         <motion.div
           variants={itemVariants}
-          className="mb-6 flex flex-wrap gap-2.5 md:mb-8 md:gap-3"
+          className="mb-6 -mx-1 overflow-x-auto px-1 pb-2 md:mb-8 md:overflow-visible md:px-0 md:pb-0"
         >
+          <div className="flex min-w-max gap-2.5 md:min-w-0 md:flex-wrap md:gap-3">
           <motion.div whileHover={{ y: -1 }} whileTap={{ scale: 0.99 }}>
             <Link
-            href="/shop"
-            className={`rounded-full border px-5 py-3 text-[10px] font-bold uppercase tracking-[0.22em] shadow-[0_10px_24px_rgba(0,0,0,0.04)] transition ${
-              !activeCategory
-                ? 'border-black bg-black text-white'
-                : 'border-[var(--line)] bg-white text-black hover:border-black'
-            }`}
-          >
-            All
+              href="/shop"
+              className={`inline-flex min-h-11 items-center justify-center rounded-full border px-5 py-3 text-[10px] font-bold uppercase tracking-[0.18em] shadow-[0_10px_24px_rgba(0,0,0,0.04)] transition md:tracking-[0.22em] ${
+                !activeCategory
+                  ? 'border-black bg-black text-white'
+                  : 'border-[var(--line)] bg-white text-black hover:border-black'
+              }`}
+            >
+              All
             </Link>
           </motion.div>
 
@@ -105,7 +106,7 @@ export default function ShopPage({
             <motion.div key={item.slug} whileHover={{ y: -1 }} whileTap={{ scale: 0.99 }}>
               <Link
                 href={`/shop?category=${item.slug}`}
-                className={`rounded-full border px-5 py-3 text-[10px] font-bold uppercase tracking-[0.22em] shadow-[0_10px_24px_rgba(0,0,0,0.04)] transition ${
+                className={`inline-flex min-h-11 items-center justify-center rounded-full border px-5 py-3 text-[10px] font-bold uppercase tracking-[0.18em] shadow-[0_10px_24px_rgba(0,0,0,0.04)] transition md:tracking-[0.22em] ${
                   activeCategory?.slug === item.slug
                     ? 'border-black bg-black text-white'
                     : 'border-[var(--line)] bg-white text-black hover:border-black'
@@ -115,11 +116,12 @@ export default function ShopPage({
               </Link>
             </motion.div>
           ))}
+          </div>
         </motion.div>
 
         <motion.section
           variants={containerVariants}
-          className="grid grid-cols-2 gap-4 md:grid-cols-[repeat(auto-fit,minmax(240px,320px))] md:justify-center md:gap-6"
+          className="grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-[repeat(auto-fit,minmax(240px,320px))] md:justify-center md:gap-6"
         >
           {visibleProducts.map((product) => (
             <motion.article
@@ -173,7 +175,7 @@ export default function ShopPage({
                 </Link>
               </div>
 
-              <h2 className="text-[10px] font-bold uppercase tracking-[0.16em] text-black md:text-[11px] md:tracking-[0.22em]">
+              <h2 className="text-[11px] font-bold uppercase tracking-[0.14em] text-black md:text-[11px] md:tracking-[0.22em]">
                 {product.title}
               </h2>
               <p className="mt-1 text-xs font-mono text-[var(--foreground-soft)]">
