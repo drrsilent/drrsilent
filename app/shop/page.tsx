@@ -121,7 +121,7 @@ export default function ShopPage({
 
         <motion.section
           variants={containerVariants}
-          className="grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-[repeat(auto-fit,minmax(240px,320px))] md:justify-center md:gap-6"
+          className="grid grid-cols-2 gap-3 md:grid-cols-[repeat(auto-fit,minmax(240px,320px))] md:justify-center md:gap-6"
         >
           {visibleProducts.map((product) => (
             <motion.article
@@ -130,7 +130,7 @@ export default function ShopPage({
               whileHover={{ y: -4 }}
               className="group flex w-full min-w-0 flex-col md:max-w-[320px]"
             >
-              <div className="relative mb-3 aspect-[5/6] overflow-hidden rounded-[22px] border border-[var(--line)] bg-[var(--surface-muted)] shadow-[0_18px_50px_rgba(0,0,0,0.06)] md:mb-4 md:rounded-[28px]">
+              <div className="relative mb-3 aspect-[4/5] overflow-hidden rounded-[20px] border border-[var(--line)] bg-[var(--surface-muted)] shadow-[0_14px_36px_rgba(0,0,0,0.06)] md:mb-4 md:aspect-[5/6] md:rounded-[28px] md:shadow-[0_18px_50px_rgba(0,0,0,0.06)]">
                 <motion.div
                   whileHover={{ scale: 1.02 }}
                   transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
@@ -161,7 +161,7 @@ export default function ShopPage({
                       sourceRect: image?.getBoundingClientRect(),
                     });
                   }}
-                  className="absolute bottom-3 left-3 right-3 z-20 inline-flex items-center justify-center gap-1.5 rounded-full border border-white/70 bg-white/95 py-2.5 text-[9px] font-bold uppercase tracking-[0.18em] text-black opacity-100 shadow-[0_16px_40px_rgba(0,0,0,0.12)] backdrop-blur-md transition-all duration-300 hover:bg-[var(--surface-muted)] md:bottom-4 md:left-4 md:right-4 md:translate-y-3 md:gap-2 md:py-3 md:text-[10px] md:tracking-[0.25em] md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100"
+                  className="absolute bottom-2.5 left-2.5 right-2.5 z-20 inline-flex items-center justify-center gap-1 rounded-full border border-white/70 bg-white/95 py-2 text-[8px] font-bold uppercase tracking-[0.14em] text-black opacity-100 shadow-[0_14px_30px_rgba(0,0,0,0.1)] backdrop-blur-md transition-all duration-300 hover:bg-[var(--surface-muted)] md:bottom-4 md:left-4 md:right-4 md:translate-y-3 md:gap-2 md:py-3 md:text-[10px] md:tracking-[0.25em] md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100"
                 >
                   <ShoppingBag size={14} />
                   Quick Add
@@ -175,7 +175,7 @@ export default function ShopPage({
                 </Link>
               </div>
 
-              <h2 className="text-[11px] font-bold uppercase tracking-[0.14em] text-black md:text-[11px] md:tracking-[0.22em]">
+              <h2 className="text-[10px] font-bold uppercase tracking-[0.1em] text-black md:text-[11px] md:tracking-[0.22em]">
                 {product.title}
               </h2>
               <p className="mt-1 text-xs font-mono text-[var(--foreground-soft)]">
