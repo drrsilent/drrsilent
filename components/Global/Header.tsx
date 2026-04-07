@@ -22,7 +22,7 @@ export default function Header() {
   const useLightHeader = isProductPage ? false : !isHome || isScrolled;
 
   const toggleCart = useCartStore((state) => state.toggleCart);
-  const cart = useCartStore((state) => state.items || state.cart || []);
+  const cart = useCartStore((state) => state.items);
   const itemCount = cart.length;
 
   useEffect(() => {

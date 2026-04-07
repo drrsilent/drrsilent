@@ -11,6 +11,8 @@
   --line-strong: rgba(18, 18, 18, 0.16);
   --accent: #171717;
   --accent-soft: #c6a97d;
+  --font-display: "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-mono: "Consolas", "SFMono-Regular", "Liberation Mono", Menlo, monospace;
 }
 
 html, body {

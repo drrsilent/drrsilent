@@ -142,7 +142,7 @@ export default function Home() {
                       const card = e.currentTarget.closest('article');
                       const image = card?.querySelector('img');
 
-                      addToCart({ ...product, size: 'L' });
+                      addToCart({ ...product, size: 'L', quantity: 1 });
                       flyToCart({
                         imageSrc: product.image,
                         sourceRect: image?.getBoundingClientRect(),
