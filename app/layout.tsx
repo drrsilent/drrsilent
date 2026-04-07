@@ -15,7 +15,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="min-h-screen bg-white text-[#0A0A0A] antialiased">
+      <body className="min-h-screen bg-[var(--surface)] text-[var(--foreground)] antialiased">
         <Header />
         <CartDrawer />
         {children}

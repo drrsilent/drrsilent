@@ -36,13 +36,13 @@ export default function Header() {
   }, []);
 
   const headerClass = useLightHeader
-    ? 'border-[var(--line)] bg-[rgba(251,250,247,0.9)] text-black shadow-[0_14px_45px_rgba(15,15,15,0.06)] backdrop-blur-2xl'
+    ? 'border-[var(--line)] bg-[rgba(248,246,241,0.88)] text-black shadow-[0_14px_45px_rgba(15,15,15,0.06)] backdrop-blur-2xl'
     : isProductPage
       ? 'border-white/10 bg-black text-white shadow-[0_18px_40px_rgba(0,0,0,0.32)]'
-      : 'border-white/10 bg-[rgba(10,10,10,0.62)] text-white supports-[backdrop-filter]:bg-[rgba(10,10,10,0.42)] supports-[backdrop-filter]:backdrop-blur-2xl';
+      : 'border-white/10 bg-[rgba(8,8,8,0.68)] text-white supports-[backdrop-filter]:bg-[rgba(8,8,8,0.46)] supports-[backdrop-filter]:backdrop-blur-2xl';
 
   const iconClass = useLightHeader
-    ? 'border-[var(--line)] bg-[rgba(18,18,18,0.035)] text-black hover:bg-black hover:text-white'
+    ? 'border-[var(--line)] bg-[rgba(17,17,17,0.03)] text-black hover:bg-[var(--accent-soft-strong)] hover:text-white'
     : isProductPage
       ? 'border-white/14 bg-white/8 text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.02)] hover:bg-white hover:text-black'
       : 'border-white/16 bg-white/12 text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.02)] hover:bg-white hover:text-black';
@@ -110,7 +110,7 @@ export default function Header() {
       <header
         className={`fixed inset-x-0 top-0 z-[100] border-b transition-all duration-300 ${headerClass}`}
       >
-        <div className="mx-auto flex h-[82px] max-w-7xl items-center justify-between px-4 md:px-6">
+        <div className="mx-auto flex h-[74px] max-w-7xl items-center justify-between px-4 md:h-[82px] md:px-6">
           <div className="flex flex-1 items-center gap-2">
             <button
               type="button"
@@ -119,7 +119,7 @@ export default function Header() {
                 setIsMenuOpen(false);
                 setIsSearchOpen(true);
               }}
-              className={`flex h-11 w-11 items-center justify-center rounded-full border transition-all duration-300 ${iconClass}`}
+              className={`flex h-10 w-10 items-center justify-center rounded-full border transition-all duration-300 md:h-11 md:w-11 ${iconClass}`}
             >
               <Search size={18} strokeWidth={2.2} />
             </button>
@@ -129,7 +129,7 @@ export default function Header() {
                 type="button"
                 aria-label="Menu"
                 onClick={() => setIsMenuOpen((current) => !current)}
-                className={`flex h-11 w-11 items-center justify-center rounded-full border transition-all duration-300 ${iconClass}`}
+                className={`flex h-10 w-10 items-center justify-center rounded-full border transition-all duration-300 md:h-11 md:w-11 ${iconClass}`}
               >
                 <Menu size={18} strokeWidth={2.2} />
               </button>
@@ -141,7 +141,7 @@ export default function Header() {
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: 8, scale: 0.96 }}
                     transition={{ duration: 0.18 }}
-                    className="absolute left-0 top-[calc(100%+12px)] z-[120] w-52 overflow-hidden rounded-[24px] border border-[var(--line)] bg-[rgba(255,255,255,0.96)] p-2 text-black shadow-[0_22px_60px_rgba(0,0,0,0.14)] backdrop-blur-xl"
+                    className="absolute left-0 top-[calc(100%+12px)] z-[120] w-48 overflow-hidden rounded-[22px] border border-[var(--line)] bg-[rgba(255,255,255,0.96)] p-2 text-black shadow-[0_22px_60px_rgba(0,0,0,0.14)] backdrop-blur-xl md:w-52 md:rounded-[24px]"
                   >
                     <div className="px-3 pb-2 pt-1 text-[10px] font-mono uppercase tracking-[0.3em] text-[var(--foreground-soft)]">
                       Categories
@@ -171,13 +171,13 @@ export default function Header() {
                 className="cursor-pointer text-center"
               >
                 <p
-                  className={`mb-1 text-[8px] font-mono uppercase tracking-[0.45em] ${
+                  className={`mb-1 text-[7px] font-mono uppercase tracking-[0.28em] md:text-[8px] md:tracking-[0.45em] ${
                     useLightHeader ? 'text-[var(--foreground-soft)]' : 'text-white/55'
                   }`}
                 >
                   Engineered Ease
                 </p>
-                <h2 className="text-[34px] font-extrabold leading-none tracking-[-0.09em] md:text-[40px]">
+                <h2 className="text-[28px] font-extrabold leading-none tracking-[-0.09em] md:text-[40px]">
                   DXLR.
                 </h2>
               </motion.div>
@@ -198,7 +198,7 @@ export default function Header() {
                   : { scale: 1 }
               }
               transition={{ duration: 0.36, ease: [0.22, 1, 0.36, 1] }}
-              className={`relative flex h-11 w-11 items-center justify-center rounded-full border transition-all duration-300 ${iconClass}`}
+              className={`relative flex h-10 w-10 items-center justify-center rounded-full border transition-all duration-300 md:h-11 md:w-11 ${iconClass}`}
             >
               <ShoppingBag size={18} strokeWidth={2.2} />
 
@@ -226,7 +226,7 @@ export default function Header() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[140] bg-black/30 p-4 backdrop-blur-sm md:p-8"
+            className="fixed inset-0 z-[140] bg-black/30 p-3 backdrop-blur-sm md:p-8"
             onClick={closeSearch}
           >
             <motion.div
@@ -234,10 +234,10 @@ export default function Header() {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -12, scale: 0.98 }}
               transition={{ duration: 0.22 }}
-              className="mx-auto mt-20 max-w-3xl overflow-hidden rounded-[30px] border border-[var(--line)] bg-[rgba(255,255,255,0.98)] shadow-[0_30px_120px_rgba(0,0,0,0.18)] backdrop-blur-xl"
+              className="mx-auto mt-16 max-w-3xl overflow-hidden rounded-[24px] border border-[var(--line)] bg-[rgba(255,255,255,0.98)] shadow-[0_30px_120px_rgba(0,0,0,0.18)] backdrop-blur-xl md:mt-20 md:rounded-[30px]"
               onClick={(event) => event.stopPropagation()}
             >
-              <div className="flex items-center gap-3 border-b border-[var(--line)] px-4 py-4 md:px-5">
+              <div className="flex items-center gap-2 border-b border-[var(--line)] px-3 py-3 md:gap-3 md:px-5 md:py-4">
                 <Search size={18} className="text-[var(--foreground-soft)]" />
                 <input
                   autoFocus
@@ -251,7 +251,7 @@ export default function Header() {
                   type="button"
                   aria-label="Close search"
                   onClick={closeSearch}
-                  className="flex h-11 w-11 items-center justify-center rounded-full border border-[var(--line)] bg-black/[0.04] text-black transition hover:bg-black hover:text-white"
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-[var(--line)] bg-black/[0.04] text-black transition hover:bg-black hover:text-white md:h-11 md:w-11"
                 >
                   <X size={18} />
                 </button>
@@ -265,9 +265,9 @@ export default function Header() {
                         key={product.id}
                         href={`/product/${product.id}`}
                         onClick={closeSearch}
-                        className="flex items-center gap-4 rounded-[24px] border border-[var(--line)] bg-[var(--surface)] p-3 transition hover:border-[var(--line-strong)] hover:bg-white"
+                        className="flex items-center gap-3 rounded-[20px] border border-[var(--line)] bg-[var(--surface)] p-3 transition hover:border-[var(--line-strong)] hover:bg-white md:gap-4 md:rounded-[24px]"
                       >
-                        <div className="relative h-20 w-20 overflow-hidden rounded-[20px] bg-[var(--surface-muted)]">
+                        <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-[16px] bg-[var(--surface-muted)] md:h-20 md:w-20 md:rounded-[20px]">
                           <Image
                             src={product.image}
                             alt={product.title}
@@ -289,7 +289,7 @@ export default function Header() {
                           </p>
                         </div>
 
-                        <p className="text-sm font-mono text-[var(--foreground-soft)]">
+                        <p className="hidden text-sm font-mono text-[var(--foreground-soft)] sm:block">
                           {product.price} EGP
                         </p>
                       </Link>

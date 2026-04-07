@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowRight, Banknote, CreditCard, ShoppingBag, Smartphone, Trash2, X } from 'lucide-react';
 import { CartItem, PaymentMethod, useCartStore } from '../../store/useCartStore';
+import { products } from '../../data/products';
 
 export default function CartDrawer() {
   const items = useCartStore((state) => state.items);
@@ -11,6 +12,8 @@ export default function CartDrawer() {
   const paymentMethod = useCartStore((state) => state.paymentMethod);
   const toggleCart = useCartStore((state) => state.toggleCart);
   const removeFromCart = useCartStore((state) => state.removeFromCart);
+  const updateItemSize = useCartStore((state) => state.updateItemSize);
+  const updateItemQuantity = useCartStore((state) => state.updateItemQuantity);
   const setPaymentMethod = useCartStore((state) => state.setPaymentMethod);
 
   const subtotal = items.reduce(
@@ -48,7 +51,7 @@ export default function CartDrawer() {
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 26, stiffness: 220 }}
-            className="absolute inset-y-0 right-0 flex w-full max-w-[440px] flex-col border-l border-black/8 bg-[#fbfaf7] px-5 pb-5 pt-4 shadow-[0_30px_120px_rgba(0,0,0,0.22)] md:px-6 md:pb-6"
+            className="absolute inset-y-0 right-0 flex h-dvh w-full max-w-[440px] flex-col border-l border-black/8 bg-[#fbfaf7] px-4 pb-4 pt-4 shadow-[0_30px_120px_rgba(0,0,0,0.22)] md:px-6 md:pb-6"
           >
             <div className="mb-5 flex items-center justify-between border-b border-black/8 pb-4">
               <div>
@@ -95,10 +98,10 @@ export default function CartDrawer() {
                       initial={{ opacity: 0, y: 18 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: index * 0.06 }}
-                      className="rounded-[26px] border border-black/8 bg-white p-3 shadow-[0_12px_40px_rgba(0,0,0,0.05)]"
+                      className="rounded-[22px] border border-black/8 bg-white p-3 shadow-[0_12px_40px_rgba(0,0,0,0.05)] md:rounded-[26px]"
                     >
-                      <div className="flex gap-4">
-                        <div className="relative h-28 w-24 shrink-0 overflow-hidden rounded-[18px] bg-[#eceae3]">
+                      <div className="flex gap-3 md:gap-4">
+                        <div className="relative h-24 w-20 shrink-0 overflow-hidden rounded-[16px] bg-[#eceae3] md:h-28 md:w-24 md:rounded-[18px]">
                           <Image
                             src={item.image}
                             alt={item.title}
@@ -114,9 +117,33 @@ export default function CartDrawer() {
                               <h3 className="truncate text-sm font-bold uppercase tracking-[0.08em] text-black">
                                 {item.title}
                               </h3>
-                              <p className="mt-2 text-xs font-mono uppercase tracking-[0.18em] text-zinc-500">
-                                Size {item.size}
-                              </p>
+                              <div className="mt-3">
+                                <p className="mb-2 text-[10px] font-mono uppercase tracking-[0.2em] text-zinc-500">
+                                  Size
+                                </p>
+                                <div className="flex flex-wrap gap-2">
+                                  {(products[item.id]?.sizes ?? [item.size]).map((sizeOption) => {
+                                    const isSelected = item.size === sizeOption;
+
+                                    return (
+                                      <button
+                                        key={`${item.id}-${item.size}-${sizeOption}`}
+                                        type="button"
+                                        onClick={() =>
+                                          updateItemSize(item.id, item.size, sizeOption)
+                                        }
+                                        className={`rounded-full border px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.16em] transition ${
+                                          isSelected
+                                            ? 'border-black bg-black text-white'
+                                            : 'border-black/10 bg-[#f8f7f3] text-black hover:border-black/25'
+                                        }`}
+                                      >
+                                        {sizeOption}
+                                      </button>
+                                    );
+                                  })}
+                                </div>
+                              </div>
                             </div>
 
                             <button
@@ -129,17 +156,39 @@ export default function CartDrawer() {
                             </button>
                           </div>
 
-                          <div className="mt-auto flex items-end justify-between pt-5">
+                          <div className="mt-auto flex flex-col gap-4 pt-5 sm:flex-row sm:items-end sm:justify-between">
                             <div>
                               <p className="text-[10px] font-mono uppercase tracking-[0.22em] text-zinc-500">
                                 Quantity
                               </p>
-                              <p className="mt-1 text-base font-semibold text-black">
-                                {item.quantity}
-                              </p>
+                              <div className="mt-2 inline-flex items-center rounded-full border border-black/10 bg-[#f8f7f3] p-1">
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    updateItemQuantity(item.id, item.size, item.quantity - 1)
+                                  }
+                                  className="flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold text-black transition hover:bg-white"
+                                  aria-label={`Decrease quantity of ${item.title}`}
+                                >
+                                  -
+                                </button>
+                                <span className="min-w-[28px] text-center text-sm font-semibold text-black">
+                                  {item.quantity}
+                                </span>
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    updateItemQuantity(item.id, item.size, item.quantity + 1)
+                                  }
+                                  className="flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold text-black transition hover:bg-white"
+                                  aria-label={`Increase quantity of ${item.title}`}
+                                >
+                                  +
+                                </button>
+                              </div>
                             </div>
 
-                            <div className="text-right">
+                            <div className="text-left sm:text-right">
                               <p className="text-[10px] font-mono uppercase tracking-[0.22em] text-zinc-500">
                                 Price
                               </p>
@@ -158,9 +207,9 @@ export default function CartDrawer() {
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.18 }}
-                  className="mt-5 rounded-[30px] border border-black/8 bg-white p-5 shadow-[0_18px_60px_rgba(0,0,0,0.06)]"
+                  className="mt-5 rounded-[24px] border border-black/8 bg-white p-4 shadow-[0_18px_60px_rgba(0,0,0,0.06)] md:rounded-[30px] md:p-5"
                 >
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <div>
                       <p className="text-[10px] font-mono uppercase tracking-[0.28em] text-zinc-500">
                         Subtotal

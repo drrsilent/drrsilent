@@ -44,7 +44,7 @@ export default function ShopPage({
     : productCards;
 
   return (
-    <main className="min-h-screen bg-[var(--surface)] px-4 pb-20 pt-28 text-black md:px-6 md:pt-32">
+    <main className="min-h-screen bg-[var(--surface)] px-4 pb-20 pt-24 text-black md:px-6 md:pt-32">
       <motion.div
         variants={containerVariants}
         initial="hidden"
@@ -53,7 +53,7 @@ export default function ShopPage({
       >
         <motion.div
           variants={itemVariants}
-          className="mb-8 rounded-[32px] border border-[var(--line)] bg-white px-5 py-6 shadow-[0_18px_50px_rgba(0,0,0,0.05)] md:px-7 md:py-8"
+          className="mb-6 rounded-[28px] border border-[var(--line)] bg-white px-4 py-5 shadow-[0_18px_50px_rgba(0,0,0,0.05)] md:mb-8 md:rounded-[32px] md:px-7 md:py-8"
         >
           <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
             <div>
@@ -68,17 +68,17 @@ export default function ShopPage({
               <p className="mb-3 text-[10px] font-mono uppercase tracking-[0.35em] text-[var(--foreground-soft)]">
                 {activeCategory ? activeCategory.label : 'Full Collection'}
               </p>
-              <h1 className="text-4xl font-semibold tracking-[-0.06em] md:text-6xl">
+              <h1 className="text-3xl font-semibold tracking-[-0.06em] sm:text-4xl md:text-6xl">
                 {activeCategory ? activeCategory.label : 'Shop All'}
               </h1>
-              <p className="mt-4 max-w-2xl text-sm leading-7 text-[var(--foreground-soft)]">
+              <p className="mt-3 max-w-xl text-sm leading-6 text-[var(--foreground-soft)] md:mt-4 md:max-w-2xl md:leading-7">
                 {activeCategory
                   ? `Browse the ${activeCategory.label.toLowerCase()} edit with the same quick add flow and direct product pages.`
                   : 'Browse the complete DXLR lineup with the same quick add flow and direct product pages.'}
               </p>
             </div>
 
-            <div className="inline-flex self-start rounded-full border border-[var(--line)] bg-[var(--surface)] px-5 py-3 text-[10px] font-bold uppercase tracking-[0.28em] text-[var(--foreground-soft)] shadow-[0_10px_30px_rgba(0,0,0,0.04)] md:self-auto">
+            <div className="inline-flex self-start rounded-full border border-[var(--line)] bg-[var(--surface)] px-4 py-2.5 text-[10px] font-bold uppercase tracking-[0.22em] text-[var(--foreground-soft)] shadow-[0_10px_30px_rgba(0,0,0,0.04)] md:self-auto md:px-5 md:py-3 md:tracking-[0.28em]">
               {visibleProducts.length} Pieces
             </div>
           </div>
@@ -86,9 +86,10 @@ export default function ShopPage({
 
         <motion.div
           variants={itemVariants}
-          className="mb-8 flex flex-wrap gap-3"
+          className="mb-6 flex flex-wrap gap-2.5 md:mb-8 md:gap-3"
         >
-          <Link
+          <motion.div whileHover={{ y: -1 }} whileTap={{ scale: 0.99 }}>
+            <Link
             href="/shop"
             className={`rounded-full border px-5 py-3 text-[10px] font-bold uppercase tracking-[0.22em] shadow-[0_10px_24px_rgba(0,0,0,0.04)] transition ${
               !activeCategory
@@ -97,41 +98,50 @@ export default function ShopPage({
             }`}
           >
             All
-          </Link>
+            </Link>
+          </motion.div>
 
           {shopCategories.map((item) => (
-            <Link
-              key={item.slug}
-              href={`/shop?category=${item.slug}`}
-              className={`rounded-full border px-5 py-3 text-[10px] font-bold uppercase tracking-[0.22em] shadow-[0_10px_24px_rgba(0,0,0,0.04)] transition ${
-                activeCategory?.slug === item.slug
-                  ? 'border-black bg-black text-white'
-                  : 'border-[var(--line)] bg-white text-black hover:border-black'
-              }`}
-            >
-              {item.label}
-            </Link>
+            <motion.div key={item.slug} whileHover={{ y: -1 }} whileTap={{ scale: 0.99 }}>
+              <Link
+                href={`/shop?category=${item.slug}`}
+                className={`rounded-full border px-5 py-3 text-[10px] font-bold uppercase tracking-[0.22em] shadow-[0_10px_24px_rgba(0,0,0,0.04)] transition ${
+                  activeCategory?.slug === item.slug
+                    ? 'border-black bg-black text-white'
+                    : 'border-[var(--line)] bg-white text-black hover:border-black'
+                }`}
+              >
+                {item.label}
+              </Link>
+            </motion.div>
           ))}
         </motion.div>
 
         <motion.section
           variants={containerVariants}
-          className="grid justify-center gap-6 [grid-template-columns:repeat(auto-fit,minmax(240px,320px))]"
+          className="grid grid-cols-2 gap-4 md:grid-cols-[repeat(auto-fit,minmax(240px,320px))] md:justify-center md:gap-6"
         >
           {visibleProducts.map((product) => (
             <motion.article
               key={product.id}
               variants={itemVariants}
-              className="group flex w-full max-w-[320px] flex-col"
+              whileHover={{ y: -4 }}
+              className="group flex w-full min-w-0 flex-col md:max-w-[320px]"
             >
-              <div className="relative mb-4 aspect-[5/6] overflow-hidden rounded-[28px] border border-[var(--line)] bg-[var(--surface-muted)] shadow-[0_18px_50px_rgba(0,0,0,0.06)]">
-                <Image
-                  src={product.image}
-                  alt={product.title}
-                  fill
-                  sizes="(max-width: 768px) 50vw, 25vw"
-                  className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
-                />
+              <div className="relative mb-3 aspect-[5/6] overflow-hidden rounded-[22px] border border-[var(--line)] bg-[var(--surface-muted)] shadow-[0_18px_50px_rgba(0,0,0,0.06)] md:mb-4 md:rounded-[28px]">
+                <motion.div
+                  whileHover={{ scale: 1.02 }}
+                  transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+                  className="absolute inset-0"
+                >
+                  <Image
+                    src={product.image}
+                    alt={product.title}
+                    fill
+                    sizes="(max-width: 768px) 50vw, 25vw"
+                    className="object-cover"
+                  />
+                </motion.div>
 
                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
 
@@ -149,7 +159,7 @@ export default function ShopPage({
                       sourceRect: image?.getBoundingClientRect(),
                     });
                   }}
-                  className="absolute bottom-4 left-4 right-4 z-20 inline-flex items-center justify-center gap-2 rounded-full border border-white/70 bg-white/95 py-3 text-[10px] font-bold uppercase tracking-[0.25em] text-black opacity-100 shadow-[0_16px_40px_rgba(0,0,0,0.12)] backdrop-blur-md transition-all duration-300 hover:bg-[var(--surface-muted)] md:translate-y-3 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100"
+                  className="absolute bottom-3 left-3 right-3 z-20 inline-flex items-center justify-center gap-1.5 rounded-full border border-white/70 bg-white/95 py-2.5 text-[9px] font-bold uppercase tracking-[0.18em] text-black opacity-100 shadow-[0_16px_40px_rgba(0,0,0,0.12)] backdrop-blur-md transition-all duration-300 hover:bg-[var(--surface-muted)] md:bottom-4 md:left-4 md:right-4 md:translate-y-3 md:gap-2 md:py-3 md:text-[10px] md:tracking-[0.25em] md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100"
                 >
                   <ShoppingBag size={14} />
                   Quick Add
@@ -163,7 +173,7 @@ export default function ShopPage({
                 </Link>
               </div>
 
-              <h2 className="text-[11px] font-bold uppercase tracking-[0.22em] text-black">
+              <h2 className="text-[10px] font-bold uppercase tracking-[0.16em] text-black md:text-[11px] md:tracking-[0.22em]">
                 {product.title}
               </h2>
               <p className="mt-1 text-xs font-mono text-[var(--foreground-soft)]">

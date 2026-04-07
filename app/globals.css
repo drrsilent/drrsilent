@@ -1,26 +1,30 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f4f1eb;
-  --surface: #fbfaf7;
+  --background: #efede8;
+  --surface: #f8f6f1;
   --surface-strong: #ffffff;
-  --surface-muted: #efe9df;
-  --foreground: #121212;
-  --foreground-soft: #5f635f;
-  --line: rgba(18, 18, 18, 0.08);
-  --line-strong: rgba(18, 18, 18, 0.16);
-  --accent: #171717;
-  --accent-soft: #c6a97d;
+  --surface-muted: #ece7dd;
+  --foreground: #111111;
+  --foreground-soft: #676256;
+  --line: rgba(17, 17, 17, 0.08);
+  --line-strong: rgba(17, 17, 17, 0.18);
+  --accent: #141414;
+  --accent-soft: #b99a6b;
+  --accent-soft-strong: #8b6b43;
+  --hero-gold: rgba(185, 154, 107, 0.22);
+  --hero-glow: rgba(255, 244, 226, 0.12);
   --font-display: "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
   --font-mono: "Consolas", "SFMono-Regular", "Liberation Mono", Menlo, monospace;
 }
 
 html, body {
   background:
-    radial-gradient(circle at top, rgba(198, 169, 125, 0.1), transparent 28%),
-    linear-gradient(180deg, #faf8f3 0%, var(--background) 100%) !important;
+    radial-gradient(circle at top, rgba(185, 154, 107, 0.08), transparent 28%),
+    linear-gradient(180deg, #fcfbf8 0%, var(--background) 100%) !important;
   color: var(--foreground);
   font-family: var(--font-display), sans-serif;
+  text-rendering: optimizeLegibility;
 }
 
 body {
@@ -36,7 +40,7 @@ select {
 }
 
 ::selection {
-  background: rgba(198, 169, 125, 0.24);
+  background: rgba(185, 154, 107, 0.26);
   color: #111;
 }
 

@@ -18,6 +18,8 @@ interface CartStore {
   paymentMethod: PaymentMethod;
   addToCart: (item: CartItem) => void;
   removeFromCart: (id: string, size: string) => void;
+  updateItemSize: (id: string, currentSize: string, nextSize: string) => void;
+  updateItemQuantity: (id: string, size: string, nextQuantity: number) => void;
   setPaymentMethod: (method: PaymentMethod) => void;
   openCart: () => void;
   toggleCart: () => void;
@@ -42,6 +44,60 @@ export const useCartStore = create<CartStore>()(
       removeFromCart: (id, size) => set((state) => ({
         items: state.items.filter(i => !(i.id === id && i.size === size))
       })),
+      updateItemSize: (id, currentSize, nextSize) => set((state) => {
+        if (currentSize === nextSize) {
+          return state;
+        }
+
+        const currentItem = state.items.find(
+          (item) => item.id === id && item.size === currentSize
+        );
+
+        if (!currentItem) {
+          return state;
+        }
+
+        const matchingTarget = state.items.find(
+          (item) => item.id === id && item.size === nextSize
+        );
+
+        if (matchingTarget) {
+          return {
+            items: state.items
+              .filter((item) => !(item.id === id && item.size === currentSize))
+              .map((item) =>
+                item.id === id && item.size === nextSize
+                  ? { ...item, quantity: item.quantity + currentItem.quantity }
+                  : item
+              ),
+          };
+        }
+
+        return {
+          items: state.items.map((item) =>
+            item.id === id && item.size === currentSize
+              ? { ...item, size: nextSize }
+              : item
+          ),
+        };
+      }),
+      updateItemQuantity: (id, size, nextQuantity) => set((state) => {
+        if (nextQuantity <= 0) {
+          return {
+            items: state.items.filter(
+              (item) => !(item.id === id && item.size === size)
+            ),
+          };
+        }
+
+        return {
+          items: state.items.map((item) =>
+            item.id === id && item.size === size
+              ? { ...item, quantity: nextQuantity }
+              : item
+          ),
+        };
+      }),
     }),
     { name: 'cart-storage' }
   )
