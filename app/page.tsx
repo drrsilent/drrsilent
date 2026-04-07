@@ -122,28 +122,28 @@ export default function Home() {
             >
               <motion.div
                 variants={heroItemVariants}
-                className="mb-4 inline-flex items-center rounded-full border border-white/12 bg-white/6 px-3 py-2 text-[9px] uppercase tracking-[0.28em] text-white/72 backdrop-blur-sm md:mb-5 md:px-4 md:text-[10px] md:tracking-[0.32em]"
+                className="mb-4 inline-flex items-center rounded-full border border-white/12 bg-white/6 px-4 py-2.5 text-[10px] uppercase tracking-[0.24em] text-white/72 backdrop-blur-sm md:mb-5 md:px-4 md:text-[10px] md:tracking-[0.32em]"
               >
                 Summer Protocol 2026
               </motion.div>
 
               <motion.p
                 variants={heroItemVariants}
-                className="mb-3 text-[9px] font-mono uppercase tracking-[0.34em] text-[var(--accent-soft)] md:text-[10px] md:tracking-[0.48em]"
+                className="mb-3 text-[10px] font-mono uppercase tracking-[0.28em] text-[var(--accent-soft)] md:text-[10px] md:tracking-[0.48em]"
               >
                 Cairo Edition
               </motion.p>
 
               <motion.h1
                 variants={heroItemVariants}
-                className="bg-[linear-gradient(180deg,#ffffff_0%,rgba(255,255,255,0.84)_100%)] bg-clip-text text-[64px] font-extrabold leading-none tracking-[-0.1em] text-transparent sm:text-[88px] md:text-[180px]"
+                className="bg-[linear-gradient(180deg,#ffffff_0%,rgba(255,255,255,0.84)_100%)] bg-clip-text text-[74px] font-extrabold leading-none tracking-[-0.09em] text-transparent sm:text-[88px] md:text-[180px]"
               >
                 DXLR.
               </motion.h1>
 
               <motion.p
                 variants={heroItemVariants}
-                className="mt-5 max-w-[320px] text-[9px] font-mono uppercase tracking-[0.24em] text-white/50 sm:max-w-xl sm:text-[10px] sm:tracking-[0.3em] md:mt-6 md:text-[11px] md:tracking-[0.42em]"
+                className="mt-5 max-w-[320px] text-[10px] font-mono uppercase tracking-[0.18em] text-white/58 sm:max-w-xl sm:text-[10px] sm:tracking-[0.3em] md:mt-6 md:text-[11px] md:tracking-[0.42em]"
               >
                 Quiet luxury streetwear with a sharper silhouette
               </motion.p>
@@ -155,7 +155,7 @@ export default function Home() {
                 <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.99 }}>
                   <Link
                     href="/shop"
-                    className="block w-full rounded-full border border-white/20 bg-[rgba(185,154,107,0.12)] px-8 py-4 text-center text-[10px] font-bold uppercase tracking-[0.24em] text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.02)] transition-all duration-300 hover:bg-white hover:text-black sm:w-auto sm:tracking-[0.3em]"
+                    className="block w-full rounded-full border border-white/20 bg-[rgba(185,154,107,0.12)] px-8 py-4 text-center text-[11px] font-bold uppercase tracking-[0.18em] text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.02)] transition-all duration-300 hover:bg-white hover:text-black sm:w-auto sm:text-[10px] sm:tracking-[0.3em]"
                   >
                     Explore Collection
                   </Link>
@@ -167,7 +167,7 @@ export default function Home() {
                   whileHover={{ y: -2 }}
                   whileTap={{ scale: 0.99 }}
                   onClick={scrollToLookbook}
-                  className="w-full rounded-full border border-white/20 bg-white/[0.05] px-8 py-4 text-[10px] font-bold uppercase tracking-[0.24em] text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.02)] transition-all duration-300 hover:bg-white hover:text-black sm:w-auto sm:tracking-[0.3em]"
+                  className="w-full rounded-full border border-white/20 bg-white/[0.05] px-8 py-4 text-[11px] font-bold uppercase tracking-[0.18em] text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.02)] transition-all duration-300 hover:bg-white hover:text-black sm:w-auto sm:text-[10px] sm:tracking-[0.3em]"
                 >
                   View Lookbook
                 </motion.button>
@@ -175,7 +175,7 @@ export default function Home() {
 
               <motion.div
                 variants={heroItemVariants}
-                className="mt-10 flex max-w-[320px] flex-wrap items-center justify-center gap-x-5 gap-y-3 text-[9px] font-mono uppercase tracking-[0.2em] text-white/35 sm:max-w-none sm:gap-x-8 sm:text-[10px] sm:tracking-[0.32em] md:mt-14"
+                className="mt-10 flex max-w-[320px] flex-wrap items-center justify-center gap-x-6 gap-y-3 text-[10px] font-mono uppercase tracking-[0.14em] text-white/38 sm:max-w-none sm:gap-x-8 sm:text-[10px] sm:tracking-[0.32em] md:mt-14"
               >
                 <span>Heavyweight Cotton</span>
                 <span>Minimal Finish</span>
