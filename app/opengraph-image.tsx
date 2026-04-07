@@ -36,6 +36,22 @@ export default function OpenGraphImage() {
             boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.02)',
           }}
         />
+        <div
+          style={{
+            position: 'absolute',
+            right: 54,
+            bottom: -12,
+            display: 'flex',
+            fontSize: 248,
+            lineHeight: 0.82,
+            fontWeight: 800,
+            letterSpacing: -12,
+            color: 'rgba(255,255,255,0.05)',
+            zIndex: 0,
+          }}
+        >
+          DXLR.
+        </div>
 
         <div
           style={{
@@ -71,17 +87,18 @@ export default function OpenGraphImage() {
               style={{
                 display: 'flex',
                 flexDirection: 'column',
-                gap: 18,
+                gap: 22,
               }}
             >
               <div
                 style={{
                   display: 'flex',
-                  fontSize: 118,
-                  lineHeight: 0.9,
+                  fontSize: 176,
+                  lineHeight: 0.84,
                   fontWeight: 800,
-                  letterSpacing: -6,
+                  letterSpacing: -10,
                   color: '#ffffff',
+                  textShadow: '0 18px 50px rgba(0,0,0,0.24)',
                 }}
               >
                 DXLR.
@@ -89,10 +106,10 @@ export default function OpenGraphImage() {
               <div
                 style={{
                   display: 'flex',
-                  fontSize: 34,
+                  fontSize: 32,
                   lineHeight: 1.3,
                   color: '#f3ede2',
-                  maxWidth: 620,
+                  maxWidth: 560,
                 }}
               >
                 Quiet luxury streetwear with a sharper silhouette.
