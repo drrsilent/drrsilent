@@ -73,7 +73,7 @@ export default function Home() {
 
               <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
                 <Link
-                  href="/product/v1-hoodie"
+                  href="/shop"
                   className="rounded-full border border-white/25 bg-white/[0.05] px-8 py-4 text-[10px] font-bold uppercase tracking-[0.3em] text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.02)] transition-all duration-300 hover:bg-white hover:text-black"
                 >
                   Explore Collection
