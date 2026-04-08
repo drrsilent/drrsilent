@@ -190,9 +190,9 @@ export default function Home() {
         id="lookbook"
         ref={lookbookRef}
         style={{ y: productsY }}
-        className="relative z-30 -mt-6 rounded-t-[32px] bg-[var(--surface)] px-3 pb-20 pt-10 shadow-[0_-26px_80px_rgba(0,0,0,0.08)] md:-mt-24 md:rounded-t-[36px] md:px-6 md:pb-24 md:pt-14"
+        className="relative z-30 -mt-10 rounded-t-[36px] bg-[var(--surface)] px-3 pb-20 pt-12 shadow-[0_-26px_80px_rgba(0,0,0,0.08)] md:-mt-24 md:rounded-t-[36px] md:px-6 md:pb-24 md:pt-14"
       >
-        <div className="absolute left-1/2 top-0 h-8 w-[72%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[var(--surface)] shadow-[0_-10px_35px_rgba(0,0,0,0.06)] md:hidden" />
+        <div className="pointer-events-none absolute inset-x-0 -top-8 h-14 rounded-t-[999px] bg-[linear-gradient(180deg,rgba(248,246,241,0),var(--surface)_72%)] md:hidden" />
         <div className="mx-auto mb-8 flex max-w-7xl flex-col gap-4 md:mb-10 md:flex-row md:items-end md:justify-between">
           <div>
             <p className="mb-2 text-[10px] font-mono uppercase tracking-[0.35em] text-[var(--foreground-soft)]">
