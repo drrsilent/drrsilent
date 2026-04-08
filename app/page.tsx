@@ -60,8 +60,8 @@ export default function Home() {
   });
 
   const heroScale = useTransform(scrollYProgress, [0, 1], [1, 0.96]);
-  const heroY = useTransform(scrollYProgress, [0, 1], [0, -50]);
-  const contentY = useTransform(scrollYProgress, [0, 1], [0, -90]);
+  const heroY = useTransform(scrollYProgress, [0, 1], [0, -28]);
+  const contentY = useTransform(scrollYProgress, [0, 1], [0, -36]);
   const overlayOpacity = useTransform(scrollYProgress, [0, 1], [0.12, 0.32]);
   const productsY = useTransform(scrollYProgress, [0.3, 1], [60, 0]);
 
@@ -74,10 +74,10 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-[var(--surface)] text-black" dir={isArabic ? 'rtl' : 'ltr'}>
-      <section ref={heroRef} className="relative h-[112vh] bg-black md:h-[175vh]">
+      <section ref={heroRef} className="relative h-[118vh] bg-black md:h-[175vh]">
         <motion.div
           style={{ scale: heroScale, y: heroY }}
-          className="safe-top sticky top-0 z-0 flex h-screen items-start justify-center overflow-hidden bg-black pt-40 md:items-center md:pt-0"
+          className="safe-top sticky top-0 z-0 flex h-screen items-start justify-center overflow-hidden bg-black pt-52 md:items-center md:pt-0"
         >
           <div className="absolute inset-0">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,var(--hero-gold),transparent_28%),radial-gradient(circle_at_20%_30%,var(--hero-glow),transparent_26%),linear-gradient(180deg,#060606,rgba(0,0,0,1))]" />
@@ -111,7 +111,7 @@ export default function Home() {
               }}
               className="absolute right-[14%] top-[30%] h-24 w-24 rounded-full bg-white/10 blur-3xl md:h-40 md:w-40"
             />
-            <div className="absolute inset-x-[8%] top-28 h-px bg-gradient-to-r from-transparent via-white/16 to-transparent md:inset-x-[10%] md:top-24" />
+            <div className="absolute inset-x-[8%] top-30 h-px bg-gradient-to-r from-transparent via-white/16 to-transparent md:inset-x-[10%] md:top-24" />
           </div>
 
           <motion.div
@@ -137,14 +137,14 @@ export default function Home() {
 
             <motion.h1
               variants={heroItemVariants}
-              className="bg-[linear-gradient(180deg,#ffffff_0%,rgba(255,255,255,0.84)_100%)] bg-clip-text text-[68px] font-extrabold leading-[0.92] tracking-[-0.09em] text-transparent sm:text-[88px] md:text-[180px]"
+              className="mt-3 bg-[linear-gradient(180deg,#ffffff_0%,rgba(255,255,255,0.84)_100%)] bg-clip-text text-[62px] font-extrabold leading-[0.92] tracking-[-0.09em] text-transparent sm:text-[88px] md:mt-0 md:text-[180px]"
             >
               DXLR.
             </motion.h1>
 
             <motion.p
               variants={heroItemVariants}
-              className="mt-4 max-w-[320px] text-[10px] font-mono uppercase tracking-[0.14em] text-white/60 sm:max-w-xl sm:text-[10px] sm:tracking-[0.3em] md:mt-6 md:text-[11px] md:tracking-[0.42em]"
+              className="mt-5 max-w-[320px] text-[10px] font-mono uppercase tracking-[0.14em] text-white/60 sm:max-w-xl sm:text-[10px] sm:tracking-[0.3em] md:mt-6 md:text-[11px] md:tracking-[0.42em]"
               >
                 {dict.heroTagline}
               </motion.p>
