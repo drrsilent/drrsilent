@@ -145,7 +145,7 @@ export default function Header() {
       <header
         className={`safe-top fixed inset-x-0 top-0 z-[100] border-b transition-all duration-300 ${headerClass}`}
       >
-        <div className="mx-auto flex h-[72px] max-w-7xl items-center justify-between px-3 sm:px-4 md:h-[82px] md:px-6">
+        <div className="relative mx-auto flex h-[92px] max-w-7xl items-start justify-between px-3 pt-3 sm:px-4 md:h-[82px] md:items-center md:px-6 md:pt-0">
           <div className="flex flex-1 items-center gap-2">
             <button
               type="button"
@@ -171,7 +171,7 @@ export default function Header() {
             </div>
           </div>
 
-          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+          <div className="absolute left-1/2 top-3 -translate-x-1/2 md:top-1/2 md:-translate-y-1/2">
             <Link href="/">
               <motion.div
                 whileHover={{ y: -1 }}
@@ -179,13 +179,13 @@ export default function Header() {
                 className="cursor-pointer text-center"
               >
                 <p
-                  className={`mb-1 text-[7px] font-mono uppercase tracking-[0.28em] md:text-[8px] md:tracking-[0.45em] ${
+                  className={`mb-1 text-[6px] font-mono uppercase tracking-[0.22em] md:text-[8px] md:tracking-[0.45em] ${
                     useLightHeader ? 'text-[var(--foreground-soft)]' : 'text-white/55'
                   }`}
                 >
                   Engineered Ease
                 </p>
-                <h2 className="text-[26px] font-extrabold leading-none tracking-[-0.09em] md:text-[40px]">
+                <h2 className="text-[22px] font-extrabold leading-none tracking-[-0.09em] md:text-[40px]">
                   DXLR.
                 </h2>
               </motion.div>
@@ -197,7 +197,7 @@ export default function Header() {
               type="button"
               onClick={toggleLocale}
               aria-label={dict.language}
-              className={`inline-flex h-10 min-w-[52px] items-center justify-center gap-1 rounded-full border px-2.5 text-[9px] font-bold uppercase tracking-[0.16em] transition-all duration-300 md:h-11 md:min-w-[60px] md:px-3 md:text-[10px] md:tracking-[0.18em] ${iconClass}`}
+              className={`absolute left-1/2 top-[49px] inline-flex h-8 min-w-[54px] -translate-x-1/2 items-center justify-center gap-1 rounded-full border px-2.5 text-[8px] font-bold uppercase tracking-[0.14em] transition-all duration-300 md:static md:h-11 md:min-w-[60px] md:translate-x-0 md:px-3 md:text-[10px] md:tracking-[0.18em] ${iconClass}`}
             >
               <Languages size={14} strokeWidth={2.1} />
               <span>{isArabic ? dict.arabic : dict.english}</span>

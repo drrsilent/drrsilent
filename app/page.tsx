@@ -74,10 +74,10 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-[var(--surface)] text-black" dir={isArabic ? 'rtl' : 'ltr'}>
-      <section ref={heroRef} className="relative h-[126vh] bg-black md:h-[175vh]">
+      <section ref={heroRef} className="relative h-[108vh] bg-black md:h-[175vh]">
         <motion.div
           style={{ scale: heroScale, y: heroY }}
-          className="safe-top sticky top-0 z-0 flex h-screen items-start justify-center overflow-hidden bg-black pt-20 md:items-center md:pt-0"
+          className="safe-top sticky top-0 z-0 flex h-screen items-start justify-center overflow-hidden bg-black pt-28 md:items-center md:pt-0"
         >
           <div className="absolute inset-0">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,var(--hero-gold),transparent_28%),radial-gradient(circle_at_20%_30%,var(--hero-glow),transparent_26%),linear-gradient(180deg,#060606,rgba(0,0,0,1))]" />
@@ -111,7 +111,7 @@ export default function Home() {
               }}
               className="absolute right-[14%] top-[30%] h-24 w-24 rounded-full bg-white/10 blur-3xl md:h-40 md:w-40"
             />
-            <div className="absolute inset-x-[8%] top-22 h-px bg-gradient-to-r from-transparent via-white/16 to-transparent md:inset-x-[10%] md:top-24" />
+            <div className="absolute inset-x-[8%] top-24 h-px bg-gradient-to-r from-transparent via-white/16 to-transparent md:inset-x-[10%] md:top-24" />
           </div>
 
           <motion.div
@@ -144,14 +144,14 @@ export default function Home() {
 
             <motion.p
               variants={heroItemVariants}
-              className="mt-3 max-w-[320px] text-[10px] font-mono uppercase tracking-[0.14em] text-white/60 sm:max-w-xl sm:text-[10px] sm:tracking-[0.3em] md:mt-6 md:text-[11px] md:tracking-[0.42em]"
-            >
-              {dict.heroTagline}
-            </motion.p>
+              className="mt-4 max-w-[320px] text-[10px] font-mono uppercase tracking-[0.14em] text-white/60 sm:max-w-xl sm:text-[10px] sm:tracking-[0.3em] md:mt-6 md:text-[11px] md:tracking-[0.42em]"
+              >
+                {dict.heroTagline}
+              </motion.p>
 
             <motion.div
               variants={heroItemVariants}
-              className="mt-8 flex w-full max-w-sm flex-col items-center justify-center gap-3 sm:max-w-none sm:flex-row sm:flex-wrap sm:gap-4 md:mt-10"
+              className="mt-10 flex w-full max-w-sm flex-col items-center justify-center gap-3.5 sm:max-w-none sm:flex-row sm:flex-wrap sm:gap-4 md:mt-10"
             >
               <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.99 }} className="w-full sm:w-auto">
                 <Link
@@ -176,7 +176,7 @@ export default function Home() {
 
             <motion.div
               variants={heroItemVariants}
-              className="mt-8 flex max-w-[320px] flex-wrap items-center justify-center gap-x-4 gap-y-2.5 text-[9px] font-mono uppercase tracking-[0.14em] text-white/42 sm:max-w-none sm:gap-x-8 sm:text-[10px] sm:tracking-[0.32em] md:mt-14"
+              className="mt-10 flex max-w-[320px] flex-wrap items-center justify-center gap-x-4 gap-y-2.5 text-[9px] font-mono uppercase tracking-[0.14em] text-white/42 sm:max-w-none sm:gap-x-8 sm:text-[10px] sm:tracking-[0.32em] md:mt-14"
             >
               <span>{dict.heavyCotton}</span>
               <span>{dict.minimalFinish}</span>
