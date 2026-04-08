@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import AuthProvider from '../components/Global/AuthProvider';
 import Header from '../components/Global/Header';
 import CartDrawer from '../components/Global/CartDrawer';
+import AccountDrawer from '../components/Global/AccountDrawer';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://drrsilent-git-main-drrsilents-projects.vercel.app'),
@@ -45,9 +47,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="min-h-screen bg-[var(--surface)] text-[var(--foreground)] antialiased">
-        <Header />
-        <CartDrawer />
-        {children}
+        <AuthProvider>
+          <Header />
+          <CartDrawer />
+          <AccountDrawer />
+          {children}
+        </AuthProvider>
       </body>
     </html>
   );

@@ -21,6 +21,7 @@ interface CartStore {
   updateItemSize: (id: string, currentSize: string, nextSize: string) => void;
   updateItemQuantity: (id: string, size: string, nextQuantity: number) => void;
   setPaymentMethod: (method: PaymentMethod) => void;
+  clearCart: () => void;
   openCart: () => void;
   toggleCart: () => void;
 }
@@ -32,6 +33,7 @@ export const useCartStore = create<CartStore>()(
       isOpen: false,
       paymentMethod: 'card',
       setPaymentMethod: (paymentMethod) => set({ paymentMethod }),
+      clearCart: () => set({ items: [], isOpen: false }),
       openCart: () => set({ isOpen: true }),
       toggleCart: () => set((state) => ({ isOpen: !state.isOpen })),
       addToCart: (newItem) => set((state) => {

@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import Link from 'next/link';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowRight, Banknote, CreditCard, ShoppingBag, Smartphone, Trash2, X } from 'lucide-react';
 import { CartItem, PaymentMethod, useCartStore } from '../../store/useCartStore';
@@ -18,6 +19,10 @@ export default function CartDrawer() {
 
   const subtotal = items.reduce(
     (acc: number, item: CartItem) => acc + item.price * item.quantity,
+    0
+  );
+  const itemCount = items.reduce(
+    (acc: number, item: CartItem) => acc + item.quantity,
     0
   );
   const paymentMethods = [
@@ -220,7 +225,7 @@ export default function CartDrawer() {
                     </div>
 
                     <div className="rounded-full bg-[#f5f5f2] px-4 py-2 text-[10px] font-bold uppercase tracking-[0.22em] text-zinc-500">
-                      {items.length} Items
+                      {itemCount} Items
                     </div>
                   </div>
 
@@ -263,13 +268,14 @@ export default function CartDrawer() {
                     </div>
                   </div>
 
-                  <button
-                    type="button"
+                  <Link
+                    href="/checkout"
+                    onClick={toggleCart}
                     className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-full bg-black px-6 py-5 text-[10px] font-bold uppercase tracking-[0.28em] text-white transition hover:bg-zinc-800"
                   >
                     {checkoutLabel}
                     <ArrowRight size={14} />
-                  </button>
+                  </Link>
                 </motion.div>
               </>
             )}
