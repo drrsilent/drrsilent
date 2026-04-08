@@ -36,6 +36,7 @@ export default function OpenGraphImage() {
             boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.02)',
           }}
         />
+
         <div
           style={{
             position: 'absolute',
@@ -47,7 +48,6 @@ export default function OpenGraphImage() {
             fontWeight: 800,
             letterSpacing: -12,
             color: 'rgba(255,255,255,0.05)',
-            zIndex: 0,
           }}
         >
           DXLR.
@@ -60,7 +60,6 @@ export default function OpenGraphImage() {
             padding: '74px 84px',
             justifyContent: 'space-between',
             alignItems: 'stretch',
-            zIndex: 1,
           }}
         >
           <div
@@ -103,6 +102,7 @@ export default function OpenGraphImage() {
               >
                 DXLR.
               </div>
+
               <div
                 style={{
                   display: 'flex',
@@ -138,17 +138,19 @@ export default function OpenGraphImage() {
               >
                 Premium Essentials
               </div>
+
               <div
                 style={{
                   display: 'flex',
-                  fontSize: 24,
-                  lineHeight: 1,
-                  color: '#b8945c',
-                  textShadow: '0 0 18px rgba(184,148,92,0.28)',
+                  width: 16,
+                  height: 16,
+                  borderRadius: 4,
+                  background: 'linear-gradient(135deg, #d6b079 0%, #9e7440 100%)',
+                  boxShadow: '0 0 18px rgba(184,148,92,0.28)',
+                  transform: 'rotate(45deg)',
                 }}
-              >
-                ★
-              </div>
+              />
+
               <div
                 style={{
                   display: 'flex',
@@ -193,6 +195,7 @@ export default function OpenGraphImage() {
               >
                 Signature Edit
               </div>
+
               <div
                 style={{
                   display: 'flex',
@@ -224,6 +227,7 @@ export default function OpenGraphImage() {
               >
                 Explore
               </div>
+
               <div
                 style={{
                   display: 'flex',
