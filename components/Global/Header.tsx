@@ -192,14 +192,14 @@ export default function Header() {
             </Link>
           </div>
 
-          <div className="flex flex-1 items-center justify-end gap-2">
+          <div className="flex flex-1 items-center justify-end gap-1.5 md:gap-2">
             <button
               type="button"
               onClick={toggleLocale}
               aria-label={dict.language}
-              className={`absolute left-1/2 top-[62px] inline-flex h-9 min-w-[58px] -translate-x-1/2 items-center justify-center gap-1 rounded-full border px-3 text-[8px] font-bold uppercase tracking-[0.14em] transition-all duration-300 md:static md:h-11 md:min-w-[60px] md:translate-x-0 md:px-3 md:text-[10px] md:tracking-[0.18em] ${iconClass}`}
+              className={`inline-flex h-10 min-w-[50px] items-center justify-center gap-1 rounded-full border px-2.5 text-[9px] font-bold uppercase tracking-[0.12em] transition-all duration-300 md:h-11 md:min-w-[60px] md:px-3 md:text-[10px] md:tracking-[0.18em] ${iconClass}`}
             >
-              <Languages size={14} strokeWidth={2.1} />
+              <Languages className="hidden md:block" size={14} strokeWidth={2.1} />
               <span>{isArabic ? dict.arabic : dict.english}</span>
             </button>
 
