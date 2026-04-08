@@ -74,10 +74,10 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-[var(--surface)] text-black" dir={isArabic ? 'rtl' : 'ltr'}>
-      <section ref={heroRef} className="relative h-[100svh] bg-black md:h-[175vh]">
+      <section ref={heroRef} className="relative h-[96svh] bg-black md:h-[175vh]">
         <motion.div
           style={{ scale: heroScale, y: heroY }}
-          className="safe-top sticky top-0 z-0 flex h-screen items-start justify-center overflow-hidden bg-black pt-74 md:items-center md:pt-0"
+          className="safe-top sticky top-0 z-0 flex h-screen items-start justify-center overflow-hidden bg-black pt-78 md:items-center md:pt-0"
         >
           <div className="absolute inset-0">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,var(--hero-gold),transparent_28%),radial-gradient(circle_at_20%_30%,var(--hero-glow),transparent_26%),linear-gradient(180deg,#060606,rgba(0,0,0,1))]" />
@@ -119,7 +119,7 @@ export default function Home() {
             variants={heroGroupVariants}
             initial="hidden"
             animate="show"
-            className="relative z-10 flex w-full max-w-md flex-col items-center px-4 pt-26 text-center text-white md:max-w-none md:px-4 md:pt-12"
+            className="relative z-10 flex w-full max-w-md flex-col items-center px-4 pt-30 text-center text-white md:max-w-none md:px-4 md:pt-12"
           >
             <motion.div
               variants={heroItemVariants}
@@ -144,14 +144,14 @@ export default function Home() {
 
             <motion.p
               variants={heroItemVariants}
-              className="mt-6 max-w-[328px] text-[10px] font-mono uppercase tracking-[0.14em] text-white/60 sm:max-w-xl sm:text-[10px] sm:tracking-[0.3em] md:mt-6 md:text-[11px] md:tracking-[0.42em]"
+              className="mt-7 max-w-[328px] text-[10px] font-mono uppercase tracking-[0.14em] text-white/60 sm:max-w-xl sm:text-[10px] sm:tracking-[0.3em] md:mt-6 md:text-[11px] md:tracking-[0.42em]"
               >
                 {dict.heroTagline}
               </motion.p>
 
             <motion.div
               variants={heroItemVariants}
-              className="mt-10 flex w-full max-w-sm flex-col items-center justify-center gap-4 sm:max-w-none sm:flex-row sm:flex-wrap sm:gap-4 md:mt-10"
+              className="mt-11 flex w-full max-w-sm flex-col items-center justify-center gap-4 sm:max-w-none sm:flex-row sm:flex-wrap sm:gap-4 md:mt-10"
             >
               <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.99 }} className="w-full sm:w-auto">
                 <Link
@@ -176,7 +176,7 @@ export default function Home() {
 
             <motion.div
               variants={heroItemVariants}
-              className="mt-10 flex max-w-[328px] flex-wrap items-center justify-center gap-x-4 gap-y-3 text-[9px] font-mono uppercase tracking-[0.14em] text-white/42 sm:max-w-none sm:gap-x-8 sm:text-[10px] sm:tracking-[0.32em] md:mt-14"
+              className="mt-11 flex max-w-[328px] flex-wrap items-center justify-center gap-x-4 gap-y-3 text-[9px] font-mono uppercase tracking-[0.14em] text-white/42 sm:max-w-none sm:gap-x-8 sm:text-[10px] sm:tracking-[0.32em] md:mt-14"
             >
               <span>{dict.heavyCotton}</span>
               <span>{dict.minimalFinish}</span>
@@ -190,8 +190,9 @@ export default function Home() {
         id="lookbook"
         ref={lookbookRef}
         style={{ y: productsY }}
-        className="relative z-30 mt-3 rounded-t-[28px] bg-[var(--surface)] px-3 pb-20 pt-8 shadow-[0_-26px_80px_rgba(0,0,0,0.08)] md:-mt-24 md:rounded-t-[36px] md:px-6 md:pb-24 md:pt-14"
+        className="relative z-30 -mt-6 rounded-t-[32px] bg-[var(--surface)] px-3 pb-20 pt-10 shadow-[0_-26px_80px_rgba(0,0,0,0.08)] md:-mt-24 md:rounded-t-[36px] md:px-6 md:pb-24 md:pt-14"
       >
+        <div className="absolute left-1/2 top-0 h-8 w-[72%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[var(--surface)] shadow-[0_-10px_35px_rgba(0,0,0,0.06)] md:hidden" />
         <div className="mx-auto mb-8 flex max-w-7xl flex-col gap-4 md:mb-10 md:flex-row md:items-end md:justify-between">
           <div>
             <p className="mb-2 text-[10px] font-mono uppercase tracking-[0.35em] text-[var(--foreground-soft)]">
