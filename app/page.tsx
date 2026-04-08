@@ -74,10 +74,10 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-[var(--surface)] text-black" dir={isArabic ? 'rtl' : 'ltr'}>
-      <section ref={heroRef} className="relative h-[88svh] bg-black md:h-[175vh]">
+      <section ref={heroRef} className="relative h-[94svh] bg-black md:h-[175vh]">
         <motion.div
           style={{ scale: heroScale, y: heroY }}
-          className="safe-top sticky top-0 z-0 flex h-screen items-start justify-center overflow-hidden bg-black pt-72 md:items-center md:pt-0"
+          className="safe-top sticky top-0 z-0 flex h-screen items-start justify-center overflow-hidden bg-black pt-76 md:items-center md:pt-0"
         >
           <div className="absolute inset-0">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,var(--hero-gold),transparent_28%),radial-gradient(circle_at_20%_30%,var(--hero-glow),transparent_26%),linear-gradient(180deg,#060606,rgba(0,0,0,1))]" />
@@ -111,7 +111,7 @@ export default function Home() {
               }}
               className="absolute right-[14%] top-[30%] h-24 w-24 rounded-full bg-white/10 blur-3xl md:h-40 md:w-40"
             />
-            <div className="absolute inset-x-[8%] top-44 h-px bg-gradient-to-r from-transparent via-white/16 to-transparent md:inset-x-[10%] md:top-24" />
+            <div className="absolute inset-x-[8%] top-48 h-px bg-gradient-to-r from-transparent via-white/16 to-transparent md:inset-x-[10%] md:top-24" />
           </div>
 
           <motion.div
@@ -119,7 +119,7 @@ export default function Home() {
             variants={heroGroupVariants}
             initial="hidden"
             animate="show"
-            className="relative z-10 flex w-full max-w-md flex-col items-center px-4 pt-24 text-center text-white md:max-w-none md:px-4 md:pt-12"
+            className="relative z-10 flex w-full max-w-md flex-col items-center px-4 pt-28 text-center text-white md:max-w-none md:px-4 md:pt-12"
           >
             <motion.div
               variants={heroItemVariants}
@@ -190,7 +190,7 @@ export default function Home() {
         id="lookbook"
         ref={lookbookRef}
         style={{ y: productsY }}
-        className="relative z-30 -mt-14 rounded-t-[28px] bg-[var(--surface)] px-3 pb-20 pt-8 shadow-[0_-26px_80px_rgba(0,0,0,0.08)] md:-mt-24 md:rounded-t-[36px] md:px-6 md:pb-24 md:pt-14"
+        className="relative z-30 -mt-4 rounded-t-[28px] bg-[var(--surface)] px-3 pb-20 pt-8 shadow-[0_-26px_80px_rgba(0,0,0,0.08)] md:-mt-24 md:rounded-t-[36px] md:px-6 md:pb-24 md:pt-14"
       >
         <div className="mx-auto mb-8 flex max-w-7xl flex-col gap-4 md:mb-10 md:flex-row md:items-end md:justify-between">
           <div>
