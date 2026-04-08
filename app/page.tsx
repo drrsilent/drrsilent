@@ -74,10 +74,10 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-[var(--surface)] text-black" dir={isArabic ? 'rtl' : 'ltr'}>
-      <section ref={heroRef} className="relative h-[108vh] bg-black md:h-[175vh]">
+      <section ref={heroRef} className="relative h-[112vh] bg-black md:h-[175vh]">
         <motion.div
           style={{ scale: heroScale, y: heroY }}
-          className="safe-top sticky top-0 z-0 flex h-screen items-start justify-center overflow-hidden bg-black pt-28 md:items-center md:pt-0"
+          className="safe-top sticky top-0 z-0 flex h-screen items-start justify-center overflow-hidden bg-black pt-40 md:items-center md:pt-0"
         >
           <div className="absolute inset-0">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,var(--hero-gold),transparent_28%),radial-gradient(circle_at_20%_30%,var(--hero-glow),transparent_26%),linear-gradient(180deg,#060606,rgba(0,0,0,1))]" />
@@ -111,7 +111,7 @@ export default function Home() {
               }}
               className="absolute right-[14%] top-[30%] h-24 w-24 rounded-full bg-white/10 blur-3xl md:h-40 md:w-40"
             />
-            <div className="absolute inset-x-[8%] top-24 h-px bg-gradient-to-r from-transparent via-white/16 to-transparent md:inset-x-[10%] md:top-24" />
+            <div className="absolute inset-x-[8%] top-28 h-px bg-gradient-to-r from-transparent via-white/16 to-transparent md:inset-x-[10%] md:top-24" />
           </div>
 
           <motion.div
@@ -137,7 +137,7 @@ export default function Home() {
 
             <motion.h1
               variants={heroItemVariants}
-              className="bg-[linear-gradient(180deg,#ffffff_0%,rgba(255,255,255,0.84)_100%)] bg-clip-text text-[72px] font-extrabold leading-[0.92] tracking-[-0.09em] text-transparent sm:text-[88px] md:text-[180px]"
+              className="bg-[linear-gradient(180deg,#ffffff_0%,rgba(255,255,255,0.84)_100%)] bg-clip-text text-[68px] font-extrabold leading-[0.92] tracking-[-0.09em] text-transparent sm:text-[88px] md:text-[180px]"
             >
               DXLR.
             </motion.h1>
