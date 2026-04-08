@@ -137,14 +137,14 @@ export default function Home() {
 
             <motion.h1
               variants={heroItemVariants}
-              className="mt-7 bg-[linear-gradient(180deg,#ffffff_0%,rgba(255,255,255,0.84)_100%)] bg-clip-text text-[68px] font-extrabold leading-[0.92] tracking-[-0.09em] text-transparent sm:text-[88px] md:mt-0 md:text-[180px]"
+              className="mt-8 bg-[linear-gradient(180deg,#ffffff_0%,rgba(255,255,255,0.82)_100%)] bg-clip-text text-[82px] font-extrabold leading-[0.88] tracking-[-0.11em] text-transparent drop-shadow-[0_16px_34px_rgba(0,0,0,0.34)] sm:text-[96px] md:mt-0 md:text-[180px]"
             >
               DXLR.
             </motion.h1>
 
             <motion.p
               variants={heroItemVariants}
-              className="mt-7 max-w-[328px] text-[10px] font-mono uppercase tracking-[0.14em] text-white/60 sm:max-w-xl sm:text-[10px] sm:tracking-[0.3em] md:mt-6 md:text-[11px] md:tracking-[0.42em]"
+              className="mt-5 max-w-[336px] text-[10px] font-mono uppercase tracking-[0.16em] text-white/60 sm:max-w-xl sm:text-[10px] sm:tracking-[0.3em] md:mt-6 md:text-[11px] md:tracking-[0.42em]"
               >
                 {dict.heroTagline}
               </motion.p>
