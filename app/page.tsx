@@ -74,10 +74,10 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-[var(--surface)] text-black" dir={isArabic ? 'rtl' : 'ltr'}>
-      <section ref={heroRef} className="relative h-[122vh] bg-black md:h-[175vh]">
+      <section ref={heroRef} className="relative h-[106vh] bg-black md:h-[175vh]">
         <motion.div
           style={{ scale: heroScale, y: heroY }}
-          className="safe-top sticky top-0 z-0 flex h-screen items-start justify-center overflow-hidden bg-black pt-56 md:items-center md:pt-0"
+          className="safe-top sticky top-0 z-0 flex h-screen items-start justify-center overflow-hidden bg-black pt-60 md:items-center md:pt-0"
         >
           <div className="absolute inset-0">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,var(--hero-gold),transparent_28%),radial-gradient(circle_at_20%_30%,var(--hero-glow),transparent_26%),linear-gradient(180deg,#060606,rgba(0,0,0,1))]" />
@@ -111,7 +111,7 @@ export default function Home() {
               }}
               className="absolute right-[14%] top-[30%] h-24 w-24 rounded-full bg-white/10 blur-3xl md:h-40 md:w-40"
             />
-            <div className="absolute inset-x-[8%] top-34 h-px bg-gradient-to-r from-transparent via-white/16 to-transparent md:inset-x-[10%] md:top-24" />
+            <div className="absolute inset-x-[8%] top-36 h-px bg-gradient-to-r from-transparent via-white/16 to-transparent md:inset-x-[10%] md:top-24" />
           </div>
 
           <motion.div
@@ -119,7 +119,7 @@ export default function Home() {
             variants={heroGroupVariants}
             initial="hidden"
             animate="show"
-            className="relative z-10 flex w-full max-w-md flex-col items-center px-4 pt-10 text-center text-white md:max-w-none md:px-4 md:pt-12"
+            className="relative z-10 flex w-full max-w-md flex-col items-center px-4 pt-14 text-center text-white md:max-w-none md:px-4 md:pt-12"
           >
             <motion.div
               variants={heroItemVariants}
@@ -137,26 +137,26 @@ export default function Home() {
 
             <motion.h1
               variants={heroItemVariants}
-              className="mt-4 bg-[linear-gradient(180deg,#ffffff_0%,rgba(255,255,255,0.84)_100%)] bg-clip-text text-[58px] font-extrabold leading-[0.92] tracking-[-0.09em] text-transparent sm:text-[88px] md:mt-0 md:text-[180px]"
+              className="mt-5 bg-[linear-gradient(180deg,#ffffff_0%,rgba(255,255,255,0.84)_100%)] bg-clip-text text-[64px] font-extrabold leading-[0.92] tracking-[-0.09em] text-transparent sm:text-[88px] md:mt-0 md:text-[180px]"
             >
               DXLR.
             </motion.h1>
 
             <motion.p
               variants={heroItemVariants}
-              className="mt-5 max-w-[320px] text-[10px] font-mono uppercase tracking-[0.14em] text-white/60 sm:max-w-xl sm:text-[10px] sm:tracking-[0.3em] md:mt-6 md:text-[11px] md:tracking-[0.42em]"
+              className="mt-6 max-w-[328px] text-[10px] font-mono uppercase tracking-[0.14em] text-white/60 sm:max-w-xl sm:text-[10px] sm:tracking-[0.3em] md:mt-6 md:text-[11px] md:tracking-[0.42em]"
               >
                 {dict.heroTagline}
               </motion.p>
 
             <motion.div
               variants={heroItemVariants}
-              className="mt-10 flex w-full max-w-sm flex-col items-center justify-center gap-3.5 sm:max-w-none sm:flex-row sm:flex-wrap sm:gap-4 md:mt-10"
+              className="mt-11 flex w-full max-w-sm flex-col items-center justify-center gap-4 sm:max-w-none sm:flex-row sm:flex-wrap sm:gap-4 md:mt-10"
             >
               <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.99 }} className="w-full sm:w-auto">
                 <Link
                   href="/shop"
-                  className="block w-full rounded-full border border-[rgba(185,154,107,0.28)] bg-[linear-gradient(180deg,rgba(185,154,107,0.18),rgba(185,154,107,0.1))] px-7 py-4 text-center text-[10px] font-bold uppercase tracking-[0.2em] text-white shadow-[0_20px_50px_rgba(0,0,0,0.22),inset_0_0_0_1px_rgba(255,255,255,0.03)] transition-all duration-300 hover:bg-white hover:text-black sm:w-auto sm:px-8 sm:py-4 sm:text-[10px] sm:tracking-[0.3em]"
+                  className="block w-full rounded-full border border-[rgba(185,154,107,0.28)] bg-[linear-gradient(180deg,rgba(185,154,107,0.18),rgba(185,154,107,0.1))] px-7 py-4.5 text-center text-[11px] font-bold uppercase tracking-[0.2em] text-white shadow-[0_20px_50px_rgba(0,0,0,0.22),inset_0_0_0_1px_rgba(255,255,255,0.03)] transition-all duration-300 hover:bg-white hover:text-black sm:w-auto sm:px-8 sm:py-4 sm:text-[10px] sm:tracking-[0.3em]"
                 >
                   {dict.exploreCollection}
                 </Link>
@@ -168,7 +168,7 @@ export default function Home() {
                 whileHover={{ y: -2 }}
                 whileTap={{ scale: 0.99 }}
                 onClick={scrollToLookbook}
-                className="w-full rounded-full border border-white/16 bg-white/[0.06] px-7 py-4 text-[10px] font-bold uppercase tracking-[0.2em] text-white shadow-[0_16px_42px_rgba(0,0,0,0.18),inset_0_0_0_1px_rgba(255,255,255,0.02)] transition-all duration-300 hover:bg-white hover:text-black sm:w-auto sm:px-8 sm:py-4 sm:text-[10px] sm:tracking-[0.3em]"
+                className="w-full rounded-full border border-white/16 bg-white/[0.06] px-7 py-4.5 text-[11px] font-bold uppercase tracking-[0.2em] text-white shadow-[0_16px_42px_rgba(0,0,0,0.18),inset_0_0_0_1px_rgba(255,255,255,0.02)] transition-all duration-300 hover:bg-white hover:text-black sm:w-auto sm:px-8 sm:py-4 sm:text-[10px] sm:tracking-[0.3em]"
               >
                 {dict.viewLookbook}
               </motion.button>
@@ -176,7 +176,7 @@ export default function Home() {
 
             <motion.div
               variants={heroItemVariants}
-              className="mt-10 flex max-w-[320px] flex-wrap items-center justify-center gap-x-4 gap-y-2.5 text-[9px] font-mono uppercase tracking-[0.14em] text-white/42 sm:max-w-none sm:gap-x-8 sm:text-[10px] sm:tracking-[0.32em] md:mt-14"
+              className="mt-11 flex max-w-[328px] flex-wrap items-center justify-center gap-x-4 gap-y-3 text-[9px] font-mono uppercase tracking-[0.14em] text-white/42 sm:max-w-none sm:gap-x-8 sm:text-[10px] sm:tracking-[0.32em] md:mt-14"
             >
               <span>{dict.heavyCotton}</span>
               <span>{dict.minimalFinish}</span>
