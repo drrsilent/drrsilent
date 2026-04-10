@@ -233,7 +233,7 @@ export default function Home() {
         id="lookbook"
         ref={lookbookRef}
         style={{ y: productsY }}
-        className="relative z-30 -mt-6 rounded-t-[36px] bg-[var(--surface)] px-3 pb-20 pt-12 shadow-[0_-26px_80px_rgba(0,0,0,0.08)] md:-mt-24 md:rounded-t-[36px] md:px-6 md:pb-24 md:pt-14"
+        className="relative z-30 -mt-6 rounded-t-[36px] bg-[var(--surface)] px-3 pb-20 pt-16 shadow-[0_-26px_80px_rgba(0,0,0,0.08)] md:-mt-24 md:rounded-t-[36px] md:px-6 md:pb-24 md:pt-14"
       >
         <div className="pointer-events-none absolute inset-x-0 -top-12 h-24 md:hidden">
           <div className="absolute inset-x-[4%] bottom-[54px] h-12 rounded-[999px] bg-[radial-gradient(circle_at_center,rgba(0,0,0,0.44),rgba(0,0,0,0)_72%)] blur-[18px] opacity-80" />
