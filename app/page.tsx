@@ -110,7 +110,7 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-[var(--surface)] text-black" dir={isArabic ? 'rtl' : 'ltr'}>
-      <section ref={heroRef} className="relative h-[96svh] bg-black md:h-[175vh]">
+      <section ref={heroRef} className="relative h-[94svh] bg-black md:h-[175vh]">
         <motion.div
           style={{ scale: heroScale, y: heroY }}
           className="safe-top sticky top-0 z-0 flex h-screen items-start justify-center overflow-hidden bg-black pt-64 md:items-center md:pt-0"
@@ -219,7 +219,7 @@ export default function Home() {
 
             <motion.div
               variants={heroItemVariants}
-              className={`mt-12 flex max-w-[328px] flex-wrap items-center justify-center gap-x-4 gap-y-3 sm:max-w-none sm:gap-x-8 md:mt-14 ${heroMetaClassName}`}
+              className={`mt-16 flex max-w-[328px] flex-wrap items-center justify-center gap-x-4 gap-y-3 sm:max-w-none sm:gap-x-8 md:mt-14 ${heroMetaClassName}`}
             >
               <span>{dict.heavyCotton}</span>
               <span>{dict.minimalFinish}</span>
@@ -233,7 +233,7 @@ export default function Home() {
         id="lookbook"
         ref={lookbookRef}
         style={{ y: productsY }}
-        className="relative z-30 -mt-4 rounded-t-[36px] bg-[var(--surface)] px-3 pb-20 pt-12 shadow-[0_-26px_80px_rgba(0,0,0,0.08)] md:-mt-24 md:rounded-t-[36px] md:px-6 md:pb-24 md:pt-14"
+        className="relative z-30 -mt-6 rounded-t-[36px] bg-[var(--surface)] px-3 pb-20 pt-12 shadow-[0_-26px_80px_rgba(0,0,0,0.08)] md:-mt-24 md:rounded-t-[36px] md:px-6 md:pb-24 md:pt-14"
       >
         <div className="pointer-events-none absolute inset-x-0 -top-12 h-24 md:hidden">
           <div className="absolute inset-x-[4%] bottom-[54px] h-12 rounded-[999px] bg-[radial-gradient(circle_at_center,rgba(0,0,0,0.44),rgba(0,0,0,0)_72%)] blur-[18px] opacity-80" />
