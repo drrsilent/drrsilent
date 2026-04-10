@@ -187,7 +187,7 @@ export default function ShopPage({
               whileHover={{ y: -4 }}
               className="group flex w-full min-w-0 flex-col"
             >
-              <div className="relative mb-2.5 aspect-[4/5] overflow-hidden rounded-[18px] border border-[var(--line)] bg-[var(--surface-muted)] shadow-[0_14px_30px_rgba(0,0,0,0.06)] md:mb-4 md:max-w-[320px] md:rounded-[28px] md:shadow-[0_18px_50px_rgba(0,0,0,0.06)]">
+              <div className="relative mb-2.5 aspect-[4/5] overflow-hidden rounded-[18px] border border-[var(--line)] bg-[linear-gradient(180deg,#f7f4ee,#ebe4d7)] shadow-[0_14px_30px_rgba(0,0,0,0.06)] md:mb-4 md:max-w-[320px] md:rounded-[28px] md:shadow-[0_18px_50px_rgba(0,0,0,0.06)]">
                 <motion.div
                   whileHover={{ scale: 1.02 }}
                   transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
@@ -198,11 +198,11 @@ export default function ShopPage({
                     alt={product.title}
                     fill
                     sizes="(max-width: 768px) 50vw, 25vw"
-                    className="object-cover"
+                    className="object-contain p-4 md:p-5"
                   />
                 </motion.div>
 
-                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
 
                 <button
                   type="button"

@@ -1,10 +1,10 @@
 'use client';
 
 import { motion, useScroll, useTransform } from 'framer-motion';
-import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowLeft, ShoppingBag } from 'lucide-react';
 import { use, useRef, useState } from 'react';
+import ProductImageViewer from '../../../components/Product/ProductImageViewer';
 import { getLocalizedProduct, products } from '../../../data/products';
 import { formatPrice } from '../../../lib/currency';
 import { getDictionary } from '../../../lib/translations';
@@ -121,27 +121,17 @@ export default function ProductPage({
 
         <section ref={heroRef} className="grid gap-5 md:grid-cols-[1.1fr_0.9fr] md:gap-8">
           <motion.div
-            ref={productImageRef}
             variants={itemVariants}
-            className="relative min-h-[320px] overflow-hidden rounded-[22px] bg-[#e9e9e3] shadow-[0_18px_50px_rgba(0,0,0,0.12)] sm:min-h-[440px] md:min-h-[720px] md:rounded-[32px] md:shadow-[0_24px_80px_rgba(0,0,0,0.12)]"
+            className="relative"
           >
-            <motion.div style={{ y: imageY, scale: imageScale }} className="absolute inset-0">
-              <Image
-                src={product.image}
-                alt={product.title}
-                fill
-                preload
-                sizes="(max-width: 768px) 100vw, 55vw"
-                className="object-cover"
+            <motion.div style={{ y: imageY, scale: imageScale }}>
+              <ProductImageViewer
+                image={product.image}
+                title={product.title}
+                isArabic={isArabic}
+                imageFrameRef={productImageRef}
               />
             </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.9, delay: 0.15 }}
-              className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.12),transparent_30%),linear-gradient(180deg,rgba(0,0,0,0.02),rgba(0,0,0,0.18))]"
-            />
           </motion.div>
 
           <motion.div

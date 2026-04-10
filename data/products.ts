@@ -22,7 +22,7 @@ export const products: Record<string, Product> = {
     title: 'V1 Heavy Hoodie',
     category: 'hoodies',
     price: 1800,
-    image: 'https://images.unsplash.com/photo-1556821840-3a63f95609a7?auto=format&fit=crop&w=1200&q=80',
+    image: '/products/hoodie-rack.jpg',
     description:
       'Heavyweight cotton hoodie with a structured silhouette, brushed interior, and a clean technical finish made for daily rotation.',
     sizes: ['S', 'M', 'L', 'XL'],
@@ -32,7 +32,7 @@ export const products: Record<string, Product> = {
     title: 'Protocol Zip Hoodie',
     category: 'hoodies',
     price: 1650,
-    image: 'https://images.unsplash.com/photo-1578768079052-aa76e52ff62e?auto=format&fit=crop&w=1200&q=80',
+    image: '/products/hoodie-collection.jpg',
     description:
       'Midweight zip hoodie with a sharp front line, soft brushed backing, and an easy oversized drape for layered everyday wear.',
     sizes: ['S', 'M', 'L', 'XL'],
@@ -42,7 +42,7 @@ export const products: Record<string, Product> = {
     title: 'Signature Washed Hoodie',
     category: 'hoodies',
     price: 1550,
-    image: 'https://images.unsplash.com/photo-1523398002811-999ca8dec234?auto=format&fit=crop&w=1200&q=80',
+    image: '/products/sweatshirt-studio.jpg',
     description:
       'Washed fleece hoodie with a softened vintage finish, roomy hood shape, and a relaxed fit that feels broken-in from day one.',
     sizes: ['S', 'M', 'L', 'XL'],
@@ -52,7 +52,7 @@ export const products: Record<string, Product> = {
     title: 'Utility Oversized Hoodie',
     category: 'hoodies',
     price: 1750,
-    image: 'https://images.unsplash.com/photo-1578587018452-892bacefd3f2?auto=format&fit=crop&w=1200&q=80',
+    image: '/products/hoodie-rack.jpg',
     description:
       'Oversized heavyweight hoodie with clean seam lines, a boxy shoulder, and dense fabric made for a structured street silhouette.',
     sizes: ['S', 'M', 'L', 'XL'],
@@ -62,7 +62,7 @@ export const products: Record<string, Product> = {
     title: 'Shadow Core Hoodie',
     category: 'hoodies',
     price: 1890,
-    image: 'https://images.unsplash.com/photo-1619603364904-c0498317e145?auto=format&fit=crop&w=1200&q=80',
+    image: '/products/sweatshirt-studio.jpg',
     description:
       'Dense brushed hoodie with a darker washed tone, dropped shoulders, and a clean front built for a minimal heavy look.',
     sizes: ['S', 'M', 'L', 'XL'],
@@ -72,7 +72,7 @@ export const products: Record<string, Product> = {
     title: 'Midnight Pullover Hoodie',
     category: 'hoodies',
     price: 1720,
-    image: 'https://images.unsplash.com/photo-1622470953794-aa9c70b0fb9d?auto=format&fit=crop&w=1200&q=80',
+    image: '/products/hoodie-collection.jpg',
     description:
       'Relaxed pullover hoodie with a soft interior, oversized hood volume, and a smoother silhouette for everyday layering.',
     sizes: ['S', 'M', 'L', 'XL'],
@@ -82,7 +82,7 @@ export const products: Record<string, Product> = {
     title: 'Studio Heavy Tee',
     category: 't-shirts',
     price: 980,
-    image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=1200&q=80',
+    image: '/products/tee-pair.jpg',
     description:
       'Structured heavyweight tee with a boxy body, clean neckline, and a minimal fit built for daily layering.',
     sizes: ['S', 'M', 'L', 'XL'],
@@ -92,7 +92,7 @@ export const products: Record<string, Product> = {
     title: 'Mono Street Tee',
     category: 't-shirts',
     price: 920,
-    image: 'https://images.unsplash.com/photo-1503342394128-c104d54dba01?auto=format&fit=crop&w=1200&q=80',
+    image: '/products/tee-minimal.jpg',
     description:
       'Monochrome oversized tee with a heavier cotton feel and a clean front made for a sharp streetwear profile.',
     sizes: ['S', 'M', 'L', 'XL'],
@@ -102,7 +102,7 @@ export const products: Record<string, Product> = {
     title: 'Vector Cargo Pants',
     category: 'pants',
     price: 2100,
-    image: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1200&q=80',
+    image: '/products/pants-sweat.jpg',
     description:
       'Relaxed cargo pants with utility pocketing, a strong leg line, and durable fabric built for everyday movement.',
     sizes: ['S', 'M', 'L', 'XL'],
@@ -112,7 +112,7 @@ export const products: Record<string, Product> = {
     title: 'Core Track Pants',
     category: 'pants',
     price: 1850,
-    image: 'https://images.unsplash.com/photo-1506629082955-511b1aa562c8?auto=format&fit=crop&w=1200&q=80',
+    image: '/products/pants-denim.jpg',
     description:
       'Straight-leg track pants with a clean drape, soft technical feel, and an easy silhouette for daily rotation.',
     sizes: ['S', 'M', 'L', 'XL'],
