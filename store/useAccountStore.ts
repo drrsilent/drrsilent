@@ -32,6 +32,7 @@ interface AccountStore {
   signIn: (user: AccountUser) => void;
   signOut: () => void;
   addOrder: (order: AccountOrder) => void;
+  removeOrder: (orderId: string) => void;
 }
 
 export const useAccountStore = create<AccountStore>()(
@@ -48,6 +49,10 @@ export const useAccountStore = create<AccountStore>()(
       addOrder: (order) =>
         set((state) => ({
           orders: [order, ...state.orders],
+        })),
+      removeOrder: (orderId) =>
+        set((state) => ({
+          orders: state.orders.filter((order) => order.id !== orderId),
         })),
     }),
     {

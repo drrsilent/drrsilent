@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion } from 'framer-motion';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import {
   AtSign,
   Check,
@@ -9,6 +10,7 @@ import {
   Clock3,
   LogOut,
   MessageCircle,
+  PencilLine,
   ShieldCheck,
   Smartphone,
   User2,
@@ -22,8 +24,10 @@ import {
 } from 'next-auth/react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { formatPrice } from '../../lib/currency';
+import { getLocalizedProduct, products } from '../../data/products';
 import { useLocaleStore } from '../../store/useLocaleStore';
 import { useAccountStore } from '../../store/useAccountStore';
+import { useCartStore } from '../../store/useCartStore';
 
 type ConfiguredProviders = {
   google: boolean;
@@ -244,13 +248,16 @@ const socialProviders: Array<{
 ];
 
 export default function AccountDrawer() {
+  const router = useRouter();
   const isOpen = useAccountStore((state) => state.isOpen);
   const user = useAccountStore((state) => state.user);
   const orders = useAccountStore((state) => state.orders);
   const closeAccount = useAccountStore((state) => state.closeAccount);
   const clearManualSignIn = useAccountStore((state) => state.signOut);
   const manualSignIn = useAccountStore((state) => state.signIn);
+  const removeOrder = useAccountStore((state) => state.removeOrder);
   const locale = useLocaleStore((state) => state.locale);
+  const setCartState = useCartStore((state) => state.setCartState);
   const { data: session } = useSession();
 
   const [availableProviders, setAvailableProviders] = useState<Record<string, unknown>>({});
@@ -422,6 +429,19 @@ export default function AccountDrawer() {
     resetManualFields();
   };
 
+  const handleEditOrder = (orderId: string) => {
+    const order = orders.find((entry) => entry.id === orderId);
+
+    if (!order) {
+      return;
+    }
+
+    setCartState(order.items, order.paymentMethod);
+    removeOrder(orderId);
+    closeAccount();
+    router.push('/checkout');
+  };
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -554,6 +574,55 @@ export default function AccountDrawer() {
                           </p>
                           <p>{order.itemCount} items</p>
                         </div>
+
+                        {order.items.length > 0 ? (
+                          <div className="mt-4 space-y-3 border-t border-black/8 pt-4">
+                            {order.items.map((item) => {
+                              const localizedItem = products[item.id]
+                                ? getLocalizedProduct(item.id, locale)
+                                : item;
+
+                              return (
+                                <div
+                                  key={`${order.id}-${item.id}-${item.size}`}
+                                  className="flex items-center gap-3 rounded-[18px] bg-[var(--surface)] p-3"
+                                >
+                                  <div className="relative h-18 w-16 shrink-0 overflow-hidden rounded-[14px] bg-[var(--surface-muted)]">
+                                    <Image
+                                      src={item.image}
+                                      alt={localizedItem.title}
+                                      fill
+                                      sizes="64px"
+                                      className="object-cover"
+                                    />
+                                  </div>
+                                  <div className="min-w-0 flex-1">
+                                    <p className="truncate text-sm font-semibold text-black">
+                                      {localizedItem.title}
+                                    </p>
+                                    <p className="mt-1 text-xs text-[var(--foreground-soft)]">
+                                      Size {item.size} • Qty {item.quantity}
+                                    </p>
+                                    <p className="mt-1 text-sm font-semibold text-black">
+                                      {formatPrice(item.price * item.quantity, locale)}
+                                    </p>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        ) : null}
+
+                        {order.status === 'awaiting_payment' ? (
+                          <button
+                            type="button"
+                            onClick={() => handleEditOrder(order.id)}
+                            className="mt-4 inline-flex items-center gap-2 rounded-full border border-black bg-black px-4 py-3 text-[10px] font-bold uppercase tracking-[0.18em] text-white transition hover:bg-zinc-800"
+                          >
+                            <PencilLine size={14} />
+                            Edit Order
+                          </button>
+                        ) : null}
                       </div>
                     ))
                   ) : (

@@ -16,6 +16,7 @@ interface CartStore {
   items: CartItem[];
   isOpen: boolean;
   paymentMethod: PaymentMethod;
+  setCartState: (items: CartItem[], paymentMethod?: PaymentMethod) => void;
   addToCart: (item: CartItem) => void;
   removeFromCart: (id: string, size: string) => void;
   updateItemSize: (id: string, currentSize: string, nextSize: string) => void;
@@ -32,6 +33,12 @@ export const useCartStore = create<CartStore>()(
       items: [],
       isOpen: false,
       paymentMethod: 'card',
+      setCartState: (items, paymentMethod = 'card') =>
+        set({
+          items,
+          paymentMethod,
+          isOpen: false,
+        }),
       setPaymentMethod: (paymentMethod) => set({ paymentMethod }),
       clearCart: () => set({ items: [], isOpen: false }),
       openCart: () => set({ isOpen: true }),
