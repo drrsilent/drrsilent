@@ -56,6 +56,39 @@ export default function Home() {
   const dict = getDictionary(locale).common;
   const isArabic = locale === 'ar';
   const featuredProducts = getLocalizedFeaturedProducts(locale);
+  const badgeClassName = isArabic
+    ? 'px-5 py-2.5 text-[11px] tracking-normal text-white/80 md:px-7 md:py-3 md:text-[12px]'
+    : 'px-5 py-2.5 text-[9px] uppercase tracking-[0.18em] text-white/72 md:px-7 md:py-3 md:text-[10px] md:tracking-[0.24em]';
+  const eyebrowClassName = isArabic
+    ? 'text-[12px] tracking-normal text-[var(--accent-soft)] md:text-[13px]'
+    : 'text-[9px] font-mono uppercase tracking-[0.22em] text-[var(--accent-soft)] md:text-[10px] md:tracking-[0.36em]';
+  const heroTaglineClassName = isArabic
+    ? 'text-[14px] leading-7 tracking-normal text-white/72 sm:text-[15px] md:text-[16px] md:leading-8'
+    : 'text-[10px] font-mono uppercase tracking-[0.14em] text-white/60 sm:text-[10px] sm:tracking-[0.24em] md:text-[11px] md:tracking-[0.36em]';
+  const heroButtonClassName = isArabic
+    ? 'text-[18px] font-semibold tracking-normal'
+    : 'text-[11px] font-bold uppercase tracking-[0.2em] sm:text-[10px] sm:tracking-[0.3em]';
+  const heroMetaClassName = isArabic
+    ? 'text-[12px] tracking-normal text-white/52 sm:text-[13px]'
+    : 'text-[9px] font-mono uppercase tracking-[0.14em] text-white/42 sm:text-[10px] sm:tracking-[0.32em]';
+  const sectionLabelClassName = isArabic
+    ? 'text-[12px] tracking-[0.04em] text-[var(--foreground-soft)]'
+    : 'text-[10px] font-mono uppercase tracking-[0.35em] text-[var(--foreground-soft)]';
+  const shopButtonClassName = isArabic
+    ? 'text-[14px] font-semibold tracking-normal'
+    : 'text-[11px] font-bold uppercase tracking-[0.22em] md:tracking-[0.25em]';
+  const quickAddClassName = isArabic
+    ? 'text-[11px] font-semibold tracking-normal'
+    : 'text-[8px] font-bold uppercase tracking-[0.14em] md:text-[10px] md:tracking-[0.25em]';
+  const productTitleClassName = isArabic
+    ? 'text-[14px] font-semibold tracking-normal'
+    : 'text-[9px] font-bold uppercase tracking-[0.12em] md:text-[11px] md:tracking-[0.24em]';
+  const contactTagClassName = isArabic
+    ? 'text-[12px] tracking-[0.04em] text-[var(--foreground-soft)]'
+    : 'text-[10px] font-mono uppercase tracking-[0.22em] text-[var(--foreground-soft)]';
+  const callButtonClassName = isArabic
+    ? 'text-[14px] font-semibold tracking-normal'
+    : 'text-[10px] font-bold uppercase tracking-[0.24em]';
 
   const { scrollYProgress } = useScroll({
     target: heroRef,
@@ -128,14 +161,16 @@ export default function Home() {
               className="relative mb-7 mt-4 flex w-full items-center justify-center md:mb-9 md:mt-5"
             >
               <div className="absolute left-1/2 top-1/2 h-px w-[min(72vw,720px)] -translate-x-1/2 -translate-y-1/2 bg-gradient-to-r from-transparent via-white/14 to-transparent" />
-              <div className="relative inline-flex items-center rounded-full border border-white/8 bg-[rgba(255,255,255,0.045)] px-5 py-2.5 text-[9px] uppercase tracking-[0.18em] text-white/72 shadow-[0_10px_28px_rgba(0,0,0,0.16),inset_0_0_0_1px_rgba(255,255,255,0.02)] backdrop-blur-md md:px-7 md:py-3 md:text-[10px] md:tracking-[0.24em]">
+              <div
+                className={`relative inline-flex items-center rounded-full border border-white/8 bg-[rgba(255,255,255,0.045)] shadow-[0_10px_28px_rgba(0,0,0,0.16),inset_0_0_0_1px_rgba(255,255,255,0.02)] backdrop-blur-md ${badgeClassName}`}
+              >
                 {dict.summerProtocol}
               </div>
             </motion.div>
 
             <motion.p
               variants={heroItemVariants}
-              className="mb-7 text-[9px] font-mono uppercase tracking-[0.22em] text-[var(--accent-soft)] md:mb-9 md:text-[10px] md:tracking-[0.36em]"
+              className={`mb-7 ${eyebrowClassName} md:mb-9`}
             >
               {dict.cairoEdition}
             </motion.p>
@@ -152,7 +187,7 @@ export default function Home() {
 
             <motion.p
               variants={heroItemVariants}
-              className="mx-auto mt-6 max-w-[336px] text-center text-[10px] font-mono uppercase tracking-[0.14em] text-white/60 sm:max-w-xl sm:text-[10px] sm:tracking-[0.24em] md:mt-7 md:text-[11px] md:tracking-[0.36em]"
+              className={`mx-auto mt-6 max-w-[336px] text-center sm:max-w-xl md:mt-7 ${heroTaglineClassName}`}
             >
               {dict.heroTagline}
             </motion.p>
@@ -164,7 +199,7 @@ export default function Home() {
               <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.99 }} className="w-full sm:w-auto">
                 <Link
                   href="/shop"
-                  className="block w-full rounded-full border border-[rgba(185,154,107,0.28)] bg-[linear-gradient(180deg,rgba(185,154,107,0.18),rgba(185,154,107,0.1))] px-7 py-4.5 text-center text-[11px] font-bold uppercase tracking-[0.2em] text-white shadow-[0_20px_50px_rgba(0,0,0,0.22),inset_0_0_0_1px_rgba(255,255,255,0.03)] transition-all duration-300 hover:bg-white hover:text-black sm:w-auto sm:px-8 sm:py-4 sm:text-[10px] sm:tracking-[0.3em]"
+                  className={`block w-full rounded-full border border-[rgba(185,154,107,0.28)] bg-[linear-gradient(180deg,rgba(185,154,107,0.18),rgba(185,154,107,0.1))] px-7 py-4.5 text-center text-white shadow-[0_20px_50px_rgba(0,0,0,0.22),inset_0_0_0_1px_rgba(255,255,255,0.03)] transition-all duration-300 hover:bg-white hover:text-black sm:w-auto sm:px-8 sm:py-4 ${heroButtonClassName}`}
                 >
                   {dict.exploreCollection}
                 </Link>
@@ -176,7 +211,7 @@ export default function Home() {
                 whileHover={{ y: -2 }}
                 whileTap={{ scale: 0.99 }}
                 onClick={scrollToLookbook}
-                className="w-full rounded-full border border-white/16 bg-white/[0.06] px-7 py-4.5 text-[11px] font-bold uppercase tracking-[0.2em] text-white shadow-[0_16px_42px_rgba(0,0,0,0.18),inset_0_0_0_1px_rgba(255,255,255,0.02)] transition-all duration-300 hover:bg-white hover:text-black sm:w-auto sm:px-8 sm:py-4 sm:text-[10px] sm:tracking-[0.3em]"
+                className={`w-full rounded-full border border-white/16 bg-white/[0.06] px-7 py-4.5 text-white shadow-[0_16px_42px_rgba(0,0,0,0.18),inset_0_0_0_1px_rgba(255,255,255,0.02)] transition-all duration-300 hover:bg-white hover:text-black sm:w-auto sm:px-8 sm:py-4 ${heroButtonClassName}`}
               >
                 {dict.viewLookbook}
               </motion.button>
@@ -184,7 +219,7 @@ export default function Home() {
 
             <motion.div
               variants={heroItemVariants}
-              className="mt-11 flex max-w-[328px] flex-wrap items-center justify-center gap-x-4 gap-y-3 text-[9px] font-mono uppercase tracking-[0.14em] text-white/42 sm:max-w-none sm:gap-x-8 sm:text-[10px] sm:tracking-[0.32em] md:mt-14"
+              className={`mt-11 flex max-w-[328px] flex-wrap items-center justify-center gap-x-4 gap-y-3 sm:max-w-none sm:gap-x-8 md:mt-14 ${heroMetaClassName}`}
             >
               <span>{dict.heavyCotton}</span>
               <span>{dict.minimalFinish}</span>
@@ -203,7 +238,7 @@ export default function Home() {
         <div className="pointer-events-none absolute inset-x-0 -top-8 h-14 rounded-t-[999px] bg-[linear-gradient(180deg,rgba(248,246,241,0),var(--surface)_72%)] md:hidden" />
         <div className="mx-auto mb-8 flex max-w-7xl flex-col gap-4 md:mb-10 md:flex-row md:items-end md:justify-between">
           <div>
-            <p className="mb-2 text-[10px] font-mono uppercase tracking-[0.35em] text-[var(--foreground-soft)]">
+            <p className={`mb-2 ${sectionLabelClassName}`}>
               {dict.featuredPieces}
             </p>
             <h2 className="max-w-[260px] text-2xl font-semibold tracking-[-0.04em] md:max-w-none md:text-4xl">
@@ -213,7 +248,7 @@ export default function Home() {
 
           <Link
             href="/shop"
-            className="inline-flex w-full items-center justify-center rounded-full border border-[var(--line)] bg-white px-5 py-3 text-[11px] font-bold uppercase tracking-[0.22em] text-[var(--foreground-soft)] shadow-[0_10px_30px_rgba(0,0,0,0.04)] transition hover:border-[var(--line-strong)] hover:text-black md:w-auto md:tracking-[0.25em]"
+            className={`inline-flex w-full items-center justify-center rounded-full border border-[var(--line)] bg-white px-5 py-3 text-[var(--foreground-soft)] shadow-[0_10px_30px_rgba(0,0,0,0.04)] transition hover:border-[var(--line-strong)] hover:text-black md:w-auto ${shopButtonClassName}`}
           >
             {dict.shopAll}
           </Link>
@@ -262,7 +297,7 @@ export default function Home() {
                       sourceRect: image?.getBoundingClientRect(),
                     });
                   }}
-                  className="absolute bottom-2 left-2 right-2 z-20 rounded-full border border-white/70 bg-white/95 py-2 text-[8px] font-bold uppercase tracking-[0.14em] text-black shadow-[0_14px_30px_rgba(0,0,0,0.12)] backdrop-blur-md transition-all duration-300 opacity-100 md:bottom-4 md:left-4 md:right-4 md:translate-y-3 md:py-3 md:text-[10px] md:tracking-[0.25em] md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100 hover:bg-[var(--surface-muted)]"
+                  className={`absolute bottom-2 left-2 right-2 z-20 rounded-full border border-white/70 bg-white/95 py-2 text-black shadow-[0_14px_30px_rgba(0,0,0,0.12)] backdrop-blur-md transition-all duration-300 opacity-100 md:bottom-4 md:left-4 md:right-4 md:translate-y-3 md:py-3 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100 hover:bg-[var(--surface-muted)] ${quickAddClassName}`}
                 >
                   {dict.quickAdd}
                 </button>
@@ -272,7 +307,7 @@ export default function Home() {
                 </Link>
               </div>
 
-              <h3 className="text-[9px] font-bold uppercase tracking-[0.12em] text-black md:text-[11px] md:tracking-[0.24em]">
+              <h3 className={`text-black ${productTitleClassName}`}>
                 {product.title}
               </h3>
               <p className="mt-1 text-[11px] font-mono text-[var(--foreground-soft)]">
@@ -291,7 +326,7 @@ export default function Home() {
         >
           <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
             <div>
-              <p className="mb-2 text-[10px] font-mono uppercase tracking-[0.35em] text-[var(--foreground-soft)]">
+              <p className={`mb-2 ${sectionLabelClassName}`}>
                 {dict.contactDXLR}
               </p>
               <h2 className="text-2xl font-semibold tracking-[-0.04em] md:text-4xl">
@@ -306,7 +341,7 @@ export default function Home() {
               href="tel:+2001028589747"
               whileHover={{ y: -2 }}
               whileTap={{ scale: 0.99 }}
-              className="inline-flex items-center justify-center rounded-full border border-black bg-black px-5 py-3 text-[10px] font-bold uppercase tracking-[0.24em] text-white transition hover:bg-zinc-800"
+              className={`inline-flex items-center justify-center rounded-full border border-black bg-black px-5 py-3 text-white transition hover:bg-zinc-800 ${callButtonClassName}`}
             >
               {dict.callNow}
             </motion.a>
@@ -326,7 +361,7 @@ export default function Home() {
                 <PhoneCall size={18} />
               </div>
               <div>
-                <p className="text-[10px] font-mono uppercase tracking-[0.22em] text-[var(--foreground-soft)]">
+                <p className={contactTagClassName}>
                   {dict.phone}
                 </p>
                 <p className="mt-1 text-sm font-semibold text-black">+20 010 285 89747</p>
@@ -348,7 +383,7 @@ export default function Home() {
                 <MessageCircle size={18} />
               </div>
               <div>
-                <p className="text-[10px] font-mono uppercase tracking-[0.22em] text-[var(--foreground-soft)]">
+                <p className={contactTagClassName}>
                   {dict.whatsapp}
                 </p>
                 <p className="mt-1 text-sm font-semibold text-black">{dict.chatDirectly}</p>
@@ -370,7 +405,7 @@ export default function Home() {
                 <AtSign size={18} />
               </div>
               <div>
-                <p className="text-[10px] font-mono uppercase tracking-[0.22em] text-[var(--foreground-soft)]">
+                <p className={contactTagClassName}>
                   {dict.instagram}
                 </p>
                 <p className="mt-1 text-sm font-semibold text-black">@x1k3.1</p>
