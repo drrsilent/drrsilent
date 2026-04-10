@@ -133,7 +133,7 @@ const productCopy: Record<
     },
     description: {
       en: 'Heavyweight cotton hoodie with a structured silhouette, brushed interior, and a clean technical finish made for daily rotation.',
-      ar: 'هودي قطن ثقيل بقصة واضحة من الداخل المبطن بملمس ناعم وتشطيب نظيف مناسب للاستخدام اليومي.',
+      ar: 'هودي قطن ثقيل بقصة واضحة، من الداخل مبطن بملمس ناعم وتشطيب نظيف مناسب للاستخدام اليومي.',
     },
   },
   'protocol-tshirt': {
@@ -153,7 +153,7 @@ const productCopy: Record<
     },
     description: {
       en: 'Washed fleece hoodie with a softened vintage finish, roomy hood shape, and a relaxed fit that feels broken-in from day one.',
-      ar: 'هودي فليس بتشطيب مغسول بطابع فينتاج ناعم مع كبّ واسع وقصة مريحة تعطي إحساسًا جاهزًا من أول لبسة.',
+      ar: 'هودي فليس بتشطيب مغسول بطابع فينتاج ناعم مع كب واسع وقصة مريحة تعطي إحساسًا جاهزًا من أول لبسة.',
     },
   },
   'cargo-pants': {
@@ -183,7 +183,7 @@ const productCopy: Record<
     },
     description: {
       en: 'Relaxed pullover hoodie with a soft interior, oversized hood volume, and a smoother silhouette for everyday layering.',
-      ar: 'هودي بولوفر بقصة مريحة وملمس داخلي ناعم وكبّ واسع مع شكل انسيابي مناسب للطبقات اليومية.',
+      ar: 'هودي بولوفر بقصة مريحة وملمس داخلي ناعم وكب واسع مع شكل انسيابي مناسب للطبقات اليومية.',
     },
   },
   'studio-fleece-hoodie': {
@@ -193,7 +193,7 @@ const productCopy: Record<
     },
     description: {
       en: 'Structured heavyweight tee with a boxy body, clean neckline, and a minimal fit built for daily layering.',
-      ar: 'تي شيرت ثقيل بقصة صندوقية ورقبة نظيفة وفِت بسيط مناسب للبس اليومي والطبقات.',
+      ar: 'تي شيرت ثقيل بقصة صندوقية ورقبة نظيفة وفيت بسيط مناسب للبس اليومي والطبقات.',
     },
   },
   'mono-street-hoodie': {
@@ -203,7 +203,7 @@ const productCopy: Record<
     },
     description: {
       en: 'Monochrome oversized tee with a heavier cotton feel and a clean front made for a sharp streetwear profile.',
-      ar: 'تي شيرت أوفرسايز بلون موحد وإحساس قطن أثقل مع واجهة نظيفة تعطي حضور ستريتوير واضح.',
+      ar: 'تي شيرت أوفرسايز بلون موحد وإحساس قطن أثقل مع واجهة نظيفة تعطي حضور ستريت وير واضح.',
     },
   },
   'vector-cargo-pants': {

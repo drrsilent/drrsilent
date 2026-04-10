@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowRight, Banknote, CreditCard, ShoppingBag, Smartphone, Trash2, X } from 'lucide-react';
 import { CartItem, PaymentMethod, useCartStore } from '../../store/useCartStore';
 import { getLocalizedProduct, products } from '../../data/products';
+import { formatPrice } from '../../lib/currency';
 import { getDictionary } from '../../lib/translations';
 import { useLocaleStore } from '../../store/useLocaleStore';
 
@@ -208,7 +209,7 @@ export default function CartDrawer() {
                                 {dict.price}
                               </p>
                               <p className="mt-1 text-base font-semibold text-black">
-                                {item.price * item.quantity} EGP
+                                {formatPrice(item.price * item.quantity, locale)}
                               </p>
                             </div>
                           </div>
@@ -231,7 +232,7 @@ export default function CartDrawer() {
                         {dict.subtotal}
                       </p>
                       <h3 className="mt-2 text-3xl font-semibold tracking-tight text-black">
-                        {subtotal} EGP
+                        {formatPrice(subtotal, locale)}
                       </h3>
                     </div>
 

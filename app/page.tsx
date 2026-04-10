@@ -7,6 +7,7 @@ import { AtSign, MessageCircle, PhoneCall } from 'lucide-react';
 import { useRef } from 'react';
 import BrandWordmark from '../components/Global/BrandWordmark';
 import { getLocalizedFeaturedProducts } from '../data/products';
+import { formatPrice } from '../lib/currency';
 import { getDictionary } from '../lib/translations';
 import { flyToCart } from '../lib/fly-to-cart';
 import { useCartStore } from '../store/useCartStore';
@@ -275,7 +276,7 @@ export default function Home() {
                 {product.title}
               </h3>
               <p className="mt-1 text-[11px] font-mono text-[var(--foreground-soft)]">
-                {product.price} EGP
+                {formatPrice(product.price, locale)}
               </p>
             </motion.article>
           ))}

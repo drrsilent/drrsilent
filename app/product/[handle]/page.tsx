@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { ArrowLeft, ShoppingBag } from 'lucide-react';
 import { use, useRef, useState } from 'react';
 import { getLocalizedProduct, products } from '../../../data/products';
+import { formatPrice } from '../../../lib/currency';
 import { getDictionary } from '../../../lib/translations';
 import { flyToCart } from '../../../lib/fly-to-cart';
 import { useCartStore } from '../../../store/useCartStore';
@@ -153,7 +154,7 @@ export default function ProductPage({
               variants={itemVariants}
               className="mt-4 text-lg font-mono text-zinc-600 md:text-xl"
             >
-              {product.price} EGP
+              {formatPrice(product.price, locale)}
             </motion.p>
 
             <motion.p

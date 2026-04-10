@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { ArrowLeft, ArrowRight, Banknote, CreditCard, LocateFixed, ShoppingBag, Smartphone } from 'lucide-react';
 import { FormEvent, useEffect, useMemo, useState } from 'react';
 import { buildWhatsappOrderUrl, getCartItemCount, getCartSubtotal } from '../../lib/checkout';
+import { formatPrice } from '../../lib/currency';
 import { getLocalizedProduct, products } from '../../data/products';
 import { PaymentMethod, useCartStore } from '../../store/useCartStore';
 import { useAccountStore } from '../../store/useAccountStore';
@@ -490,7 +491,7 @@ export default function CheckoutPage() {
                     </p>
                   </div>
                   <p className="text-sm font-semibold text-black">
-                    {item.price * item.quantity} EGP
+                    {formatPrice(item.price * item.quantity, locale)}
                   </p>
                 </div>
               </div>
@@ -502,7 +503,7 @@ export default function CheckoutPage() {
               Subtotal
             </p>
             <h3 className="mt-3 text-4xl font-semibold tracking-[-0.05em]">
-              {subtotal} EGP
+              {formatPrice(subtotal, locale)}
             </h3>
             <p className="mt-3 text-sm leading-6 text-white/70">
               Cash on Delivery now creates a real order message to your WhatsApp. Online payments are routed to Paymob once account keys are added.

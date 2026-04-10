@@ -9,6 +9,7 @@ import { Languages, Menu, Search, ShoppingBag, User2, X } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import BrandWordmark from './BrandWordmark';
 import { getLocalizedProducts, shopCategories } from '../../data/products';
+import { formatPrice } from '../../lib/currency';
 import { getCategoryLabel, getDictionary } from '../../lib/translations';
 import { useAccountStore } from '../../store/useAccountStore';
 import { useCartStore } from '../../store/useCartStore';
@@ -419,7 +420,7 @@ export default function Header() {
                         </div>
 
                         <p className="hidden text-sm font-mono text-[var(--foreground-soft)] sm:block">
-                          {product.price} EGP
+                          {formatPrice(product.price, locale)}
                         </p>
                       </Link>
                     ))}

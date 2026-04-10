@@ -21,6 +21,8 @@ import {
   useSession,
 } from 'next-auth/react';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { formatPrice } from '../../lib/currency';
+import { useLocaleStore } from '../../store/useLocaleStore';
 import { useAccountStore } from '../../store/useAccountStore';
 
 type ConfiguredProviders = {
@@ -248,6 +250,7 @@ export default function AccountDrawer() {
   const closeAccount = useAccountStore((state) => state.closeAccount);
   const clearManualSignIn = useAccountStore((state) => state.signOut);
   const manualSignIn = useAccountStore((state) => state.signIn);
+  const locale = useLocaleStore((state) => state.locale);
   const { data: session } = useSession();
 
   const [availableProviders, setAvailableProviders] = useState<Record<string, unknown>>({});
@@ -525,7 +528,7 @@ export default function AccountDrawer() {
                               Order #{order.id.slice(-6)}
                             </p>
                             <h4 className="mt-2 text-lg font-semibold tracking-[-0.03em] text-black">
-                              {order.total} EGP
+                              {formatPrice(order.total, locale)}
                             </h4>
                           </div>
 
