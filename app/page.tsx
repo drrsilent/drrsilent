@@ -154,11 +154,11 @@ export default function Home() {
             variants={heroGroupVariants}
             initial="hidden"
             animate="show"
-            className="relative z-10 flex w-full max-w-md flex-col items-center px-4 pt-16 text-center text-white md:max-w-none md:px-4 md:pt-[6.5rem]"
+            className="relative z-10 flex w-full max-w-md flex-col items-center px-4 pt-20 text-center text-white md:max-w-none md:px-4 md:pt-[6.5rem]"
           >
             <motion.div
               variants={heroItemVariants}
-              className="relative mb-5 mt-0 flex w-full items-center justify-center md:mb-9 md:mt-5"
+              className="relative mb-5 mt-1 flex w-full items-center justify-center md:mb-9 md:mt-5"
             >
               <div className="absolute left-1/2 top-1/2 h-px w-[min(72vw,720px)] -translate-x-1/2 -translate-y-1/2 bg-gradient-to-r from-transparent via-white/14 to-transparent" />
               <div
@@ -219,7 +219,7 @@ export default function Home() {
 
             <motion.div
               variants={heroItemVariants}
-              className={`mt-11 flex max-w-[328px] flex-wrap items-center justify-center gap-x-4 gap-y-3 sm:max-w-none sm:gap-x-8 md:mt-14 ${heroMetaClassName}`}
+              className={`mt-12 flex max-w-[328px] flex-wrap items-center justify-center gap-x-4 gap-y-3 sm:max-w-none sm:gap-x-8 md:mt-14 ${heroMetaClassName}`}
             >
               <span>{dict.heavyCotton}</span>
               <span>{dict.minimalFinish}</span>
