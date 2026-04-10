@@ -6,7 +6,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowRight, Banknote, CreditCard, ShoppingBag, Smartphone, Trash2, X } from 'lucide-react';
 import { CartItem, PaymentMethod, useCartStore } from '../../store/useCartStore';
 import { getLocalizedProduct, products } from '../../data/products';
-import { getDictionary } from '../../lib/i18n';
+import { getDictionary } from '../../lib/translations';
 import { useLocaleStore } from '../../store/useLocaleStore';
 
 export default function CartDrawer() {

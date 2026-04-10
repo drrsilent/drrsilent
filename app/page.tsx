@@ -7,7 +7,7 @@ import { AtSign, MessageCircle, PhoneCall } from 'lucide-react';
 import { useRef } from 'react';
 import BrandWordmark from '../components/Global/BrandWordmark';
 import { getLocalizedFeaturedProducts } from '../data/products';
-import { getDictionary } from '../lib/i18n';
+import { getDictionary } from '../lib/translations';
 import { flyToCart } from '../lib/fly-to-cart';
 import { useCartStore } from '../store/useCartStore';
 import { useLocaleStore } from '../store/useLocaleStore';

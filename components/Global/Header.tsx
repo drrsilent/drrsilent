@@ -9,7 +9,7 @@ import { Languages, Menu, Search, ShoppingBag, User2, X } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import BrandWordmark from './BrandWordmark';
 import { getLocalizedProducts, shopCategories } from '../../data/products';
-import { getCategoryLabel, getDictionary } from '../../lib/i18n';
+import { getCategoryLabel, getDictionary } from '../../lib/translations';
 import { useAccountStore } from '../../store/useAccountStore';
 import { useCartStore } from '../../store/useCartStore';
 import { useLocaleStore } from '../../store/useLocaleStore';

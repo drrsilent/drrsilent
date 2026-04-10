@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { ArrowLeft, ShoppingBag } from 'lucide-react';
 import { use } from 'react';
 import { getLocalizedProductCards, shopCategories } from '../../data/products';
-import { getCategoryLabel, getDictionary } from '../../lib/i18n';
+import { getCategoryLabel, getDictionary } from '../../lib/translations';
 import { flyToCart } from '../../lib/fly-to-cart';
 import { useCartStore } from '../../store/useCartStore';
 import { useLocaleStore } from '../../store/useLocaleStore';
