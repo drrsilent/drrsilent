@@ -22,6 +22,7 @@ export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [isCartPulsing, setIsCartPulsing] = useState(false);
+  const [isCartImpacting, setIsCartImpacting] = useState(false);
   const menuRef = useRef<HTMLDivElement | null>(null);
   const locale = useLocaleStore((state) => state.locale);
   const toggleLocale = useLocaleStore((state) => state.toggleLocale);
@@ -127,6 +128,21 @@ export default function Header() {
     window.addEventListener('cart:bump', handleCartBump);
     return () => {
       window.removeEventListener('cart:bump', handleCartBump);
+      if (timeoutId) clearTimeout(timeoutId);
+    };
+  }, []);
+
+  useEffect(() => {
+    let timeoutId: ReturnType<typeof setTimeout> | undefined;
+
+    const handleCartImpact = () => {
+      setIsCartImpacting(true);
+      timeoutId = setTimeout(() => setIsCartImpacting(false), 520);
+    };
+
+    window.addEventListener('cart:impact', handleCartImpact);
+    return () => {
+      window.removeEventListener('cart:impact', handleCartImpact);
       if (timeoutId) clearTimeout(timeoutId);
     };
   }, []);
@@ -250,6 +266,18 @@ export default function Header() {
               className={`relative flex h-10 w-10 items-center justify-center rounded-full border transition-all duration-300 md:h-11 md:w-11 ${iconClass}`}
             >
               <ShoppingBag size={17} strokeWidth={2.2} />
+
+              <AnimatePresence>
+                {isCartImpacting && (
+                  <motion.span
+                    initial={{ scale: 0.72, opacity: 0.4 }}
+                    animate={{ scale: 1.42, opacity: 0 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                    className="absolute inset-[-6px] rounded-full border border-[rgba(185,154,107,0.55)] shadow-[0_0_30px_rgba(185,154,107,0.26)]"
+                  />
+                )}
+              </AnimatePresence>
 
               <AnimatePresence>
                 {itemCount > 0 && (
