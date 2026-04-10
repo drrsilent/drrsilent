@@ -235,10 +235,12 @@ export default function Home() {
         style={{ y: productsY }}
         className="relative z-30 -mt-10 rounded-t-[36px] bg-[var(--surface)] px-3 pb-20 pt-12 shadow-[0_-26px_80px_rgba(0,0,0,0.08)] md:-mt-24 md:rounded-t-[36px] md:px-6 md:pb-24 md:pt-14"
       >
-        <div className="pointer-events-none absolute inset-x-0 -top-14 h-24 md:hidden">
-          <div className="absolute inset-x-0 bottom-0 h-18 rounded-t-[34px] bg-[var(--surface)] shadow-[0_-18px_46px_rgba(0,0,0,0.18)]" />
-          <div className="absolute left-1/2 top-0 h-16 w-[84%] -translate-x-1/2 rounded-[999px] bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.96)_0%,rgba(248,246,241,0.88)_42%,rgba(248,246,241,0)_74%)] blur-[10px] opacity-95" />
-          <div className="absolute left-1/2 top-8 h-px w-[62%] -translate-x-1/2 bg-gradient-to-r from-transparent via-black/10 to-transparent" />
+        <div className="pointer-events-none absolute inset-x-0 -top-16 h-28 md:hidden">
+          <div className="absolute inset-x-[4%] bottom-[62px] h-12 rounded-[999px] bg-[radial-gradient(circle_at_center,rgba(0,0,0,0.44),rgba(0,0,0,0)_72%)] blur-[18px] opacity-80" />
+          <div className="absolute left-1/2 bottom-[64px] h-9 w-[148px] -translate-x-1/2 rounded-full border border-[rgba(185,154,107,0.22)] bg-[linear-gradient(180deg,rgba(185,154,107,0.16),rgba(185,154,107,0.03))] shadow-[0_14px_30px_rgba(0,0,0,0.18)]" />
+          <div className="absolute left-1/2 bottom-[80px] h-px w-[92px] -translate-x-1/2 bg-gradient-to-r from-transparent via-[rgba(185,154,107,0.86)] to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 h-20 rounded-t-[36px] bg-[var(--surface)] shadow-[0_-20px_54px_rgba(0,0,0,0.2)]" />
+          <div className="absolute inset-x-6 bottom-[18px] h-px bg-gradient-to-r from-transparent via-black/12 to-transparent" />
         </div>
         <div className="mx-auto mb-8 flex max-w-7xl flex-col gap-4 md:mb-10 md:flex-row md:items-end md:justify-between">
           <div>
