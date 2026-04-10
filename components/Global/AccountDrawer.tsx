@@ -257,8 +257,24 @@ export default function AccountDrawer() {
   const manualSignIn = useAccountStore((state) => state.signIn);
   const removeOrder = useAccountStore((state) => state.removeOrder);
   const locale = useLocaleStore((state) => state.locale);
+  const isArabic = locale === 'ar';
   const setCartState = useCartStore((state) => state.setCartState);
   const { data: session } = useSession();
+  const labelClassName = isArabic
+    ? 'text-[12px] tracking-[0.04em]'
+    : 'text-[10px] font-mono uppercase tracking-[0.3em]';
+  const sectionCountClassName = isArabic
+    ? 'text-[14px] tracking-normal'
+    : 'text-[10px] font-bold uppercase tracking-[0.22em]';
+  const badgeClassName = isArabic
+    ? 'text-[11px] tracking-normal'
+    : 'text-[10px] font-bold uppercase tracking-[0.18em]';
+  const actionButtonClassName = isArabic
+    ? 'text-[13px] tracking-normal'
+    : 'text-[10px] font-bold uppercase tracking-[0.18em]';
+  const providerCardTitleClassName = isArabic
+    ? 'text-[15px] tracking-normal'
+    : 'text-sm font-bold uppercase tracking-[0.16em]';
 
   const [availableProviders, setAvailableProviders] = useState<Record<string, unknown>>({});
   const [configuredProviders, setConfiguredProviders] = useState<ConfiguredProviders>({
@@ -465,10 +481,10 @@ export default function AccountDrawer() {
           >
             <div className="mb-5 flex shrink-0 items-center justify-between border-b border-black/8 pb-4">
               <div>
-                <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-zinc-500">
+                <p className={`text-zinc-500 ${labelClassName}`}>
                   Account Hub
                 </p>
-                <h2 className="mt-2 text-xl font-semibold uppercase tracking-[0.08em] text-black">
+                <h2 className={`mt-2 text-xl font-semibold text-black ${isArabic ? 'tracking-normal' : 'uppercase tracking-[0.08em]'}`}>
                   Your Account
                 </h2>
               </div>
@@ -487,7 +503,7 @@ export default function AccountDrawer() {
               {activeUser ? (
                 <>
                 <div className="rounded-[28px] border border-black/8 bg-[linear-gradient(145deg,#111111_0%,#1d1a16_100%)] p-5 text-white shadow-[0_18px_50px_rgba(0,0,0,0.14)]">
-                  <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/58">
+                  <p className={`text-white/58 ${labelClassName}`}>
                     Signed In
                   </p>
                   <div className="mt-4 flex items-center gap-4">
@@ -512,7 +528,7 @@ export default function AccountDrawer() {
 
                 <div className="mt-5 flex items-center justify-between">
                   <div>
-                    <p className="text-[10px] font-mono uppercase tracking-[0.28em] text-zinc-500">
+                    <p className={`text-zinc-500 ${labelClassName}`}>
                       Purchase History
                     </p>
                     <h3 className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-black">
@@ -528,7 +544,7 @@ export default function AccountDrawer() {
                       }
                       clearManualSignIn();
                     }}
-                    className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white px-4 py-3 text-[10px] font-bold uppercase tracking-[0.22em] text-black transition hover:bg-black hover:text-white"
+                    className={`inline-flex items-center gap-2 rounded-full border border-black/10 bg-white px-4 py-3 text-black transition hover:bg-black hover:text-white ${sectionCountClassName}`}
                   >
                     <LogOut size={14} />
                     Sign Out
@@ -544,7 +560,7 @@ export default function AccountDrawer() {
                       >
                         <div className="flex items-start justify-between gap-3">
                           <div>
-                            <p className="text-[10px] font-mono uppercase tracking-[0.24em] text-zinc-500">
+                            <p className={`text-zinc-500 ${labelClassName}`}>
                               Order #{order.id.slice(-6)}
                             </p>
                             <h4 className="mt-2 text-lg font-semibold tracking-[-0.03em] text-black">
@@ -553,7 +569,7 @@ export default function AccountDrawer() {
                           </div>
 
                           <span
-                            className={`rounded-full px-3 py-2 text-[10px] font-bold uppercase tracking-[0.18em] ${
+                            className={`rounded-full px-3 py-2 ${badgeClassName} ${
                               order.status === 'confirmed'
                                 ? 'bg-emerald-50 text-emerald-600'
                                 : 'bg-amber-50 text-amber-600'
@@ -617,7 +633,7 @@ export default function AccountDrawer() {
                           <button
                             type="button"
                             onClick={() => handleEditOrder(order.id)}
-                            className="mt-4 inline-flex items-center gap-2 rounded-full border border-black bg-black px-4 py-3 text-[10px] font-bold uppercase tracking-[0.18em] text-white transition hover:bg-zinc-800"
+                            className={`mt-4 inline-flex items-center gap-2 rounded-full border border-black bg-black px-4 py-3 text-white transition hover:bg-zinc-800 ${actionButtonClassName}`}
                           >
                             <PencilLine size={14} />
                             Edit Order
@@ -627,7 +643,7 @@ export default function AccountDrawer() {
                     ))
                   ) : (
                     <div className="rounded-[24px] border border-dashed border-black/10 bg-white px-6 py-12 text-center">
-                      <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-zinc-500">
+                      <p className={`text-zinc-500 ${labelClassName}`}>
                         No Orders Yet
                       </p>
                       <p className="mt-3 text-sm leading-7 text-zinc-600">
@@ -640,7 +656,7 @@ export default function AccountDrawer() {
               ) : (
                 <>
                 <div className="rounded-[28px] border border-black/8 bg-[linear-gradient(145deg,#111111_0%,#1d1a16_100%)] p-5 text-white shadow-[0_18px_50px_rgba(0,0,0,0.14)]">
-                  <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/58">
+                  <p className={`text-white/58 ${labelClassName}`}>
                     DXLR Access
                   </p>
                   <h3 className="mt-3 text-[30px] font-semibold leading-tight tracking-[-0.05em]">
@@ -652,7 +668,7 @@ export default function AccountDrawer() {
                 </div>
 
                 <div className="mt-5">
-                  <p className="text-[10px] font-mono uppercase tracking-[0.28em] text-zinc-500">
+                  <p className={`text-zinc-500 ${labelClassName}`}>
                     Social Sign In
                   </p>
 
@@ -689,7 +705,7 @@ export default function AccountDrawer() {
                         >
                           <Icon size={16} />
                         </div>
-                        <h4 className="mt-3 text-sm font-bold uppercase tracking-[0.16em]">
+                        <h4 className={`mt-3 ${providerCardTitleClassName}`}>
                           {provider.label}
                         </h4>
                         <p
@@ -697,7 +713,7 @@ export default function AccountDrawer() {
                         >
                           {provider.helper}
                         </p>
-                        <p className="mt-3 text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--accent-soft-strong)]">
+                        <p className={`mt-3 text-[var(--accent-soft-strong)] ${badgeClassName}`}>
                           {providerStatus}
                         </p>
                       </button>
@@ -706,7 +722,7 @@ export default function AccountDrawer() {
                 </div>
 
                   <div className="mt-6">
-                    <p className="text-[10px] font-mono uppercase tracking-[0.28em] text-zinc-500">
+                    <p className={`text-zinc-500 ${labelClassName}`}>
                       Direct Contact
                     </p>
 
@@ -722,13 +738,13 @@ export default function AccountDrawer() {
                         <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--surface)] text-black">
                           <MessageCircle size={16} />
                         </div>
-                        <h4 className="mt-3 text-sm font-bold uppercase tracking-[0.16em]">
+                        <h4 className={`mt-3 ${providerCardTitleClassName}`}>
                           Phone
                         </h4>
                         <p className="mt-2 text-xs leading-5 text-[var(--foreground-soft)]">
                           Create your account with your phone number inside DXLR.
                         </p>
-                        <p className="mt-3 text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--accent-soft-strong)]">
+                        <p className={`mt-3 text-[var(--accent-soft-strong)] ${badgeClassName}`}>
                           {manualMode === 'phone' ? 'Close Form' : 'Continue'}
                         </p>
                       </button>
@@ -739,7 +755,7 @@ export default function AccountDrawer() {
                         ref={manualFormRef}
                         className="mt-4 rounded-[24px] border border-black/8 bg-white p-4 shadow-[0_12px_40px_rgba(0,0,0,0.04)]"
                       >
-                        <p className="text-[10px] font-mono uppercase tracking-[0.28em] text-zinc-500">
+                        <p className={`text-zinc-500 ${labelClassName}`}>
                           Phone Sign In
                         </p>
                         <div className="mt-4 grid gap-3">
@@ -835,7 +851,7 @@ export default function AccountDrawer() {
                           <button
                             type="button"
                             onClick={handleManualSignIn}
-                            className="inline-flex h-12 items-center justify-center rounded-full bg-black px-5 text-[10px] font-bold uppercase tracking-[0.18em] text-white transition hover:bg-zinc-800"
+                            className={`inline-flex h-12 items-center justify-center rounded-full bg-black px-5 text-white transition hover:bg-zinc-800 ${actionButtonClassName}`}
                           >
                             Save Account
                           </button>

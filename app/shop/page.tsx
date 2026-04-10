@@ -44,6 +44,18 @@ export default function ShopPage({
   const locale = useLocaleStore((state) => state.locale);
   const dict = getDictionary(locale).common;
   const isArabic = locale === 'ar';
+  const labelClassName = isArabic
+    ? 'text-[12px] tracking-[0.04em]'
+    : 'text-[10px] font-mono uppercase tracking-[0.28em]';
+  const buttonClassName = isArabic
+    ? 'text-[13px] tracking-normal'
+    : 'text-[10px] font-bold uppercase tracking-[0.16em] md:tracking-[0.22em]';
+  const quickAddClassName = isArabic
+    ? 'text-[11px] tracking-normal'
+    : 'text-[8px] font-bold uppercase tracking-[0.12em] md:text-[10px] md:tracking-[0.25em]';
+  const productTitleClassName = isArabic
+    ? 'text-[14px] tracking-normal'
+    : 'text-[9px] font-bold uppercase tracking-[0.08em] md:text-[11px] md:tracking-[0.22em]';
   const productCards = getLocalizedProductCards(locale);
   const activeCategory = shopCategories.find((item) => item.slug === category);
 
@@ -106,13 +118,13 @@ export default function ShopPage({
             <div>
               <Link
                 href="/"
-                className="mb-4 inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.24em] text-[var(--foreground-soft)] transition hover:text-black"
+                className={`mb-4 inline-flex items-center gap-2 text-[var(--foreground-soft)] transition hover:text-black ${buttonClassName}`}
               >
                 <ArrowLeft size={14} />
                 {dict.backHome}
               </Link>
 
-              <p className="mb-3 text-[10px] font-mono uppercase tracking-[0.28em] text-[var(--foreground-soft)]">
+              <p className={`mb-3 text-[var(--foreground-soft)] ${labelClassName}`}>
                 {collectionLabel}
               </p>
               <h1 className="text-[34px] font-semibold tracking-[-0.06em] sm:text-4xl md:text-6xl">
@@ -123,7 +135,7 @@ export default function ShopPage({
               </p>
             </div>
 
-            <div className="inline-flex self-start rounded-full border border-[var(--line)] bg-[var(--surface)] px-4 py-2.5 text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--foreground-soft)] shadow-[0_10px_30px_rgba(0,0,0,0.04)] md:self-auto md:px-5 md:py-3 md:tracking-[0.28em]">
+            <div className={`inline-flex self-start rounded-full border border-[var(--line)] bg-[var(--surface)] px-4 py-2.5 text-[var(--foreground-soft)] shadow-[0_10px_30px_rgba(0,0,0,0.04)] md:self-auto md:px-5 md:py-3 ${buttonClassName}`}>
               {visibleProducts.length} {dict.pieces}
             </div>
           </div>
@@ -137,7 +149,7 @@ export default function ShopPage({
             <motion.div whileHover={{ y: -1 }} whileTap={{ scale: 0.99 }}>
               <Link
                 href="/shop"
-                className={`inline-flex min-h-11 items-center justify-center rounded-full border px-5 py-3 text-[10px] font-bold uppercase tracking-[0.16em] shadow-[0_10px_24px_rgba(0,0,0,0.04)] transition md:tracking-[0.22em] ${
+                className={`inline-flex min-h-11 items-center justify-center rounded-full border px-5 py-3 shadow-[0_10px_24px_rgba(0,0,0,0.04)] transition ${buttonClassName} ${
                   !activeCategory
                     ? 'border-black bg-black text-white'
                     : 'border-[var(--line)] bg-white text-black hover:border-black'
@@ -151,7 +163,7 @@ export default function ShopPage({
               <motion.div key={item.slug} whileHover={{ y: -1 }} whileTap={{ scale: 0.99 }}>
                 <Link
                   href={`/shop?category=${item.slug}`}
-                  className={`inline-flex min-h-11 items-center justify-center rounded-full border px-5 py-3 text-[10px] font-bold uppercase tracking-[0.16em] shadow-[0_10px_24px_rgba(0,0,0,0.04)] transition md:tracking-[0.22em] ${
+                  className={`inline-flex min-h-11 items-center justify-center rounded-full border px-5 py-3 shadow-[0_10px_24px_rgba(0,0,0,0.04)] transition ${buttonClassName} ${
                     activeCategory?.slug === item.slug
                       ? 'border-black bg-black text-white'
                       : 'border-[var(--line)] bg-white text-black hover:border-black'
@@ -206,7 +218,7 @@ export default function ShopPage({
                       sourceRect: image?.getBoundingClientRect(),
                     });
                   }}
-                  className="absolute bottom-2 left-2 right-2 z-20 inline-flex items-center justify-center gap-1 rounded-full border border-white/70 bg-white/95 py-2 text-[8px] font-bold uppercase tracking-[0.12em] text-black opacity-100 shadow-[0_14px_30px_rgba(0,0,0,0.1)] backdrop-blur-md transition-all duration-300 hover:bg-[var(--surface-muted)] md:bottom-4 md:left-4 md:right-4 md:translate-y-3 md:gap-2 md:py-3 md:text-[10px] md:tracking-[0.25em] md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100"
+                  className={`absolute bottom-2 left-2 right-2 z-20 inline-flex items-center justify-center gap-1 rounded-full border border-white/70 bg-white/95 py-2 text-black opacity-100 shadow-[0_14px_30px_rgba(0,0,0,0.1)] backdrop-blur-md transition-all duration-300 hover:bg-[var(--surface-muted)] md:bottom-4 md:left-4 md:right-4 md:translate-y-3 md:gap-2 md:py-3 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100 ${quickAddClassName}`}
                 >
                   <ShoppingBag size={14} />
                   {dict.quickAdd}
@@ -217,7 +229,7 @@ export default function ShopPage({
                 </Link>
               </div>
 
-              <h2 className="text-[9px] font-bold uppercase tracking-[0.08em] text-black md:text-[11px] md:tracking-[0.22em]">
+              <h2 className={`text-black ${productTitleClassName}`}>
                 {product.title}
               </h2>
               <p className="mt-1 text-[11px] font-mono text-[var(--foreground-soft)]">
@@ -232,7 +244,7 @@ export default function ShopPage({
             variants={itemVariants}
             className="rounded-[28px] border border-dashed border-black/10 bg-white px-6 py-16 text-center"
           >
-            <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-zinc-500">
+            <p className={`text-zinc-500 ${labelClassName}`}>
               {dict.noPiecesYet}
             </p>
             <p className="mt-3 text-sm text-zinc-600">{dict.noPiecesHint}</p>

@@ -28,6 +28,21 @@ export default function Header() {
   const dict = getDictionary(locale).common;
   const isArabic = locale === 'ar';
   const nextLocaleLabel = isArabic ? dict.english : dict.arabic;
+  const microLabelClassName = isArabic
+    ? 'tracking-normal'
+    : 'font-mono uppercase tracking-[0.2em] md:tracking-[0.45em]';
+  const localeButtonClassName = isArabic
+    ? 'text-[11px] tracking-normal md:text-[12px]'
+    : 'text-[9px] font-bold uppercase tracking-[0.1em] md:text-[10px] md:tracking-[0.18em]';
+  const menuLabelClassName = isArabic
+    ? 'text-[12px] tracking-[0.04em]'
+    : 'text-[10px] font-mono uppercase tracking-[0.32em]';
+  const menuChipClassName = isArabic
+    ? 'text-[12px] font-semibold tracking-normal'
+    : 'text-[10px] font-bold uppercase tracking-[0.22em]';
+  const menuChipSecondaryClassName = isArabic
+    ? 'text-[12px] font-semibold tracking-normal'
+    : 'text-[10px] font-bold uppercase tracking-[0.2em]';
   const localizedProducts = getLocalizedProducts(locale);
   const isHome = pathname === '/';
   const isProductPage = pathname.startsWith('/product/');
@@ -183,7 +198,9 @@ export default function Header() {
                 className="cursor-pointer text-center"
               >
                 <p
-                  className={`mb-0.5 text-[5px] font-mono uppercase tracking-[0.2em] md:mb-1 md:text-[8px] md:tracking-[0.45em] ${
+                  className={`mb-0.5 text-[5px] md:mb-1 md:text-[8px] ${
+                    microLabelClassName
+                  } ${
                     useLightHeader ? 'text-[var(--foreground-soft)]' : 'text-white/55'
                   }`}
                 >
@@ -203,7 +220,7 @@ export default function Header() {
               type="button"
               onClick={toggleLocale}
               aria-label={dict.language}
-              className={`inline-flex h-9 min-w-[46px] items-center justify-center gap-1 rounded-full border px-2 text-[9px] font-bold uppercase tracking-[0.1em] transition-all duration-300 md:h-11 md:min-w-[60px] md:px-3 md:text-[10px] md:tracking-[0.18em] ${iconClass}`}
+              className={`inline-flex h-9 min-w-[46px] items-center justify-center gap-1 rounded-full border px-2 transition-all duration-300 md:h-11 md:min-w-[60px] md:px-3 ${localeButtonClassName} ${iconClass}`}
             >
               <Languages className="hidden md:block" size={14} strokeWidth={2.1} />
               <span>{nextLocaleLabel}</span>
@@ -286,7 +303,7 @@ export default function Header() {
                 </div>
 
                 <div className="mt-7 rounded-[28px] border border-black/8 bg-[radial-gradient(circle_at_top,rgba(185,154,107,0.14),transparent_40%),linear-gradient(145deg,#111111_0%,#1d1a16_100%)] p-5 text-white shadow-[0_18px_50px_rgba(0,0,0,0.14)]">
-                  <p className="text-[10px] font-mono uppercase tracking-[0.32em] text-white/60">
+                  <p className={`text-white/60 ${menuLabelClassName}`}>
                     {dict.dxlrNavigation}
                   </p>
                   <h3 className="mt-3 text-[28px] font-semibold tracking-[-0.06em]">
@@ -299,14 +316,14 @@ export default function Header() {
               </div>
 
               <div className="px-6 pb-3 pt-5">
-                <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-[var(--foreground-soft)]">
+                <p className={`text-[var(--foreground-soft)] ${menuLabelClassName}`}>
                   {dict.productCategories}
                 </p>
                 <div className="mt-3 flex flex-wrap gap-2.5">
                   <Link
                     href="/shop"
                     onClick={() => setIsMenuOpen(false)}
-                    className="inline-flex items-center rounded-full border border-black bg-black px-4 py-2.5 text-[10px] font-bold uppercase tracking-[0.22em] text-white shadow-[0_10px_26px_rgba(0,0,0,0.12)] transition hover:border-[var(--accent-soft-strong)] hover:bg-[var(--accent-soft-strong)]"
+                    className={`inline-flex items-center rounded-full border border-black bg-black px-4 py-2.5 text-white shadow-[0_10px_26px_rgba(0,0,0,0.12)] transition hover:border-[var(--accent-soft-strong)] hover:bg-[var(--accent-soft-strong)] ${menuChipClassName}`}
                   >
                     {dict.shopAll}
                   </Link>
@@ -315,7 +332,7 @@ export default function Header() {
                       key={category.slug}
                       href={`/shop?category=${category.slug}`}
                       onClick={() => setIsMenuOpen(false)}
-                      className="inline-flex items-center rounded-full border border-black/8 bg-white/90 px-4 py-2.5 text-[10px] font-bold uppercase tracking-[0.2em] text-black shadow-[0_10px_24px_rgba(0,0,0,0.04)] transition hover:border-black hover:bg-white"
+                      className={`inline-flex items-center rounded-full border border-black/8 bg-white/90 px-4 py-2.5 text-black shadow-[0_10px_24px_rgba(0,0,0,0.04)] transition hover:border-black hover:bg-white ${menuChipSecondaryClassName}`}
                     >
                       {getCategoryLabel(locale, category.slug)}
                     </Link>
@@ -324,7 +341,7 @@ export default function Header() {
               </div>
 
               <nav className="pb-8 pt-2">
-                <div className="px-6 pb-3 text-[10px] font-mono uppercase tracking-[0.3em] text-[var(--foreground-soft)]">
+                <div className={`px-6 pb-3 text-[var(--foreground-soft)] ${menuLabelClassName}`}>
                   {dict.quickLinks}
                 </div>
 

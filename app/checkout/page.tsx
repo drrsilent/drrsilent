@@ -46,6 +46,22 @@ export default function CheckoutPage() {
   const accountUser = useAccountStore((state) => state.user);
   const addOrder = useAccountStore((state) => state.addOrder);
   const locale = useLocaleStore((state) => state.locale);
+  const isArabic = locale === 'ar';
+  const labelClassName = isArabic
+    ? 'text-[12px] tracking-[0.04em]'
+    : 'text-[10px] font-mono uppercase tracking-[0.3em]';
+  const actionClassName = isArabic
+    ? 'text-[13px] tracking-normal'
+    : 'text-[10px] font-bold uppercase tracking-[0.28em]';
+  const subtleActionClassName = isArabic
+    ? 'text-[13px] tracking-normal'
+    : 'text-[10px] font-bold uppercase tracking-[0.18em]';
+  const cardTitleClassName = isArabic
+    ? 'text-[15px] tracking-normal'
+    : 'text-sm font-bold uppercase tracking-[0.12em]';
+  const itemTitleClassName = isArabic
+    ? 'text-[14px] tracking-normal'
+    : 'text-sm font-bold uppercase tracking-[0.1em]';
 
   const [customer, setCustomer] = useState({
     firstName: '',
@@ -280,9 +296,9 @@ export default function CheckoutPage() {
 
   if (!items.length) {
     return (
-      <main className="min-h-screen bg-[var(--surface)] px-4 pb-20 pt-28 text-black md:px-6 md:pt-32">
+      <main className="min-h-screen bg-[var(--surface)] px-4 pb-20 pt-28 text-black md:px-6 md:pt-32" dir={isArabic ? 'rtl' : 'ltr'}>
         <div className="mx-auto max-w-4xl rounded-[30px] border border-[var(--line)] bg-white p-8 text-center shadow-[0_20px_60px_rgba(0,0,0,0.05)]">
-          <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-[var(--foreground-soft)]">
+          <p className={`text-[var(--foreground-soft)] ${labelClassName}`}>
             Checkout
           </p>
           <h1 className="mt-3 text-4xl font-semibold tracking-[-0.05em]">Your cart is empty.</h1>
@@ -291,7 +307,7 @@ export default function CheckoutPage() {
           </p>
           <Link
             href="/shop"
-            className="mt-8 inline-flex items-center gap-2 rounded-full bg-black px-6 py-4 text-[10px] font-bold uppercase tracking-[0.24em] text-white transition hover:bg-zinc-800"
+            className={`mt-8 inline-flex items-center gap-2 rounded-full bg-black px-6 py-4 text-white transition hover:bg-zinc-800 ${subtleActionClassName}`}
           >
             Browse Shop
             <ArrowRight size={14} />
@@ -302,7 +318,7 @@ export default function CheckoutPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[var(--surface)] px-4 pb-20 pt-28 text-black md:px-6 md:pt-32">
+    <main className="min-h-screen bg-[var(--surface)] px-4 pb-20 pt-28 text-black md:px-6 md:pt-32" dir={isArabic ? 'rtl' : 'ltr'}>
       <div className="mx-auto grid max-w-7xl gap-6 lg:grid-cols-[1.1fr_0.9fr]">
         <form
           onSubmit={handleSubmit}
@@ -310,13 +326,13 @@ export default function CheckoutPage() {
         >
           <Link
             href="/shop"
-            className="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.28em] text-[var(--foreground-soft)] transition hover:text-black"
+            className={`inline-flex items-center gap-2 text-[var(--foreground-soft)] transition hover:text-black ${actionClassName}`}
           >
             <ArrowLeft size={14} />
             Back to Shop
           </Link>
 
-          <p className="mt-6 text-[10px] font-mono uppercase tracking-[0.34em] text-[var(--foreground-soft)]">
+          <p className={`mt-6 text-[var(--foreground-soft)] ${labelClassName}`}>
             Secure Checkout
           </p>
           <h1 className="mt-3 text-4xl font-semibold tracking-[-0.06em] md:text-6xl">
@@ -369,7 +385,7 @@ export default function CheckoutPage() {
                 type="button"
                 onClick={handleUseCurrentLocation}
                 disabled={isLocating}
-                className="inline-flex h-14 w-full shrink-0 items-center justify-center gap-2 rounded-[20px] border border-black bg-black px-4 text-[10px] font-bold uppercase tracking-[0.18em] text-white transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-60"
+                className={`inline-flex h-14 w-full shrink-0 items-center justify-center gap-2 rounded-[20px] border border-black bg-black px-4 text-white transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-60 ${subtleActionClassName}`}
               >
                 <LocateFixed size={16} />
                 {isLocating ? 'Locating...' : 'Use my location'}
@@ -390,7 +406,7 @@ export default function CheckoutPage() {
           </div>
 
           <div className="mt-8">
-            <p className="text-[10px] font-mono uppercase tracking-[0.28em] text-[var(--foreground-soft)]">
+            <p className={`text-[var(--foreground-soft)] ${labelClassName}`}>
               Payment Method
             </p>
 
@@ -417,7 +433,7 @@ export default function CheckoutPage() {
                     >
                       <Icon size={18} />
                     </div>
-                    <h2 className="mt-4 text-sm font-bold uppercase tracking-[0.12em]">
+                    <h2 className={`mt-4 ${cardTitleClassName}`}>
                       {method.label}
                     </h2>
                     <p
@@ -448,7 +464,7 @@ export default function CheckoutPage() {
           <button
             type="submit"
             disabled={isSubmitting || !isFormValid}
-            className="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-full bg-black px-6 py-5 text-[10px] font-bold uppercase tracking-[0.28em] text-white transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-50"
+            className={`mt-8 inline-flex w-full items-center justify-center gap-2 rounded-full bg-black px-6 py-5 text-white transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-50 ${actionClassName}`}
           >
             {isSubmitting
               ? 'Processing...'
@@ -462,7 +478,7 @@ export default function CheckoutPage() {
         <aside className="rounded-[30px] border border-[var(--line)] bg-white p-5 shadow-[0_20px_60px_rgba(0,0,0,0.05)] md:p-8">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-[10px] font-mono uppercase tracking-[0.28em] text-[var(--foreground-soft)]">
+              <p className={`text-[var(--foreground-soft)] ${labelClassName}`}>
                 Order Summary
               </p>
               <h2 className="mt-3 text-3xl font-semibold tracking-[-0.04em]">
@@ -483,7 +499,7 @@ export default function CheckoutPage() {
               >
                 <div className="flex items-start justify-between gap-4">
                   <div>
-                    <h3 className="text-sm font-bold uppercase tracking-[0.1em] text-black">
+                    <h3 className={`text-black ${itemTitleClassName}`}>
                       {item.title}
                     </h3>
                     <p className="mt-2 text-sm leading-6 text-[var(--foreground-soft)]">
@@ -499,7 +515,7 @@ export default function CheckoutPage() {
           </div>
 
           <div className="mt-6 rounded-[24px] bg-black px-5 py-5 text-white">
-            <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/60">
+            <p className={`text-white/60 ${labelClassName}`}>
               Subtotal
             </p>
             <h3 className="mt-3 text-4xl font-semibold tracking-[-0.05em]">

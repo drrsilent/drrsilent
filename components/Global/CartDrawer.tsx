@@ -22,6 +22,24 @@ export default function CartDrawer() {
   const locale = useLocaleStore((state) => state.locale);
   const dict = getDictionary(locale).common;
   const isArabic = locale === 'ar';
+  const labelClassName = isArabic
+    ? 'text-[12px] tracking-[0.04em]'
+    : 'text-[10px] font-mono uppercase tracking-[0.3em]';
+  const titleClassName = isArabic
+    ? 'text-xl tracking-normal'
+    : 'text-xl uppercase tracking-[0.08em]';
+  const productTitleClassName = isArabic
+    ? 'text-sm tracking-normal'
+    : 'text-sm uppercase tracking-[0.08em]';
+  const sizeChipClassName = isArabic
+    ? 'text-[11px] tracking-normal'
+    : 'text-[10px] uppercase tracking-[0.16em]';
+  const countChipClassName = isArabic
+    ? 'text-[12px] tracking-normal'
+    : 'text-[10px] uppercase tracking-[0.22em]';
+  const checkoutButtonClassName = isArabic
+    ? 'text-[14px] tracking-normal'
+    : 'text-[10px] uppercase tracking-[0.28em]';
 
   const subtotal = items.reduce(
     (acc: number, item: CartItem) => acc + item.price * item.quantity,
@@ -67,10 +85,10 @@ export default function CartDrawer() {
           >
             <div className="mb-5 flex items-center justify-between border-b border-black/8 pb-4">
               <div>
-                <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-zinc-500">
+                <p className={`text-zinc-500 ${labelClassName}`}>
                   {dict.cartSummary}
                 </p>
-                <h2 className="mt-2 flex items-center gap-2 text-xl font-semibold uppercase tracking-[0.08em] text-black">
+                <h2 className={`mt-2 flex items-center gap-2 font-semibold text-black ${titleClassName}`}>
                   {dict.yourCart}
                   <ShoppingBag size={18} />
                 </h2>
@@ -92,7 +110,7 @@ export default function CartDrawer() {
                   <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-black text-white">
                     <ShoppingBag size={24} />
                   </div>
-                  <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-zinc-500">
+                  <p className={`text-zinc-500 ${labelClassName}`}>
                     {dict.cartEmpty}
                   </p>
                   <p className="mt-3 text-sm leading-7 text-zinc-600">
@@ -130,11 +148,11 @@ export default function CartDrawer() {
                         <div className="flex min-w-0 flex-1 flex-col">
                           <div className="flex items-start justify-between gap-3">
                             <div className="min-w-0">
-                              <h3 className="truncate text-sm font-bold uppercase tracking-[0.08em] text-black">
+                              <h3 className={`truncate font-bold text-black ${productTitleClassName}`}>
                                 {localizedTitle}
                               </h3>
                               <div className="mt-3">
-                                <p className="mb-2 text-[10px] font-mono uppercase tracking-[0.2em] text-zinc-500">
+                                <p className={`mb-2 text-zinc-500 ${labelClassName}`}>
                                   {dict.size}
                                 </p>
                                 <div className="flex flex-wrap gap-2">
@@ -148,7 +166,7 @@ export default function CartDrawer() {
                                         onClick={() =>
                                           updateItemSize(item.id, item.size, sizeOption)
                                         }
-                                        className={`rounded-full border px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.16em] transition ${
+                                        className={`rounded-full border px-3 py-1.5 font-bold transition ${sizeChipClassName} ${
                                           isSelected
                                             ? 'border-black bg-black text-white'
                                             : 'border-black/10 bg-[#f8f7f3] text-black hover:border-black/25'
@@ -174,7 +192,7 @@ export default function CartDrawer() {
 
                           <div className="mt-auto flex flex-col gap-4 pt-5 sm:flex-row sm:items-end sm:justify-between">
                             <div>
-                              <p className="text-[10px] font-mono uppercase tracking-[0.22em] text-zinc-500">
+                              <p className={`text-zinc-500 ${labelClassName}`}>
                                 {dict.quantity}
                               </p>
                               <div className="mt-2 inline-flex items-center rounded-full border border-black/10 bg-[#f8f7f3] p-1">
@@ -205,7 +223,7 @@ export default function CartDrawer() {
                             </div>
 
                             <div className="text-left sm:text-right">
-                              <p className="text-[10px] font-mono uppercase tracking-[0.22em] text-zinc-500">
+                              <p className={`text-zinc-500 ${labelClassName}`}>
                                 {dict.price}
                               </p>
                               <p className="mt-1 text-base font-semibold text-black">
@@ -228,7 +246,7 @@ export default function CartDrawer() {
                 >
                   <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <div>
-                      <p className="text-[10px] font-mono uppercase tracking-[0.28em] text-zinc-500">
+                      <p className={`text-zinc-500 ${labelClassName}`}>
                         {dict.subtotal}
                       </p>
                       <h3 className="mt-2 text-3xl font-semibold tracking-tight text-black">
@@ -236,13 +254,13 @@ export default function CartDrawer() {
                       </h3>
                     </div>
 
-                    <div className="rounded-full bg-[#f5f5f2] px-4 py-2 text-[10px] font-bold uppercase tracking-[0.22em] text-zinc-500">
+                    <div className={`rounded-full bg-[#f5f5f2] px-4 py-2 font-bold text-zinc-500 ${countChipClassName}`}>
                       {itemCount} {dict.itemsCount}
                     </div>
                   </div>
 
                   <div className="mt-5">
-                    <p className="text-[10px] font-mono uppercase tracking-[0.28em] text-zinc-500">
+                    <p className={`text-zinc-500 ${labelClassName}`}>
                       {dict.paymentMethods}
                     </p>
 
@@ -283,7 +301,7 @@ export default function CartDrawer() {
                   <Link
                     href="/checkout"
                     onClick={toggleCart}
-                    className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-full bg-black px-6 py-5 text-[10px] font-bold uppercase tracking-[0.28em] text-white transition hover:bg-zinc-800"
+                    className={`mt-5 inline-flex w-full items-center justify-center gap-2 rounded-full bg-black px-6 py-5 font-bold text-white transition hover:bg-zinc-800 ${checkoutButtonClassName}`}
                   >
                     {checkoutLabel}
                     <ArrowRight size={14} />

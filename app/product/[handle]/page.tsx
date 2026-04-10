@@ -48,6 +48,18 @@ export default function ProductPage({
   const isArabic = locale === 'ar';
   const product = products[handle] ? getLocalizedProduct(handle, locale) : undefined;
   const [selectedSize, setSelectedSize] = useState(product?.sizes[0] ?? 'M');
+  const labelClassName = isArabic
+    ? 'text-[12px] tracking-[0.04em]'
+    : 'text-[10px] font-mono uppercase tracking-[0.35em]';
+  const actionClassName = isArabic
+    ? 'text-[13px] tracking-normal'
+    : 'text-[10px] font-bold uppercase tracking-[0.18em] md:tracking-[0.28em]';
+  const sizeLabelClassName = isArabic
+    ? 'text-[12px] tracking-[0.04em]'
+    : 'text-[10px] font-bold uppercase tracking-[0.24em]';
+  const sizeChipClassName = isArabic
+    ? 'text-[12px] tracking-normal'
+    : 'text-[10px] font-bold uppercase tracking-[0.14em] md:text-[11px] md:tracking-[0.2em]';
 
   const { scrollYProgress } = useScroll({
     target: heroRef,
@@ -68,7 +80,7 @@ export default function ProductPage({
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           className="mx-auto max-w-3xl rounded-[28px] border border-black/10 bg-white p-6 text-center shadow-[0_20px_80px_rgba(0,0,0,0.08)] md:rounded-[32px] md:p-10"
         >
-          <p className="text-[10px] font-mono uppercase tracking-[0.35em] text-zinc-500">
+          <p className={`text-zinc-500 ${labelClassName}`}>
             {dict.productNotFound}
           </p>
           <h1 className="mt-4 text-3xl font-semibold tracking-tight">
@@ -76,7 +88,7 @@ export default function ProductPage({
           </h1>
           <Link
             href="/"
-            className="mt-8 inline-flex items-center gap-2 rounded-full bg-black px-6 py-3 text-[10px] font-bold uppercase tracking-[0.2em] text-white transition hover:bg-zinc-800 md:tracking-[0.25em]"
+            className={`mt-8 inline-flex items-center gap-2 rounded-full bg-black px-6 py-3 text-white transition hover:bg-zinc-800 ${actionClassName}`}
           >
             <ArrowLeft size={14} />
             {dict.backHome}
@@ -100,7 +112,7 @@ export default function ProductPage({
         <motion.div variants={itemVariants}>
           <Link
             href="/"
-            className="mb-4 inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--foreground-soft)] transition hover:text-black md:mb-6 md:tracking-[0.28em]"
+            className={`mb-4 inline-flex items-center gap-2 text-[var(--foreground-soft)] transition hover:text-black ${actionClassName}`}
           >
             <ArrowLeft size={14} />
             {dict.backToCollection}
@@ -138,7 +150,7 @@ export default function ProductPage({
           >
             <motion.p
               variants={itemVariants}
-              className="text-[10px] font-mono uppercase tracking-[0.35em] text-zinc-500"
+              className={`text-zinc-500 ${labelClassName}`}
             >
               {dict.dxlrProduct}
             </motion.p>
@@ -165,7 +177,7 @@ export default function ProductPage({
             </motion.p>
 
             <motion.div variants={itemVariants} className="mt-6">
-              <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.24em] text-zinc-500">
+              <p className={`mb-3 text-zinc-500 ${sizeLabelClassName}`}>
                 {dict.selectSize}
               </p>
 
@@ -180,7 +192,7 @@ export default function ProductPage({
                       whileHover={{ y: -1 }}
                       whileTap={{ scale: 0.99 }}
                       onClick={() => setSelectedSize(size)}
-                      className={`rounded-full border px-4 py-2.5 text-[10px] font-bold uppercase tracking-[0.14em] transition md:px-5 md:py-3 md:text-[11px] md:tracking-[0.2em] ${
+                      className={`rounded-full border px-4 py-2.5 transition md:px-5 md:py-3 ${sizeChipClassName} ${
                         isSelected
                           ? 'border-black bg-black text-white shadow-[0_10px_30px_rgba(0,0,0,0.14)]'
                           : 'border-black/10 bg-[#f5f5f2] text-black hover:border-black'
@@ -212,7 +224,7 @@ export default function ProductPage({
                   sourceRect: productImageRef.current?.getBoundingClientRect(),
                 });
               }}
-              className="mt-6 inline-flex w-full items-center justify-center gap-3 rounded-full bg-black px-6 py-4 text-[10px] font-bold uppercase tracking-[0.18em] text-white transition hover:bg-zinc-800 md:mt-10 md:py-5 md:tracking-[0.28em]"
+              className={`mt-6 inline-flex w-full items-center justify-center gap-3 rounded-full bg-black px-6 py-4 text-white transition hover:bg-zinc-800 md:mt-10 md:py-5 ${actionClassName}`}
             >
               <ShoppingBag size={16} />
               {dict.addToCart}
