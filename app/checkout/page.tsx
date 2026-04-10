@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, ArrowRight, Banknote, CreditCard, LocateFixed, ShoppingBag, Smartphone } from 'lucide-react';
 import { FormEvent, useEffect, useMemo, useState } from 'react';
+import { useSession } from 'next-auth/react';
 import { buildWhatsappOrderUrl, getCartItemCount, getCartSubtotal } from '../../lib/checkout';
 import { formatPrice } from '../../lib/currency';
 import { getDictionary } from '../../lib/translations';
@@ -40,12 +41,15 @@ const paymentMethods: Array<{
 
 export default function CheckoutPage() {
   const router = useRouter();
+  const { data: session } = useSession();
   const items = useCartStore((state) => state.items);
   const paymentMethod = useCartStore((state) => state.paymentMethod);
   const setPaymentMethod = useCartStore((state) => state.setPaymentMethod);
   const clearCart = useCartStore((state) => state.clearCart);
   const accountUser = useAccountStore((state) => state.user);
   const addOrder = useAccountStore((state) => state.addOrder);
+  const profiles = useAccountStore((state) => state.profiles);
+  const saveCheckoutProfile = useAccountStore((state) => state.saveCheckoutProfile);
   const locale = useLocaleStore((state) => state.locale);
   const dict = getDictionary(locale).common;
   const isArabic = locale === 'ar';
@@ -97,21 +101,31 @@ export default function CheckoutPage() {
       })),
     [items, locale]
   );
+  const activeEmail = (session?.user?.email || accountUser?.email || customer.email)
+    .trim()
+    .toLowerCase();
+  const currentProfile = activeEmail ? profiles[activeEmail] : undefined;
 
   useEffect(() => {
-    if (!accountUser) {
+    if (!accountUser && !session?.user && !currentProfile) {
       return;
     }
 
+    const fullName = currentProfile?.name || session?.user?.name || accountUser?.name || '';
+    const [profileFirstName, ...restNames] = fullName.split(' ').filter(Boolean);
+
     setCustomer((current) => ({
       ...current,
-      firstName: current.firstName || accountUser.name.split(' ')[0] || '',
-      lastName:
-        current.lastName || accountUser.name.split(' ').slice(1).join(' ') || '',
-      email: current.email || accountUser.email || '',
-      phone: current.phone || accountUser.phone || '',
+      firstName: current.firstName || profileFirstName || '',
+      lastName: current.lastName || restNames.join(' ') || '',
+      email: current.email || currentProfile?.email || session?.user?.email || accountUser?.email || '',
+      phone: current.phone || currentProfile?.phone || accountUser?.phone || '',
+      location: current.location || currentProfile?.location?.locationUrl || '',
+      address: current.address || currentProfile?.location?.address || '',
+      city: current.city || currentProfile?.location?.city || '',
+      notes: current.notes || currentProfile?.location?.notes || '',
     }));
-  }, [accountUser]);
+  }, [accountUser, currentProfile, session?.user]);
 
   useEffect(() => {
     let cancelled = false;
@@ -225,6 +239,17 @@ export default function CheckoutPage() {
 
     setCheckoutError('');
     setIsSubmitting(true);
+
+    saveCheckoutProfile({
+      email: customer.email,
+      name: `${customer.firstName} ${customer.lastName}`.trim(),
+      phone: customer.phone,
+      location: customer.location,
+      address: customer.address,
+      city: customer.city,
+      notes: customer.notes,
+      paymentMethod,
+    });
 
     if (paymentMethod === 'cash_on_delivery') {
       addOrder({

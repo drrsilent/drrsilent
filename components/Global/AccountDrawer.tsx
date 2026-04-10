@@ -5,11 +5,18 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import {
   Clock3,
+  CreditCard,
+  ExternalLink,
   LogOut,
   Mail,
+  LocateFixed,
+  MapPinned,
   PencilLine,
+  Plus,
   ShieldCheck,
+  Trash2,
   User2,
+  WalletCards,
   X,
 } from 'lucide-react';
 import {
@@ -35,14 +42,64 @@ type AuthNotice = {
   message: string;
 } | null;
 
+const normalizeProfileEmail = (email: string) => email.trim().toLowerCase();
+
+const formatCardBrand = (brand: string) => {
+  if (brand === 'visa') return 'Visa';
+  if (brand === 'mastercard') return 'Mastercard';
+  if (brand === 'amex') return 'Amex';
+  if (brand === 'meeza') return 'Meeza';
+  return 'Card';
+};
+
+const buildMapsLinks = (locationUrl: string, address: string, city: string) => {
+  const rawLocation = locationUrl.trim();
+  const fallbackQuery = [address.trim(), city.trim()].filter(Boolean).join(', ');
+
+  if (!rawLocation && !fallbackQuery) {
+    return null;
+  }
+
+  let query = rawLocation || fallbackQuery;
+  let openUrl = rawLocation;
+
+  try {
+    const parsedUrl = new URL(rawLocation);
+    const urlQuery =
+      parsedUrl.searchParams.get('q') ||
+      parsedUrl.searchParams.get('query') ||
+      parsedUrl.searchParams.get('destination');
+
+    if (urlQuery) {
+      query = urlQuery;
+    }
+  } catch {
+    openUrl = '';
+  }
+
+  if (!openUrl) {
+    openUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
+  }
+
+  return {
+    query,
+    openUrl,
+    embedUrl: `https://www.google.com/maps?q=${encodeURIComponent(query)}&z=15&output=embed`,
+  };
+};
+
 export default function AccountDrawer() {
   const router = useRouter();
   const isOpen = useAccountStore((state) => state.isOpen);
   const user = useAccountStore((state) => state.user);
   const orders = useAccountStore((state) => state.orders);
+  const profiles = useAccountStore((state) => state.profiles);
   const closeAccount = useAccountStore((state) => state.closeAccount);
   const clearManualSignIn = useAccountStore((state) => state.signOut);
   const removeOrder = useAccountStore((state) => state.removeOrder);
+  const saveCurrentLocation = useAccountStore((state) => state.saveCurrentLocation);
+  const saveCard = useAccountStore((state) => state.saveCard);
+  const removeSavedCard = useAccountStore((state) => state.removeSavedCard);
   const locale = useLocaleStore((state) => state.locale);
   const dict = getDictionary(locale).common;
   const isArabic = locale === 'ar';
@@ -173,12 +230,22 @@ export default function AccountDrawer() {
     email: false,
   });
   const [authNotice, setAuthNotice] = useState<AuthNotice>(null);
+  const [accountNotice, setAccountNotice] = useState<AuthNotice>(null);
   const [emailAddress, setEmailAddress] = useState('');
   const [emailOtp, setEmailOtp] = useState('');
   const [emailChallengeToken, setEmailChallengeToken] = useState('');
   const [maskedEmailAddress, setMaskedEmailAddress] = useState('');
   const [isSendingEmailCode, setIsSendingEmailCode] = useState(false);
   const [isVerifyingEmailCode, setIsVerifyingEmailCode] = useState(false);
+  const [isSavingLocation, setIsSavingLocation] = useState(false);
+  const [showCardForm, setShowCardForm] = useState(false);
+  const [cardDraft, setCardDraft] = useState({
+    nickname: '',
+    cardholder: '',
+    cardNumber: '',
+    expiryMonth: '',
+    expiryYear: '',
+  });
   const [resendCooldown, setResendCooldown] = useState(0);
   const authFormRef = useRef<HTMLDivElement | null>(null);
   const emailInputRef = useRef<HTMLInputElement | null>(null);
@@ -192,6 +259,15 @@ export default function AccountDrawer() {
       }
     : user;
   const hasActiveUser = Boolean(session?.user || user);
+  const activeEmail = normalizeProfileEmail(activeUser?.email || '');
+  const currentProfile = activeEmail ? profiles[activeEmail] : undefined;
+  const savedLocation = currentProfile?.location || null;
+  const savedCards = currentProfile?.savedCards || [];
+  const mapsLinks = buildMapsLinks(
+    savedLocation?.locationUrl || '',
+    savedLocation?.address || '',
+    savedLocation?.city || ''
+  );
   const signedInProviderName =
     session?.user?.provider === 'email' || user?.provider === 'email'
       ? copy.emailName
@@ -208,6 +284,47 @@ export default function AccountDrawer() {
   const emailAccessHint = isArabic
     ? 'اكتب إيميلك ليصلك كود تحقق، ثم أدخله هنا لإكمال الدخول داخل DXLR.'
     : 'Enter your email to receive a one-time verification code, then enter it here to complete sign in.';
+  const accountOptionsLabel = isArabic ? 'خيارات الحساب' : 'Account Options';
+  const locationLabel = isArabic ? 'موقعك' : 'Your Location';
+  const locationHint = isArabic
+    ? 'احفظ موقعك الحالي أو افتحه مباشرة على Google Maps من داخل حسابك.'
+    : 'Keep your latest delivery pin ready and open it directly in Google Maps.';
+  const locationEmptyLabel = isArabic
+    ? 'لا يوجد موقع محفوظ حتى الآن. احفظه من checkout أو استخدم موقعك الحالي.'
+    : 'No saved location yet. Save one from checkout or use your current location.';
+  const openMapsLabel = isArabic ? 'فتح Google Maps' : 'Open Google Maps';
+  const useCurrentLocationLabel = isArabic ? 'استخدام موقعي الحالي' : 'Use Current Location';
+  const locationSavedMessage = isArabic
+    ? 'تم حفظ موقعك الحالي وربطه بـ Google Maps.'
+    : 'Your current location was saved and linked to Google Maps.';
+  const locationErrorMessage = isArabic
+    ? 'تعذر تحديد موقعك الآن. اسمح بالوصول إلى الموقع وجرّب مرة أخرى.'
+    : 'We could not detect your location right now. Allow location access and try again.';
+  const cardsLabel = isArabic ? 'البطاقات المحفوظة' : 'Saved Cards';
+  const cardsHint = isArabic
+    ? 'احفظ بيانات البطاقة بشكل مقنّع داخل هذا المتصفح لتسهيل الرجوع إليها.'
+    : 'Keep masked card details in this browser for quick access later.';
+  const addCardLabel = isArabic ? 'إضافة بطاقة' : 'Add Card';
+  const hideCardFormLabel = isArabic ? 'إخفاء النموذج' : 'Hide Form';
+  const noCardsLabel = isArabic
+    ? 'لا توجد بطاقات محفوظة حتى الآن.'
+    : 'No saved cards yet.';
+  const nicknamePlaceholder = isArabic ? 'اسم البطاقة' : 'Card nickname';
+  const cardholderPlaceholder = isArabic ? 'اسم حامل البطاقة' : 'Cardholder name';
+  const cardNumberPlaceholder = isArabic ? 'رقم البطاقة' : 'Card number';
+  const expiryMonthPlaceholder = isArabic ? 'الشهر MM' : 'MM';
+  const expiryYearPlaceholder = isArabic ? 'السنة YY' : 'YY';
+  const saveCardLabel = isArabic ? 'حفظ البطاقة' : 'Save Card';
+  const removeCardLabel = isArabic ? 'حذف' : 'Remove';
+  const savedBrowserHint = isArabic
+    ? 'نحفظ آخر 4 أرقام فقط دون رقم البطاقة الكامل أو CVV.'
+    : 'Only the last 4 digits are stored, never the full card number or CVV.';
+  const cardSavedMessage = isArabic
+    ? 'تم حفظ البطاقة بشكل مقنّع داخل هذا المتصفح.'
+    : 'The card was saved in masked form in this browser.';
+  const cardInvalidMessage = isArabic
+    ? 'أكمل اسم البطاقة والاسم ورقم البطاقة وتاريخ الانتهاء بشكل صحيح.'
+    : 'Complete the nickname, cardholder, card number, and expiry correctly.';
 
   useEffect(() => {
     let cancelled = false;
@@ -250,6 +367,7 @@ export default function AccountDrawer() {
   useEffect(() => {
     if (session?.user) {
       setAuthNotice(null);
+      setAccountNotice(null);
       setEmailAddress('');
       setEmailOtp('');
       setEmailChallengeToken('');
@@ -420,6 +538,78 @@ export default function AccountDrawer() {
     router.push('/checkout');
   };
 
+  const handleSaveCurrentLocation = () => {
+    if (!activeEmail) {
+      return;
+    }
+
+    if (!navigator.geolocation) {
+      setAccountNotice({
+        tone: 'error',
+        message: locationErrorMessage,
+      });
+      return;
+    }
+
+    setIsSavingLocation(true);
+    setAccountNotice(null);
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`;
+
+        saveCurrentLocation(activeEmail, mapsUrl);
+        setAccountNotice({
+          tone: 'success',
+          message: locationSavedMessage,
+        });
+        setIsSavingLocation(false);
+      },
+      () => {
+        setAccountNotice({
+          tone: 'error',
+          message: locationErrorMessage,
+        });
+        setIsSavingLocation(false);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0,
+      }
+    );
+  };
+
+  const handleSaveCard = () => {
+    if (!activeEmail) {
+      return;
+    }
+
+    const result = saveCard(activeEmail, cardDraft);
+
+    if (!result.ok) {
+      setAccountNotice({
+        tone: 'error',
+        message: cardInvalidMessage,
+      });
+      return;
+    }
+
+    setCardDraft({
+      nickname: '',
+      cardholder: '',
+      cardNumber: '',
+      expiryMonth: '',
+      expiryYear: '',
+    });
+    setShowCardForm(false);
+    setAccountNotice({
+      tone: 'success',
+      message: cardSavedMessage,
+    });
+  };
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -480,6 +670,242 @@ export default function AccountDrawer() {
                     <p>{activeUser.email || copy.noEmail}</p>
                     {activeUser.phone ? <p>{activeUser.phone}</p> : null}
                   </div>
+                </div>
+
+                <div className="mt-5">
+                  <p className={`text-zinc-500 ${labelClassName}`}>{accountOptionsLabel}</p>
+
+                  <div className="mt-3 grid gap-3">
+                    <div className="rounded-[24px] border border-black/8 bg-white p-4 shadow-[0_12px_40px_rgba(0,0,0,0.04)]">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex items-start gap-3">
+                          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-black text-white">
+                            <MapPinned size={18} />
+                          </div>
+                          <div>
+                            <h4 className="text-lg font-semibold tracking-[-0.03em] text-black">
+                              {locationLabel}
+                            </h4>
+                            <p className="mt-1 text-sm leading-6 text-[var(--foreground-soft)]">
+                              {savedLocation
+                                ? [savedLocation.address, savedLocation.city]
+                                    .filter(Boolean)
+                                    .join(isArabic ? '، ' : ', ') || locationHint
+                                : locationEmptyLabel}
+                            </p>
+                          </div>
+                        </div>
+
+                        {mapsLinks ? (
+                          <a
+                            href={mapsLinks.openUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            className={`inline-flex items-center gap-2 rounded-full border border-black/10 bg-[var(--surface)] px-3 py-2 text-black transition hover:border-black/20 hover:bg-black hover:text-white ${actionButtonClassName}`}
+                          >
+                            <ExternalLink size={14} />
+                            {openMapsLabel}
+                          </a>
+                        ) : null}
+                      </div>
+
+                      {mapsLinks ? (
+                        <div className="mt-4 overflow-hidden rounded-[18px] border border-black/8">
+                          <iframe
+                            src={mapsLinks.embedUrl}
+                            title={locationLabel}
+                            className="h-36 w-full bg-[var(--surface)]"
+                            loading="lazy"
+                            referrerPolicy="no-referrer-when-downgrade"
+                          />
+                        </div>
+                      ) : null}
+
+                      <div className="mt-4 flex flex-wrap gap-2">
+                        <button
+                          type="button"
+                          onClick={handleSaveCurrentLocation}
+                          disabled={isSavingLocation}
+                          className={`inline-flex items-center gap-2 rounded-full border border-black bg-black px-4 py-3 text-white transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-60 ${actionButtonClassName}`}
+                        >
+                          <LocateFixed size={14} />
+                          {isSavingLocation ? copy.checking : useCurrentLocationLabel}
+                        </button>
+                        {savedLocation?.notes ? (
+                          <span className="inline-flex items-center rounded-full border border-black/10 bg-[var(--surface)] px-3 py-2 text-xs text-[var(--foreground-soft)]">
+                            {savedLocation.notes}
+                          </span>
+                        ) : null}
+                      </div>
+                    </div>
+
+                    <div className="rounded-[24px] border border-black/8 bg-white p-4 shadow-[0_12px_40px_rgba(0,0,0,0.04)]">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex items-start gap-3">
+                          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-black text-white">
+                            <WalletCards size={18} />
+                          </div>
+                          <div>
+                            <h4 className="text-lg font-semibold tracking-[-0.03em] text-black">
+                              {cardsLabel}
+                            </h4>
+                            <p className="mt-1 text-sm leading-6 text-[var(--foreground-soft)]">
+                              {cardsHint}
+                            </p>
+                          </div>
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={() => setShowCardForm((current) => !current)}
+                          className={`inline-flex items-center gap-2 rounded-full border border-black/10 bg-[var(--surface)] px-3 py-2 text-black transition hover:border-black/20 hover:bg-black hover:text-white ${actionButtonClassName}`}
+                        >
+                          <Plus size={14} />
+                          {showCardForm ? hideCardFormLabel : addCardLabel}
+                        </button>
+                      </div>
+
+                      <div className="mt-4 space-y-3">
+                        {savedCards.length > 0 ? (
+                          savedCards.map((card) => (
+                            <div
+                              key={card.id}
+                              className="rounded-[18px] border border-black/8 bg-[var(--surface)] px-4 py-4"
+                            >
+                              <div className="flex items-start justify-between gap-3">
+                                <div className="flex items-start gap-3">
+                                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white text-black">
+                                    <CreditCard size={16} />
+                                  </div>
+                                  <div>
+                                    <p className="text-sm font-semibold text-black">
+                                      {card.nickname || `${formatCardBrand(card.brand)} •••• ${card.last4}`}
+                                    </p>
+                                    <p className="mt-1 text-xs text-[var(--foreground-soft)]">
+                                      {formatCardBrand(card.brand)} •••• {card.last4} · {card.expiryMonth}/{card.expiryYear}
+                                    </p>
+                                    <p className="mt-1 text-xs text-[var(--foreground-soft)]">
+                                      {card.cardholder}
+                                    </p>
+                                  </div>
+                                </div>
+
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    removeSavedCard(activeEmail, card.id);
+                                    setAccountNotice(null);
+                                  }}
+                                  className={`inline-flex items-center gap-2 rounded-full border border-black/10 bg-white px-3 py-2 text-black transition hover:border-red-200 hover:bg-red-50 hover:text-red-600 ${actionButtonClassName}`}
+                                >
+                                  <Trash2 size={14} />
+                                  {removeCardLabel}
+                                </button>
+                              </div>
+                            </div>
+                          ))
+                        ) : (
+                          <div className="rounded-[18px] border border-dashed border-black/10 bg-[var(--surface)] px-4 py-5 text-sm text-[var(--foreground-soft)]">
+                            {noCardsLabel}
+                          </div>
+                        )}
+
+                        <p className="text-xs leading-5 text-zinc-500">{savedBrowserHint}</p>
+
+                        {showCardForm ? (
+                          <div className="rounded-[18px] border border-black/8 bg-[var(--surface)] p-4">
+                            <div className="grid gap-3">
+                              <input
+                                type="text"
+                                value={cardDraft.nickname}
+                                onChange={(event) =>
+                                  setCardDraft((current) => ({
+                                    ...current,
+                                    nickname: event.target.value,
+                                  }))
+                                }
+                                placeholder={nicknamePlaceholder}
+                                className="h-11 rounded-[14px] border border-black/10 bg-white px-4 text-sm outline-none transition focus:border-black"
+                              />
+                              <input
+                                type="text"
+                                value={cardDraft.cardholder}
+                                onChange={(event) =>
+                                  setCardDraft((current) => ({
+                                    ...current,
+                                    cardholder: event.target.value,
+                                  }))
+                                }
+                                placeholder={cardholderPlaceholder}
+                                className="h-11 rounded-[14px] border border-black/10 bg-white px-4 text-sm outline-none transition focus:border-black"
+                              />
+                              <input
+                                type="text"
+                                inputMode="numeric"
+                                value={cardDraft.cardNumber}
+                                onChange={(event) =>
+                                  setCardDraft((current) => ({
+                                    ...current,
+                                    cardNumber: event.target.value.replace(/\D/g, '').slice(0, 19),
+                                  }))
+                                }
+                                placeholder={cardNumberPlaceholder}
+                                className="h-11 rounded-[14px] border border-black/10 bg-white px-4 text-sm outline-none transition focus:border-black"
+                              />
+                              <div className="grid grid-cols-2 gap-3">
+                                <input
+                                  type="text"
+                                  inputMode="numeric"
+                                  value={cardDraft.expiryMonth}
+                                  onChange={(event) =>
+                                    setCardDraft((current) => ({
+                                      ...current,
+                                      expiryMonth: event.target.value.replace(/\D/g, '').slice(0, 2),
+                                    }))
+                                  }
+                                  placeholder={expiryMonthPlaceholder}
+                                  className="h-11 rounded-[14px] border border-black/10 bg-white px-4 text-sm outline-none transition focus:border-black"
+                                />
+                                <input
+                                  type="text"
+                                  inputMode="numeric"
+                                  value={cardDraft.expiryYear}
+                                  onChange={(event) =>
+                                    setCardDraft((current) => ({
+                                      ...current,
+                                      expiryYear: event.target.value.replace(/\D/g, '').slice(0, 2),
+                                    }))
+                                  }
+                                  placeholder={expiryYearPlaceholder}
+                                  className="h-11 rounded-[14px] border border-black/10 bg-white px-4 text-sm outline-none transition focus:border-black"
+                                />
+                              </div>
+                              <button
+                                type="button"
+                                onClick={handleSaveCard}
+                                className={`inline-flex h-11 items-center justify-center gap-2 rounded-full border border-black bg-black px-4 text-white transition hover:bg-zinc-800 ${actionButtonClassName}`}
+                              >
+                                <CreditCard size={14} />
+                                {saveCardLabel}
+                              </button>
+                            </div>
+                          </div>
+                        ) : null}
+                      </div>
+                    </div>
+                  </div>
+
+                  {accountNotice ? (
+                    <div
+                      className={`mt-3 rounded-[16px] px-4 py-3 text-sm ${
+                        accountNotice.tone === 'success'
+                          ? 'border border-emerald-200 bg-emerald-50 text-emerald-700'
+                          : 'border border-amber-200 bg-amber-50 text-amber-700'
+                      }`}
+                    >
+                      {accountNotice.message}
+                    </div>
+                  ) : null}
                 </div>
 
                 <div className="mt-5 flex items-center justify-between">
