@@ -538,6 +538,13 @@ export default function AccountDrawer() {
     router.push('/checkout');
   };
 
+  const handleSignOut = () => {
+    if (session?.user) {
+      void authSignOut({ callbackUrl: '/' });
+    }
+    clearManualSignIn();
+  };
+
   const handleSaveCurrentLocation = () => {
     if (!activeEmail) {
       return;
@@ -653,7 +660,18 @@ export default function AccountDrawer() {
               {activeUser ? (
                 <>
                 <div className="rounded-[28px] border border-black/8 bg-[linear-gradient(145deg,#111111_0%,#1d1a16_100%)] p-5 text-white shadow-[0_18px_50px_rgba(0,0,0,0.14)]">
-                  <p className={`text-white/58 ${labelClassName}`}>{copy.signedIn}</p>
+                  <div className="flex items-start justify-between gap-3">
+                    <p className={`text-white/58 ${labelClassName}`}>{copy.signedIn}</p>
+                    <button
+                      type="button"
+                      onClick={handleSignOut}
+                      className={`inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/8 px-4 py-2.5 text-white transition hover:bg-white hover:text-black ${sectionCountClassName}`}
+                    >
+                      <LogOut size={14} />
+                      {copy.signOut}
+                    </button>
+                  </div>
+
                   <div className="mt-4 flex items-center gap-4">
                     <div className="flex h-14 w-14 items-center justify-center rounded-full bg-white text-black">
                       <User2 size={24} />
@@ -915,20 +933,6 @@ export default function AccountDrawer() {
                       {copy.ordersCount(orders.length)}
                     </h3>
                   </div>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (session?.user) {
-                        void authSignOut({ callbackUrl: '/' });
-                      }
-                      clearManualSignIn();
-                    }}
-                    className={`inline-flex items-center gap-2 rounded-full border border-black/10 bg-white px-4 py-3 text-black transition hover:bg-black hover:text-white ${sectionCountClassName}`}
-                  >
-                    <LogOut size={14} />
-                    {copy.signOut}
-                  </button>
                 </div>
 
                 <div className="mt-4 space-y-3 pb-2">
