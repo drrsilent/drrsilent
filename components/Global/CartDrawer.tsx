@@ -34,6 +34,9 @@ export default function CartDrawer() {
   const sizeChipClassName = isArabic
     ? 'text-[11px] tracking-normal'
     : 'text-[10px] uppercase tracking-[0.16em]';
+  const activeSizeBadgeClassName = isArabic
+    ? 'text-[12px] font-semibold tracking-normal'
+    : 'text-[10px] font-bold uppercase tracking-[0.16em]';
   const countChipClassName = isArabic
     ? 'text-[12px] tracking-normal'
     : 'text-[10px] uppercase tracking-[0.22em]';
@@ -148,12 +151,27 @@ export default function CartDrawer() {
                         <div className="flex min-w-0 flex-1 flex-col">
                           <div className="flex items-start justify-between gap-3">
                             <div className="min-w-0">
-                              <h3 className={`truncate font-bold text-black ${productTitleClassName}`}>
-                                {localizedTitle}
-                              </h3>
+                              <div className="flex flex-wrap items-center gap-2">
+                                <h3 className={`truncate font-bold text-black ${productTitleClassName}`}>
+                                  {localizedTitle}
+                                </h3>
+                                <span
+                                  className={`inline-flex items-center rounded-full border border-black bg-black px-2.5 py-1 text-white ${activeSizeBadgeClassName}`}
+                                >
+                                  {dict.size} {item.size}
+                                </span>
+                                <span className="inline-flex items-center rounded-full border border-black/10 bg-[#f8f7f3] px-2.5 py-1 text-xs text-[var(--foreground-soft)]">
+                                  {dict.quantity} {item.quantity}
+                                </span>
+                              </div>
+                              <p className="mt-1 text-xs text-[var(--foreground-soft)]">
+                                {isArabic
+                                  ? `المقاس الحالي: ${item.size}`
+                                  : `Current size: ${item.size}`}
+                              </p>
                               <div className="mt-3">
                                 <p className={`mb-2 text-zinc-500 ${labelClassName}`}>
-                                  {dict.size}
+                                  {isArabic ? 'تغيير المقاس' : 'Change size'}
                                 </p>
                                 <div className="flex flex-wrap gap-2">
                                   {(products[item.id]?.sizes ?? [item.size]).map((sizeOption) => {

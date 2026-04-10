@@ -24,6 +24,7 @@ import {
 } from 'next-auth/react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { formatPrice } from '../../lib/currency';
+import { getDictionary } from '../../lib/translations';
 import { getLocalizedProduct, products } from '../../data/products';
 import { useLocaleStore } from '../../store/useLocaleStore';
 import { useAccountStore } from '../../store/useAccountStore';
@@ -257,6 +258,7 @@ export default function AccountDrawer() {
   const manualSignIn = useAccountStore((state) => state.signIn);
   const removeOrder = useAccountStore((state) => state.removeOrder);
   const locale = useLocaleStore((state) => state.locale);
+  const dict = getDictionary(locale).common;
   const isArabic = locale === 'ar';
   const setCartState = useCartStore((state) => state.setCartState);
   const { data: session } = useSession();
@@ -616,6 +618,14 @@ export default function AccountDrawer() {
                                     <p className="truncate text-sm font-semibold text-black">
                                       {localizedItem.title}
                                     </p>
+                                    <div className="mt-1 flex flex-wrap items-center gap-2">
+                                      <span className="inline-flex items-center rounded-full border border-black bg-black px-2.5 py-1 text-[10px] font-bold text-white">
+                                        {dict.size} {item.size}
+                                      </span>
+                                      <span className="inline-flex items-center rounded-full border border-black/10 bg-white px-2.5 py-1 text-[10px] text-[var(--foreground-soft)]">
+                                        {dict.quantity} {item.quantity}
+                                      </span>
+                                    </div>
                                     <p className="mt-1 text-xs text-[var(--foreground-soft)]">
                                       Size {item.size} • Qty {item.quantity}
                                     </p>

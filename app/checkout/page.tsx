@@ -6,6 +6,7 @@ import { ArrowLeft, ArrowRight, Banknote, CreditCard, LocateFixed, ShoppingBag, 
 import { FormEvent, useEffect, useMemo, useState } from 'react';
 import { buildWhatsappOrderUrl, getCartItemCount, getCartSubtotal } from '../../lib/checkout';
 import { formatPrice } from '../../lib/currency';
+import { getDictionary } from '../../lib/translations';
 import { getLocalizedProduct, products } from '../../data/products';
 import { PaymentMethod, useCartStore } from '../../store/useCartStore';
 import { useAccountStore } from '../../store/useAccountStore';
@@ -46,6 +47,7 @@ export default function CheckoutPage() {
   const accountUser = useAccountStore((state) => state.user);
   const addOrder = useAccountStore((state) => state.addOrder);
   const locale = useLocaleStore((state) => state.locale);
+  const dict = getDictionary(locale).common;
   const isArabic = locale === 'ar';
   const labelClassName = isArabic
     ? 'text-[12px] tracking-[0.04em]'
@@ -62,6 +64,9 @@ export default function CheckoutPage() {
   const itemTitleClassName = isArabic
     ? 'text-[14px] tracking-normal'
     : 'text-sm font-bold uppercase tracking-[0.1em]';
+  const sizeBadgeClassName = isArabic
+    ? 'text-[12px] font-semibold tracking-normal'
+    : 'text-[10px] font-bold uppercase tracking-[0.14em]';
 
   const [customer, setCustomer] = useState({
     firstName: '',
@@ -502,6 +507,16 @@ export default function CheckoutPage() {
                     <h3 className={`text-black ${itemTitleClassName}`}>
                       {item.title}
                     </h3>
+                    <div className="mt-2 flex flex-wrap items-center gap-2">
+                      <span
+                        className={`inline-flex items-center rounded-full border border-black bg-black px-2.5 py-1 text-white ${sizeBadgeClassName}`}
+                      >
+                        {dict.size} {item.size}
+                      </span>
+                      <span className="inline-flex items-center rounded-full border border-[var(--line)] bg-white px-2.5 py-1 text-xs text-[var(--foreground-soft)]">
+                        {dict.quantity} {item.quantity}
+                      </span>
+                    </div>
                     <p className="mt-2 text-sm leading-6 text-[var(--foreground-soft)]">
                       Size {item.size} • Qty {item.quantity}
                     </p>
