@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowRight, Banknote, CreditCard, ShoppingBag, Smartphone, Trash2, X } from 'lucide-react';
 import { CartItem, PaymentMethod, useCartStore } from '../../store/useCartStore';
 import { getLocalizedProduct, products } from '../../data/products';
+import { getDictionary } from '../../lib/i18n';
 import { useLocaleStore } from '../../store/useLocaleStore';
 
 export default function CartDrawer() {
@@ -18,6 +19,8 @@ export default function CartDrawer() {
   const updateItemQuantity = useCartStore((state) => state.updateItemQuantity);
   const setPaymentMethod = useCartStore((state) => state.setPaymentMethod);
   const locale = useLocaleStore((state) => state.locale);
+  const dict = getDictionary(locale).common;
+  const isArabic = locale === 'ar';
 
   const subtotal = items.reduce(
     (acc: number, item: CartItem) => acc + item.price * item.quantity,
@@ -28,16 +31,16 @@ export default function CartDrawer() {
     0
   );
   const paymentMethods = [
-    { label: 'Card', value: 'card', icon: CreditCard },
-    { label: 'Cash on Delivery', value: 'cash_on_delivery', icon: Banknote },
-    { label: 'Apple Pay', value: 'apple_pay', icon: Smartphone },
+    { label: dict.paymentCard, value: 'card', icon: CreditCard },
+    { label: dict.paymentCashOnDelivery, value: 'cash_on_delivery', icon: Banknote },
+    { label: dict.paymentApplePay, value: 'apple_pay', icon: Smartphone },
   ];
   const checkoutLabel =
     paymentMethod === 'cash_on_delivery'
-      ? 'Place Cash Order'
+      ? dict.checkoutCashOnDelivery
       : paymentMethod === 'apple_pay'
-        ? 'Pay with Apple Pay'
-        : 'Pay with Card';
+        ? dict.checkoutApplePay
+        : dict.checkoutCard;
 
   return (
     <AnimatePresence>
@@ -59,14 +62,15 @@ export default function CartDrawer() {
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 26, stiffness: 220 }}
             className="absolute inset-y-0 right-0 flex h-dvh w-full max-w-[440px] flex-col border-l border-black/8 bg-[#fbfaf7] px-4 pb-4 pt-4 shadow-[0_30px_120px_rgba(0,0,0,0.22)] md:px-6 md:pb-6"
+            dir={isArabic ? 'rtl' : 'ltr'}
           >
             <div className="mb-5 flex items-center justify-between border-b border-black/8 pb-4">
               <div>
                 <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-zinc-500">
-                  Cart Summary
+                  {dict.cartSummary}
                 </p>
                 <h2 className="mt-2 flex items-center gap-2 text-xl font-semibold uppercase tracking-[0.08em] text-black">
-                  Your Cart
+                  {dict.yourCart}
                   <ShoppingBag size={18} />
                 </h2>
               </div>
@@ -75,7 +79,7 @@ export default function CartDrawer() {
                 type="button"
                 onClick={toggleCart}
                 className="flex h-11 w-11 items-center justify-center rounded-full border border-black/10 bg-white text-black transition hover:rotate-90 hover:bg-black hover:text-white"
-                aria-label="Close cart"
+                aria-label={dict.closeCart}
               >
                 <X size={18} />
               </button>
@@ -88,11 +92,10 @@ export default function CartDrawer() {
                     <ShoppingBag size={24} />
                   </div>
                   <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-zinc-500">
-                    Your cart is empty
+                    {dict.cartEmpty}
                   </p>
                   <p className="mt-3 text-sm leading-7 text-zinc-600">
-                    Add a few DXLR pieces and they will show up here with a
-                    clean checkout summary.
+                    {dict.cartEmptyHint}
                   </p>
                 </div>
               </div>
@@ -131,7 +134,7 @@ export default function CartDrawer() {
                               </h3>
                               <div className="mt-3">
                                 <p className="mb-2 text-[10px] font-mono uppercase tracking-[0.2em] text-zinc-500">
-                                  Size
+                                  {dict.size}
                                 </p>
                                 <div className="flex flex-wrap gap-2">
                                   {(products[item.id]?.sizes ?? [item.size]).map((sizeOption) => {
@@ -162,7 +165,7 @@ export default function CartDrawer() {
                               type="button"
                               onClick={() => removeFromCart(item.id, item.size)}
                               className="flex h-9 w-9 items-center justify-center rounded-full text-zinc-400 transition hover:bg-red-50 hover:text-red-500"
-                              aria-label={`Remove ${localizedTitle}`}
+                              aria-label={`${dict.removeItem} ${localizedTitle}`}
                             >
                               <Trash2 size={17} />
                             </button>
@@ -171,7 +174,7 @@ export default function CartDrawer() {
                           <div className="mt-auto flex flex-col gap-4 pt-5 sm:flex-row sm:items-end sm:justify-between">
                             <div>
                               <p className="text-[10px] font-mono uppercase tracking-[0.22em] text-zinc-500">
-                                Quantity
+                                {dict.quantity}
                               </p>
                               <div className="mt-2 inline-flex items-center rounded-full border border-black/10 bg-[#f8f7f3] p-1">
                                 <button
@@ -180,7 +183,7 @@ export default function CartDrawer() {
                                     updateItemQuantity(item.id, item.size, item.quantity - 1)
                                   }
                                   className="flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold text-black transition hover:bg-white"
-                                  aria-label={`Decrease quantity of ${localizedTitle}`}
+                                  aria-label={`${dict.decreaseQuantity} ${localizedTitle}`}
                                 >
                                   -
                                 </button>
@@ -193,7 +196,7 @@ export default function CartDrawer() {
                                     updateItemQuantity(item.id, item.size, item.quantity + 1)
                                   }
                                   className="flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold text-black transition hover:bg-white"
-                                  aria-label={`Increase quantity of ${localizedTitle}`}
+                                  aria-label={`${dict.increaseQuantity} ${localizedTitle}`}
                                 >
                                   +
                                 </button>
@@ -202,7 +205,7 @@ export default function CartDrawer() {
 
                             <div className="text-left sm:text-right">
                               <p className="text-[10px] font-mono uppercase tracking-[0.22em] text-zinc-500">
-                                Price
+                                {dict.price}
                               </p>
                               <p className="mt-1 text-base font-semibold text-black">
                                 {item.price * item.quantity} EGP
@@ -225,7 +228,7 @@ export default function CartDrawer() {
                   <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <div>
                       <p className="text-[10px] font-mono uppercase tracking-[0.28em] text-zinc-500">
-                        Subtotal
+                        {dict.subtotal}
                       </p>
                       <h3 className="mt-2 text-3xl font-semibold tracking-tight text-black">
                         {subtotal} EGP
@@ -233,13 +236,13 @@ export default function CartDrawer() {
                     </div>
 
                     <div className="rounded-full bg-[#f5f5f2] px-4 py-2 text-[10px] font-bold uppercase tracking-[0.22em] text-zinc-500">
-                      {itemCount} Items
+                      {itemCount} {dict.itemsCount}
                     </div>
                   </div>
 
                   <div className="mt-5">
                     <p className="text-[10px] font-mono uppercase tracking-[0.28em] text-zinc-500">
-                      Payment Methods
+                      {dict.paymentMethods}
                     </p>
 
                     <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-3">
