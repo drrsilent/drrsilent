@@ -5,24 +5,22 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import {
   AtSign,
-  Check,
-  ChevronDown,
   Clock3,
   LogOut,
-  MessageCircle,
+  Mail,
   PencilLine,
   ShieldCheck,
-  Smartphone,
   User2,
   X,
 } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import {
   getProviders,
-  signIn as oauthSignIn,
+  signIn as authSignIn,
   signOut as authSignOut,
   useSession,
 } from 'next-auth/react';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { formatPrice } from '../../lib/currency';
 import { getDictionary } from '../../lib/translations';
 import { getLocalizedProduct, products } from '../../data/products';
@@ -32,221 +30,21 @@ import { useCartStore } from '../../store/useCartStore';
 
 type ConfiguredProviders = {
   google: boolean;
-  apple: boolean;
+  email: boolean;
+  apple?: boolean;
 };
 
-type PhoneCountry = {
-  code: string;
-  dialCode: string;
+type ProviderCard = {
   label: string;
-  flagUrl: string;
-  pattern: RegExp;
-  placeholder: string;
-  hint: string;
-};
-
-const phoneCountries: PhoneCountry[] = [
-  {
-    code: 'EG',
-    dialCode: '+20',
-    label: 'Egypt',
-    flagUrl: 'https://flagcdn.com/w40/eg.png',
-    pattern: /^(10|11|12|15)\d{8}$/,
-    placeholder: '10XXXXXXXX',
-    hint: 'Use 10 digits starting with 10, 11, 12, or 15.',
-  },
-  {
-    code: 'SA',
-    dialCode: '+966',
-    label: 'Saudi Arabia',
-    flagUrl: 'https://flagcdn.com/w40/sa.png',
-    pattern: /^5\d{8}$/,
-    placeholder: '5XXXXXXXX',
-    hint: 'Use 9 digits starting with 5.',
-  },
-  {
-    code: 'AE',
-    dialCode: '+971',
-    label: 'UAE',
-    flagUrl: 'https://flagcdn.com/w40/ae.png',
-    pattern: /^5\d{8}$/,
-    placeholder: '5XXXXXXXX',
-    hint: 'Use 9 digits starting with 5.',
-  },
-  {
-    code: 'KW',
-    dialCode: '+965',
-    label: 'Kuwait',
-    flagUrl: 'https://flagcdn.com/w40/kw.png',
-    pattern: /^[569]\d{7}$/,
-    placeholder: 'XXXXXXXX',
-    hint: 'Use 8 digits starting with 5, 6, or 9.',
-  },
-  {
-    code: 'QA',
-    dialCode: '+974',
-    label: 'Qatar',
-    flagUrl: 'https://flagcdn.com/w40/qa.png',
-    pattern: /^(3|5|6|7)\d{7}$/,
-    placeholder: 'XXXXXXXX',
-    hint: 'Use 8 digits starting with 3, 5, 6, or 7.',
-  },
-  {
-    code: 'BH',
-    dialCode: '+973',
-    label: 'Bahrain',
-    flagUrl: 'https://flagcdn.com/w40/bh.png',
-    pattern: /^(3|6)\d{7}$/,
-    placeholder: 'XXXXXXXX',
-    hint: 'Use 8 digits starting with 3 or 6.',
-  },
-  {
-    code: 'OM',
-    dialCode: '+968',
-    label: 'Oman',
-    flagUrl: 'https://flagcdn.com/w40/om.png',
-    pattern: /^(7|9)\d{7}$/,
-    placeholder: 'XXXXXXXX',
-    hint: 'Use 8 digits starting with 7 or 9.',
-  },
-  {
-    code: 'JO',
-    dialCode: '+962',
-    label: 'Jordan',
-    flagUrl: 'https://flagcdn.com/w40/jo.png',
-    pattern: /^7\d{8}$/,
-    placeholder: '7XXXXXXXX',
-    hint: 'Use 9 digits starting with 7.',
-  },
-  {
-    code: 'LB',
-    dialCode: '+961',
-    label: 'Lebanon',
-    flagUrl: 'https://flagcdn.com/w40/lb.png',
-    pattern: /^(3|7|8|9)\d{6,7}$/,
-    placeholder: 'XXXXXXXX',
-    hint: 'Use a valid Lebanese mobile number.',
-  },
-  {
-    code: 'MA',
-    dialCode: '+212',
-    label: 'Morocco',
-    flagUrl: 'https://flagcdn.com/w40/ma.png',
-    pattern: /^(6|7)\d{8}$/,
-    placeholder: '6XXXXXXXX',
-    hint: 'Use 9 digits starting with 6 or 7.',
-  },
-  {
-    code: 'TR',
-    dialCode: '+90',
-    label: 'Turkey',
-    flagUrl: 'https://flagcdn.com/w40/tr.png',
-    pattern: /^5\d{9}$/,
-    placeholder: '5XXXXXXXXX',
-    hint: 'Use 10 digits starting with 5.',
-  },
-  {
-    code: 'US',
-    dialCode: '+1',
-    label: 'United States',
-    flagUrl: 'https://flagcdn.com/w40/us.png',
-    pattern: /^[2-9]\d{9}$/,
-    placeholder: '2015550123',
-    hint: 'Use a 10-digit mobile number.',
-  },
-  {
-    code: 'CA',
-    dialCode: '+1',
-    label: 'Canada',
-    flagUrl: 'https://flagcdn.com/w40/ca.png',
-    pattern: /^[2-9]\d{9}$/,
-    placeholder: '2045550123',
-    hint: 'Use a 10-digit mobile number.',
-  },
-  {
-    code: 'GB',
-    dialCode: '+44',
-    label: 'United Kingdom',
-    flagUrl: 'https://flagcdn.com/w40/gb.png',
-    pattern: /^7\d{9}$/,
-    placeholder: '7XXXXXXXXX',
-    hint: 'Use 10 digits starting with 7.',
-  },
-  {
-    code: 'DE',
-    dialCode: '+49',
-    label: 'Germany',
-    flagUrl: 'https://flagcdn.com/w40/de.png',
-    pattern: /^1\d{9,11}$/,
-    placeholder: '15XXXXXXXX',
-    hint: 'Use a valid German mobile number.',
-  },
-  {
-    code: 'FR',
-    dialCode: '+33',
-    label: 'France',
-    flagUrl: 'https://flagcdn.com/w40/fr.png',
-    pattern: /^(6|7)\d{8}$/,
-    placeholder: '6XXXXXXXX',
-    hint: 'Use 9 digits starting with 6 or 7.',
-  },
-  {
-    code: 'IT',
-    dialCode: '+39',
-    label: 'Italy',
-    flagUrl: 'https://flagcdn.com/w40/it.png',
-    pattern: /^3\d{8,10}$/,
-    placeholder: '3XXXXXXXXX',
-    hint: 'Use a valid Italian mobile number.',
-  },
-  {
-    code: 'ES',
-    dialCode: '+34',
-    label: 'Spain',
-    flagUrl: 'https://flagcdn.com/w40/es.png',
-    pattern: /^(6|7)\d{8}$/,
-    placeholder: '6XXXXXXXX',
-    hint: 'Use 9 digits starting with 6 or 7.',
-  },
-  {
-    code: 'AU',
-    dialCode: '+61',
-    label: 'Australia',
-    flagUrl: 'https://flagcdn.com/w40/au.png',
-    pattern: /^4\d{8}$/,
-    placeholder: '4XXXXXXXX',
-    hint: 'Use 9 digits starting with 4.',
-  },
-  {
-    code: 'IN',
-    dialCode: '+91',
-    label: 'India',
-    flagUrl: 'https://flagcdn.com/w40/in.png',
-    pattern: /^[6-9]\d{9}$/,
-    placeholder: '9XXXXXXXXX',
-    hint: 'Use 10 digits starting with 6, 7, 8, or 9.',
-  },
-];
-
-const socialProviders: Array<{
-  label: string;
-  value: 'google' | 'apple';
-  icon: typeof AtSign;
+  value: 'google' | 'email';
+  icon: LucideIcon;
   helper: string;
-}> = [
-  {
-    label: 'Google',
-    value: 'google',
-    icon: AtSign,
-    helper: 'Real Google sign-in that returns to DXLR automatically.',
-  },
-  {
-    label: 'Apple',
-    value: 'apple',
-    icon: Smartphone,
-    helper: 'Secure Apple sign-in for live HTTPS deployments.',
-  },
-];
+};
+
+type AuthNotice = {
+  tone: 'error' | 'success';
+  message: string;
+} | null;
 
 export default function AccountDrawer() {
   const router = useRouter();
@@ -255,13 +53,121 @@ export default function AccountDrawer() {
   const orders = useAccountStore((state) => state.orders);
   const closeAccount = useAccountStore((state) => state.closeAccount);
   const clearManualSignIn = useAccountStore((state) => state.signOut);
-  const manualSignIn = useAccountStore((state) => state.signIn);
   const removeOrder = useAccountStore((state) => state.removeOrder);
   const locale = useLocaleStore((state) => state.locale);
   const dict = getDictionary(locale).common;
   const isArabic = locale === 'ar';
   const setCartState = useCartStore((state) => state.setCartState);
   const { data: session } = useSession();
+  const copy = isArabic
+    ? {
+        accountHub: 'بوابة الحساب',
+        yourAccount: 'حسابك',
+        closeAccount: 'إغلاق الحساب',
+        signedIn: 'تم تسجيل الدخول',
+        memberName: 'عضو DXLR',
+        googleName: 'Google',
+        emailName: 'الإيميل',
+        phoneName: 'الهاتف',
+        dxlrName: 'DXLR',
+        accountLabel: (provider: string) => `حساب ${provider}`,
+        noEmail: 'لا يوجد إيميل مضاف بعد',
+        purchaseHistory: 'سجل الطلبات',
+        ordersCount: (count: number) => `${count} طلبات`,
+        signOut: 'تسجيل الخروج',
+        order: 'طلب',
+        confirmed: 'مؤكد',
+        awaitingPayment: 'بانتظار الدفع',
+        itemsCount: (count: number) => `${count} قطعة`,
+        noOrdersYet: 'لا توجد طلبات بعد',
+        noOrdersHint: 'بمجرد إتمام أي عملية شراء، سيظهر سجل طلبات DXLR هنا.',
+        editOrder: 'تعديل الطلب',
+        accessLabel: 'دخول DXLR',
+        signInHeadline: 'سجّل دخولك وابقَ قريبًا من طلباتك.',
+        signInHint:
+          'استخدم Google أو كود تحقق يصل إلى إيميلك، ثم احتفظ بحساب DXLR للـ checkout وسجل الطلبات.',
+        signInOptions: 'خيارات تسجيل الدخول',
+        googleHelper: 'سجّل عبر Google وارجع إلى DXLR تلقائيًا.',
+        emailHelper: 'اكتب إيميلك، استقبل كود تحقق، ثم ادخل الموقع من داخل DXLR.',
+        checking: 'جارٍ الفحص',
+        continue: 'متابعة',
+        retry: 'أعد المحاولة',
+        needsSetup: 'يحتاج إعداد',
+        closeForm: 'إغلاق النموذج',
+        emailSignIn: 'الدخول بالإيميل',
+        emailPlaceholder: 'name@gmail.com',
+        sendCode: 'إرسال الكود',
+        resendCode: 'إعادة إرسال الكود',
+        otpPlaceholder: 'كود من 6 أرقام',
+        otpHint: 'سنرسل كود تحقق لمرة واحدة إلى إيميلك.',
+        verifyCode: 'تأكيد الكود',
+        sentCode: (email: string) => `أرسلنا كود التحقق إلى ${email}.`,
+        signedInSuccess: 'تم تسجيل الدخول بنجاح.',
+        invalidEmail: 'أدخل إيميلًا صحيحًا أولًا.',
+        invalidOtp: 'أدخل كود التحقق المكوّن من 6 أرقام.',
+        requestCodeFirst: 'أرسل كود التحقق أولًا.',
+        failedToSendCode: 'تعذّر إرسال الكود الآن. جرّب مرة أخرى.',
+        emailSetupMissing: 'تسجيل الدخول بالإيميل غير مفعّل بعد.',
+        googleSetupMissing: 'تسجيل Google غير مفعّل بعد.',
+        googleUnavailable: 'تسجيل Google غير متاح مؤقتًا. جرّب مرة أخرى.',
+        invalidCode: 'الكود غير صحيح أو انتهت صلاحيته. اطلب كودًا جديدًا وحاول مرة أخرى.',
+        verificationHint: (email: string) => `أدخل الكود الذي وصلك على ${email}.`,
+        sizeQtySummary: (size: string, quantity: number) => `المقاس ${size} - الكمية ${quantity}`,
+      }
+    : {
+        accountHub: 'Account Hub',
+        yourAccount: 'Your Account',
+        closeAccount: 'Close account drawer',
+        signedIn: 'Signed In',
+        memberName: 'DXLR Member',
+        googleName: 'Google',
+        emailName: 'Email',
+        phoneName: 'Phone',
+        dxlrName: 'DXLR',
+        accountLabel: (provider: string) => `${provider} account`,
+        noEmail: 'No email added yet',
+        purchaseHistory: 'Purchase History',
+        ordersCount: (count: number) => `${count} orders`,
+        signOut: 'Sign Out',
+        order: 'Order',
+        confirmed: 'Confirmed',
+        awaitingPayment: 'Awaiting Payment',
+        itemsCount: (count: number) => `${count} items`,
+        noOrdersYet: 'No Orders Yet',
+        noOrdersHint: 'Once a checkout is placed, your DXLR purchase history will appear here.',
+        editOrder: 'Edit Order',
+        accessLabel: 'DXLR Access',
+        signInHeadline: 'Sign in and keep your orders close.',
+        signInHint:
+          'Use Google or a one-time email code, then keep your DXLR profile for checkout and order history.',
+        signInOptions: 'Sign In Options',
+        googleHelper: 'Continue with Google and return to DXLR automatically.',
+        emailHelper: 'Enter your email, receive a verification code, then sign in inside DXLR.',
+        checking: 'Checking',
+        continue: 'Continue',
+        retry: 'Retry',
+        needsSetup: 'Needs Setup',
+        closeForm: 'Close Form',
+        emailSignIn: 'Email Sign In',
+        emailPlaceholder: 'your@email.com',
+        sendCode: 'Send Code',
+        resendCode: 'Resend Code',
+        otpPlaceholder: '6-digit code',
+        otpHint: 'We will send a one-time 6-digit code to your inbox.',
+        verifyCode: 'Verify Code',
+        sentCode: (email: string) => `We sent a verification code to ${email}.`,
+        signedInSuccess: 'Signed in successfully.',
+        invalidEmail: 'Add a valid email address first.',
+        invalidOtp: 'Enter the 6-digit verification code.',
+        requestCodeFirst: 'Request a verification code first.',
+        failedToSendCode: 'We could not send the code right now. Please try again.',
+        emailSetupMissing: 'Email verification is not configured yet.',
+        googleSetupMissing: 'Google sign-in is not configured yet.',
+        googleUnavailable: 'Google sign-in is temporarily unavailable. Please try again.',
+        invalidCode: 'That code is incorrect or expired. Request a new one and try again.',
+        verificationHint: (email: string) => `Enter the code we sent to ${email}.`,
+        sizeQtySummary: (size: string, quantity: number) => `Size ${size} - Qty ${quantity}`,
+      };
   const labelClassName = isArabic
     ? 'text-[12px] tracking-[0.04em]'
     : 'text-[10px] font-mono uppercase tracking-[0.3em]';
@@ -277,41 +183,57 @@ export default function AccountDrawer() {
   const providerCardTitleClassName = isArabic
     ? 'text-[15px] tracking-normal'
     : 'text-sm font-bold uppercase tracking-[0.16em]';
+  const providerCards: ProviderCard[] = [
+    {
+      label: copy.googleName,
+      value: 'google',
+      icon: AtSign,
+      helper: copy.googleHelper,
+    },
+    {
+      label: copy.emailName,
+      value: 'email',
+      icon: Mail,
+      helper: copy.emailHelper,
+    },
+  ];
 
   const [availableProviders, setAvailableProviders] = useState<Record<string, unknown>>({});
   const [configuredProviders, setConfiguredProviders] = useState<ConfiguredProviders>({
     google: false,
-    apple: false,
+    email: false,
   });
-  const [authMessage, setAuthMessage] = useState('');
   const [providersLoaded, setProvidersLoaded] = useState(false);
-  const [manualMode, setManualMode] = useState<'phone' | null>(null);
-  const [manualName, setManualName] = useState('');
-  const [manualCountryCode, setManualCountryCode] = useState('EG');
-  const [manualPhone, setManualPhone] = useState('');
-  const [isCountryMenuOpen, setIsCountryMenuOpen] = useState(false);
-  const countryMenuRef = useRef<HTMLDivElement | null>(null);
-  const manualFormRef = useRef<HTMLDivElement | null>(null);
-  const manualNameInputRef = useRef<HTMLInputElement | null>(null);
+  const [authMode, setAuthMode] = useState<'email' | null>(null);
+  const [authNotice, setAuthNotice] = useState<AuthNotice>(null);
+  const [emailAddress, setEmailAddress] = useState('');
+  const [emailOtp, setEmailOtp] = useState('');
+  const [emailChallengeToken, setEmailChallengeToken] = useState('');
+  const [maskedEmailAddress, setMaskedEmailAddress] = useState('');
+  const [isSendingEmailCode, setIsSendingEmailCode] = useState(false);
+  const [isVerifyingEmailCode, setIsVerifyingEmailCode] = useState(false);
+  const authFormRef = useRef<HTMLDivElement | null>(null);
+  const emailInputRef = useRef<HTMLInputElement | null>(null);
+  const otpInputRef = useRef<HTMLInputElement | null>(null);
 
   const activeUser = session?.user
     ? {
-        name: session.user.name || 'DXLR Member',
+        name: session.user.name || copy.memberName,
         email: session.user.email || '',
         phone: '',
       }
     : user;
-  const signedInProviderLabel = useMemo(
-    () =>
-      session?.user
-        ? 'Social account'
-        : user?.provider
-          ? `${user.provider} account`
-          : 'DXLR',
-    [session, user]
-  );
-  const selectedCountry =
-    phoneCountries.find((country) => country.code === manualCountryCode) ?? phoneCountries[0];
+  const signedInProviderName = session?.user?.provider
+    ? session.user.provider === 'google'
+      ? copy.googleName
+      : copy.emailName
+    : user?.provider === 'google'
+      ? copy.googleName
+      : user?.provider === 'email'
+        ? copy.emailName
+        : user?.provider === 'whatsapp'
+          ? copy.phoneName
+          : copy.dxlrName;
 
   useEffect(() => {
     let cancelled = false;
@@ -365,86 +287,177 @@ export default function AccountDrawer() {
   }, []);
 
   useEffect(() => {
-    if (!isCountryMenuOpen) return;
-
-    const handlePointerDown = (event: MouseEvent) => {
-      if (!countryMenuRef.current?.contains(event.target as Node)) {
-        setIsCountryMenuOpen(false);
-      }
-    };
-
-    window.addEventListener('mousedown', handlePointerDown);
-    return () => window.removeEventListener('mousedown', handlePointerDown);
-  }, [isCountryMenuOpen]);
-
-  useEffect(() => {
-    if (manualMode !== 'phone') return;
+    if (authMode !== 'email') {
+      return;
+    }
 
     const scrollTimeout = window.setTimeout(() => {
-      manualFormRef.current?.scrollIntoView({
+      authFormRef.current?.scrollIntoView({
         behavior: 'smooth',
         block: 'nearest',
       });
-      manualNameInputRef.current?.focus();
+      emailInputRef.current?.focus();
     }, 120);
 
     return () => window.clearTimeout(scrollTimeout);
-  }, [manualMode]);
+  }, [authMode]);
 
-  const handleOAuthSignIn = (provider: 'google' | 'apple') => {
+  useEffect(() => {
+    if (session?.user) {
+      setAuthMode(null);
+      setAuthNotice(null);
+      setEmailAddress('');
+      setEmailOtp('');
+      setEmailChallengeToken('');
+      setMaskedEmailAddress('');
+      setIsSendingEmailCode(false);
+      setIsVerifyingEmailCode(false);
+    }
+  }, [session?.user]);
+
+  const setNotice = (tone: 'error' | 'success', message: string) => {
+    setAuthNotice({ tone, message });
+  };
+
+  const getProviderAvailability = (provider: 'google' | 'email') => {
+    const providerKey = provider === 'email' ? 'email-otp' : provider;
     const providerIsConfigured = configuredProviders[provider];
     const providerIsAvailable =
-      providerIsConfigured && (Boolean(availableProviders[provider]) || !providersLoaded);
-    const providerLabel = provider === 'google' ? 'Google' : 'Apple';
+      providerIsConfigured && (Boolean(availableProviders[providerKey]) || !providersLoaded);
+
+    return {
+      providerIsConfigured,
+      providerIsAvailable,
+    };
+  };
+
+  const handleGoogleSignIn = () => {
+    const { providerIsConfigured, providerIsAvailable } = getProviderAvailability('google');
 
     if (!providerIsConfigured) {
-      setAuthMessage(`${providerLabel} sign-in is not configured yet.`);
+      setNotice('error', copy.googleSetupMissing);
       return;
     }
 
     if (!providerIsAvailable) {
-      setAuthMessage(`${providerLabel} sign-in is temporarily unavailable. Please try again.`);
+      setNotice('error', copy.googleUnavailable);
       return;
     }
 
-    setAuthMessage('');
-    void oauthSignIn(provider, { callbackUrl: '/' });
+    setAuthNotice(null);
+    void authSignIn('google', { callbackUrl: '/' });
   };
 
-  const resetManualFields = () => {
-    setManualMode(null);
-    setManualName('');
-    setManualCountryCode('EG');
-    setManualPhone('');
-    setIsCountryMenuOpen(false);
+  const handleToggleEmailForm = () => {
+    const { providerIsConfigured } = getProviderAvailability('email');
+
+    if (!providerIsConfigured) {
+      setNotice('error', copy.emailSetupMissing);
+      return;
+    }
+
+    setAuthNotice(null);
+    setAuthMode((current) => (current === 'email' ? null : 'email'));
   };
 
-  const handleManualSignIn = () => {
-    const trimmedName = manualName.trim();
-    const normalizedPhone = manualPhone.replace(/\D/g, '');
-    if (!trimmedName) {
-      setAuthMessage('Add your name first.');
+  const handleRequestEmailCode = async () => {
+    const normalizedEmail = emailAddress.trim().toLowerCase();
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
+      setNotice('error', copy.invalidEmail);
       return;
     }
 
-    if (!normalizedPhone) {
-      setAuthMessage('Add your phone number to continue.');
+    try {
+      setIsSendingEmailCode(true);
+      setAuthNotice(null);
+
+      const response = await fetch('/api/auth/email/request-code', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: normalizedEmail,
+        }),
+      });
+
+      const data = (await response.json().catch(() => ({}))) as {
+        challengeToken?: string;
+        maskedEmail?: string;
+        error?: string;
+      };
+
+      if (!response.ok || !data.challengeToken) {
+        if (data.error === 'email_auth_not_configured') {
+          setNotice('error', copy.emailSetupMissing);
+        } else if (data.error === 'invalid_email') {
+          setNotice('error', copy.invalidEmail);
+        } else {
+          setNotice('error', copy.failedToSendCode);
+        }
+        return;
+      }
+
+      setEmailAddress(normalizedEmail);
+      setEmailChallengeToken(data.challengeToken);
+      setMaskedEmailAddress(data.maskedEmail ?? normalizedEmail);
+      setEmailOtp('');
+      setNotice('success', copy.sentCode(data.maskedEmail ?? normalizedEmail));
+
+      window.setTimeout(() => {
+        otpInputRef.current?.focus();
+      }, 120);
+    } catch {
+      setNotice('error', copy.failedToSendCode);
+    } finally {
+      setIsSendingEmailCode(false);
+    }
+  };
+
+  const handleVerifyEmailCode = async () => {
+    const normalizedEmail = emailAddress.trim().toLowerCase();
+    const normalizedOtp = emailOtp.replace(/\D/g, '');
+
+    if (!emailChallengeToken) {
+      setNotice('error', copy.requestCodeFirst);
       return;
     }
 
-    if (!selectedCountry.pattern.test(normalizedPhone)) {
-      setAuthMessage(`This phone number does not match ${selectedCountry.label}. ${selectedCountry.hint}`);
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
+      setNotice('error', copy.invalidEmail);
       return;
     }
 
-    manualSignIn({
-      name: trimmedName,
-      email: '',
-      phone: `${selectedCountry.dialCode}${normalizedPhone}`,
-      provider: 'whatsapp',
-    });
-    setAuthMessage('');
-    resetManualFields();
+    if (!/^\d{6}$/.test(normalizedOtp)) {
+      setNotice('error', copy.invalidOtp);
+      return;
+    }
+
+    try {
+      setIsVerifyingEmailCode(true);
+      setAuthNotice(null);
+
+      const result = await authSignIn('email-otp', {
+        email: normalizedEmail,
+        otp: normalizedOtp,
+        challengeToken: emailChallengeToken,
+        redirect: false,
+        callbackUrl: '/',
+      });
+
+      if (result?.error) {
+        setNotice('error', copy.invalidCode);
+        return;
+      }
+
+      setNotice('success', copy.signedInSuccess);
+      router.refresh();
+    } catch {
+      setNotice('error', copy.invalidCode);
+    } finally {
+      setIsVerifyingEmailCode(false);
+    }
   };
 
   const handleEditOrder = (orderId: string) => {
@@ -471,7 +484,7 @@ export default function AccountDrawer() {
             exit={{ opacity: 0 }}
             className="absolute inset-0 bg-black/40 backdrop-blur-md"
             onClick={closeAccount}
-            aria-label="Close account drawer"
+            aria-label={copy.closeAccount}
           />
 
           <motion.aside
@@ -483,11 +496,9 @@ export default function AccountDrawer() {
           >
             <div className="mb-5 flex shrink-0 items-center justify-between border-b border-black/8 pb-4">
               <div>
-                <p className={`text-zinc-500 ${labelClassName}`}>
-                  Account Hub
-                </p>
+                <p className={`text-zinc-500 ${labelClassName}`}>{copy.accountHub}</p>
                 <h2 className={`mt-2 text-xl font-semibold text-black ${isArabic ? 'tracking-normal' : 'uppercase tracking-[0.08em]'}`}>
-                  Your Account
+                  {copy.yourAccount}
                 </h2>
               </div>
 
@@ -495,7 +506,7 @@ export default function AccountDrawer() {
                 type="button"
                 onClick={closeAccount}
                 className="flex h-11 w-11 items-center justify-center rounded-full border border-black/10 bg-white text-black transition hover:rotate-90 hover:bg-black hover:text-white"
-                aria-label="Close account drawer"
+                aria-label={copy.closeAccount}
               >
                 <X size={18} />
               </button>
@@ -505,9 +516,7 @@ export default function AccountDrawer() {
               {activeUser ? (
                 <>
                 <div className="rounded-[28px] border border-black/8 bg-[linear-gradient(145deg,#111111_0%,#1d1a16_100%)] p-5 text-white shadow-[0_18px_50px_rgba(0,0,0,0.14)]">
-                  <p className={`text-white/58 ${labelClassName}`}>
-                    Signed In
-                  </p>
+                  <p className={`text-white/58 ${labelClassName}`}>{copy.signedIn}</p>
                   <div className="mt-4 flex items-center gap-4">
                     <div className="flex h-14 w-14 items-center justify-center rounded-full bg-white text-black">
                       <User2 size={24} />
@@ -516,25 +525,21 @@ export default function AccountDrawer() {
                       <h3 className="text-2xl font-semibold tracking-[-0.04em]">
                         {activeUser.name}
                       </h3>
-                      <p className="mt-1 text-sm text-white/68">
-                        {signedInProviderLabel} account
-                      </p>
+                      <p className="mt-1 text-sm text-white/68">{copy.accountLabel(signedInProviderName)}</p>
                     </div>
                   </div>
 
                   <div className="mt-5 grid gap-2 text-sm text-white/72">
-                    <p>{activeUser.email || 'No email added yet'}</p>
-                    <p>{activeUser.phone || 'No phone added yet'}</p>
+                    <p>{activeUser.email || copy.noEmail}</p>
+                    {activeUser.phone ? <p>{activeUser.phone}</p> : null}
                   </div>
                 </div>
 
                 <div className="mt-5 flex items-center justify-between">
                   <div>
-                    <p className={`text-zinc-500 ${labelClassName}`}>
-                      Purchase History
-                    </p>
+                    <p className={`text-zinc-500 ${labelClassName}`}>{copy.purchaseHistory}</p>
                     <h3 className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-black">
-                      {orders.length} orders
+                      {copy.ordersCount(orders.length)}
                     </h3>
                   </div>
 
@@ -549,7 +554,7 @@ export default function AccountDrawer() {
                     className={`inline-flex items-center gap-2 rounded-full border border-black/10 bg-white px-4 py-3 text-black transition hover:bg-black hover:text-white ${sectionCountClassName}`}
                   >
                     <LogOut size={14} />
-                    Sign Out
+                    {copy.signOut}
                   </button>
                 </div>
 
@@ -563,7 +568,7 @@ export default function AccountDrawer() {
                         <div className="flex items-start justify-between gap-3">
                           <div>
                             <p className={`text-zinc-500 ${labelClassName}`}>
-                              Order #{order.id.slice(-6)}
+                              {copy.order} #{order.id.slice(-6)}
                             </p>
                             <h4 className="mt-2 text-lg font-semibold tracking-[-0.03em] text-black">
                               {formatPrice(order.total, locale)}
@@ -577,20 +582,20 @@ export default function AccountDrawer() {
                                 : 'bg-amber-50 text-amber-600'
                             }`}
                           >
-                            {order.status === 'confirmed' ? 'Confirmed' : 'Awaiting Payment'}
+                            {order.status === 'confirmed' ? copy.confirmed : copy.awaitingPayment}
                           </span>
                         </div>
 
                         <div className="mt-4 grid gap-2 text-sm text-[var(--foreground-soft)]">
                           <p className="inline-flex items-center gap-2">
                             <Clock3 size={14} />
-                            {new Date(order.createdAt).toLocaleString('en-GB')}
+                            {new Date(order.createdAt).toLocaleString(isArabic ? 'ar-EG' : 'en-GB')}
                           </p>
                           <p className="inline-flex items-center gap-2">
                             <ShieldCheck size={14} />
                             {order.paymentMethod.replaceAll('_', ' ')}
                           </p>
-                          <p>{order.itemCount} items</p>
+                          <p>{copy.itemsCount(order.itemCount)}</p>
                         </div>
 
                         {order.items.length > 0 ? (
@@ -627,7 +632,7 @@ export default function AccountDrawer() {
                                       </span>
                                     </div>
                                     <p className="mt-1 text-xs text-[var(--foreground-soft)]">
-                                      Size {item.size} • Qty {item.quantity}
+                                      {copy.sizeQtySummary(item.size, item.quantity)}
                                     </p>
                                     <p className="mt-1 text-sm font-semibold text-black">
                                       {formatPrice(item.price * item.quantity, locale)}
@@ -646,18 +651,16 @@ export default function AccountDrawer() {
                             className={`mt-4 inline-flex items-center gap-2 rounded-full border border-black bg-black px-4 py-3 text-white transition hover:bg-zinc-800 ${actionButtonClassName}`}
                           >
                             <PencilLine size={14} />
-                            Edit Order
+                            {copy.editOrder}
                           </button>
                         ) : null}
                       </div>
                     ))
                   ) : (
                     <div className="rounded-[24px] border border-dashed border-black/10 bg-white px-6 py-12 text-center">
-                      <p className={`text-zinc-500 ${labelClassName}`}>
-                        No Orders Yet
-                      </p>
+                      <p className={`text-zinc-500 ${labelClassName}`}>{copy.noOrdersYet}</p>
                       <p className="mt-3 text-sm leading-7 text-zinc-600">
-                        Once a checkout is placed, your DXLR purchase history will appear here.
+                        {copy.noOrdersHint}
                       </p>
                     </div>
                   )}
@@ -666,52 +669,56 @@ export default function AccountDrawer() {
               ) : (
                 <>
                 <div className="rounded-[28px] border border-black/8 bg-[linear-gradient(145deg,#111111_0%,#1d1a16_100%)] p-5 text-white shadow-[0_18px_50px_rgba(0,0,0,0.14)]">
-                  <p className={`text-white/58 ${labelClassName}`}>
-                    DXLR Access
-                  </p>
+                  <p className={`text-white/58 ${labelClassName}`}>{copy.accessLabel}</p>
                   <h3 className="mt-3 text-[30px] font-semibold leading-tight tracking-[-0.05em]">
-                    Sign in and keep your orders close.
+                    {copy.signInHeadline}
                   </h3>
-                  <p className="mt-3 text-sm leading-6 text-white/72">
-                    Choose the sign-in style you want, then save your DXLR profile for checkout and order history.
-                  </p>
+                  <p className="mt-3 text-sm leading-6 text-white/72">{copy.signInHint}</p>
                 </div>
 
                 <div className="mt-5">
-                  <p className={`text-zinc-500 ${labelClassName}`}>
-                    Social Sign In
-                  </p>
+                  <p className={`text-zinc-500 ${labelClassName}`}>{copy.signInOptions}</p>
 
                   <div className="mt-3 grid grid-cols-2 gap-2.5">
-                  {socialProviders.map((provider) => {
+                  {providerCards.map((provider) => {
                     const Icon = provider.icon;
-                    const providerIsConfigured = configuredProviders[provider.value];
-                    const providerIsAvailable =
-                      providerIsConfigured &&
-                      (Boolean(availableProviders[provider.value]) || !providersLoaded);
-                    const providerStatus = !providersLoaded
-                      ? 'Checking'
-                      : providerIsAvailable
-                        ? 'Continue'
-                        : providerIsConfigured
-                          ? 'Retry'
-                          : 'Needs Setup';
+                    const { providerIsConfigured, providerIsAvailable } = getProviderAvailability(
+                      provider.value
+                    );
+                    const providerStatus =
+                      provider.value === 'email' && authMode === 'email'
+                        ? copy.closeForm
+                        : !providersLoaded
+                          ? copy.checking
+                          : providerIsAvailable
+                            ? copy.continue
+                            : providerIsConfigured
+                              ? copy.retry
+                              : copy.needsSetup;
 
                     return (
                       <button
                         key={provider.value}
                         type="button"
-                        onClick={() => handleOAuthSignIn(provider.value)}
+                        onClick={() =>
+                          provider.value === 'email' ? handleToggleEmailForm() : handleGoogleSignIn()
+                        }
                         className={`rounded-[20px] border p-4 text-left transition ${
-                          providerIsAvailable
-                            ? 'border-black/8 bg-white text-black hover:border-black/14'
-                            : providerIsConfigured
-                              ? 'border-amber-200 bg-amber-50 text-black'
-                              : 'border-black/8 bg-[#f7f4ee] text-black/75'
+                          provider.value === 'email' && authMode === 'email'
+                            ? 'border-black bg-black text-white'
+                            : providerIsAvailable
+                              ? 'border-black/8 bg-white text-black hover:border-black/14'
+                              : providerIsConfigured
+                                ? 'border-amber-200 bg-amber-50 text-black'
+                                : 'border-black/8 bg-[#f7f4ee] text-black/75'
                         }`}
                       >
                         <div
-                          className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--surface)] text-black"
+                          className={`flex h-10 w-10 items-center justify-center rounded-full ${
+                            provider.value === 'email' && authMode === 'email'
+                              ? 'bg-white text-black'
+                              : 'bg-[var(--surface)] text-black'
+                          }`}
                         >
                           <Icon size={16} />
                         </div>
@@ -719,11 +726,21 @@ export default function AccountDrawer() {
                           {provider.label}
                         </h4>
                         <p
-                          className="mt-2 text-xs leading-5 text-[var(--foreground-soft)]"
+                          className={`mt-2 text-xs leading-5 ${
+                            provider.value === 'email' && authMode === 'email'
+                              ? 'text-white/72'
+                              : 'text-[var(--foreground-soft)]'
+                          }`}
                         >
                           {provider.helper}
                         </p>
-                        <p className={`mt-3 text-[var(--accent-soft-strong)] ${badgeClassName}`}>
+                        <p
+                          className={`mt-3 ${
+                            provider.value === 'email' && authMode === 'email'
+                              ? `text-white/80 ${badgeClassName}`
+                              : `text-[var(--accent-soft-strong)] ${badgeClassName}`
+                          }`}
+                        >
                           {providerStatus}
                         </p>
                       </button>
@@ -731,149 +748,81 @@ export default function AccountDrawer() {
                   })}
                 </div>
 
-                  <div className="mt-6">
-                    <p className={`text-zinc-500 ${labelClassName}`}>
-                      Direct Contact
-                    </p>
-
-                    <div className="mt-3">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setAuthMessage('');
-                          setManualMode((current) => (current === 'phone' ? null : 'phone'));
-                        }}
-                        className="w-full rounded-[20px] border border-black/8 bg-white p-4 text-left transition hover:border-black/14"
-                      >
-                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--surface)] text-black">
-                          <MessageCircle size={16} />
-                        </div>
-                        <h4 className={`mt-3 ${providerCardTitleClassName}`}>
-                          Phone
-                        </h4>
-                        <p className="mt-2 text-xs leading-5 text-[var(--foreground-soft)]">
-                          Create your account with your phone number inside DXLR.
-                        </p>
-                        <p className={`mt-3 text-[var(--accent-soft-strong)] ${badgeClassName}`}>
-                          {manualMode === 'phone' ? 'Close Form' : 'Continue'}
-                        </p>
-                      </button>
-                    </div>
-
-                    {manualMode ? (
+                  {authMode === 'email' ? (
                       <div
-                        ref={manualFormRef}
+                        ref={authFormRef}
                         className="mt-4 rounded-[24px] border border-black/8 bg-white p-4 shadow-[0_12px_40px_rgba(0,0,0,0.04)]"
                       >
-                        <p className={`text-zinc-500 ${labelClassName}`}>
-                          Phone Sign In
-                        </p>
+                        <p className={`text-zinc-500 ${labelClassName}`}>{copy.emailSignIn}</p>
                         <div className="mt-4 grid gap-3">
                           <input
-                            ref={manualNameInputRef}
-                            type="text"
-                            value={manualName}
-                            onChange={(event) => setManualName(event.target.value)}
-                            placeholder="Your name"
+                            ref={emailInputRef}
+                            type="email"
+                            value={emailAddress}
+                            onChange={(event) => setEmailAddress(event.target.value)}
+                            placeholder={copy.emailPlaceholder}
                             className="h-12 rounded-[16px] border border-black/10 bg-[var(--surface)] px-4 text-sm outline-none transition focus:border-black"
                           />
-                          <div className="grid gap-3">
-                            <div ref={countryMenuRef} className="relative">
-                              <button
-                                type="button"
-                                onClick={() => setIsCountryMenuOpen((current) => !current)}
-                                className="flex h-13 w-full items-center gap-3 rounded-[16px] border border-black/10 bg-[var(--surface)] px-4 text-left text-sm text-black transition hover:border-black/20"
-                              >
-                                <Image
-                                  src={selectedCountry.flagUrl}
-                                  alt={`${selectedCountry.label} flag`}
-                                  width={28}
-                                  height={20}
-                                  className="h-5 w-7 rounded-[4px] object-cover shadow-sm"
-                                />
-                                <div className="min-w-0 flex-1">
-                                  <p className="truncate text-sm font-medium text-black">
-                                    {selectedCountry.label}
-                                  </p>
-                                  <p className="text-xs text-zinc-500">
-                                    {selectedCountry.dialCode}
-                                  </p>
-                                </div>
-                                <ChevronDown
-                                  size={18}
-                                  className={`shrink-0 text-zinc-500 transition ${isCountryMenuOpen ? 'rotate-180' : ''}`}
-                                />
-                              </button>
-
-                              {isCountryMenuOpen ? (
-                                <div className="absolute left-0 right-0 top-[calc(100%+8px)] z-20 max-h-72 overflow-y-auto rounded-[18px] border border-black/10 bg-white p-2 shadow-[0_24px_60px_rgba(0,0,0,0.14)]">
-                                  {phoneCountries.map((country) => {
-                                    const isSelected = country.code === manualCountryCode;
-
-                                    return (
-                                      <button
-                                        key={country.code}
-                                        type="button"
-                                        onClick={() => {
-                                          setManualCountryCode(country.code);
-                                          setIsCountryMenuOpen(false);
-                                        }}
-                                        className={`flex w-full items-center gap-3 rounded-[14px] px-3 py-2.5 text-left transition ${
-                                          isSelected ? 'bg-black text-white' : 'hover:bg-[var(--surface)]'
-                                        }`}
-                                      >
-                                        <Image
-                                          src={country.flagUrl}
-                                          alt={`${country.label} flag`}
-                                          width={28}
-                                          height={20}
-                                          className="h-5 w-7 rounded-[4px] object-cover shadow-sm"
-                                        />
-                                        <div className="min-w-0 flex-1">
-                                          <p className="truncate text-sm font-medium">
-                                            {country.label}
-                                          </p>
-                                          <p className={`text-xs ${isSelected ? 'text-white/70' : 'text-zinc-500'}`}>
-                                            {country.dialCode}
-                                          </p>
-                                        </div>
-                                        {isSelected ? <Check size={16} className="shrink-0" /> : null}
-                                      </button>
-                                    );
-                                  })}
-                                </div>
-                              ) : null}
-                            </div>
-                            <input
-                              type="tel"
-                              inputMode="numeric"
-                              value={manualPhone}
-                              onChange={(event) =>
-                                setManualPhone(event.target.value.replace(/[^\d\s()-]/g, ''))
-                              }
-                              placeholder={selectedCountry.placeholder}
-                              className="h-12 rounded-[16px] border border-black/10 bg-[var(--surface)] px-4 text-sm outline-none transition focus:border-black"
-                            />
-                          </div>
-                          <p className="text-xs leading-5 text-zinc-500">
-                            {selectedCountry.hint}
-                          </p>
                           <button
                             type="button"
-                            onClick={handleManualSignIn}
-                            className={`inline-flex h-12 items-center justify-center rounded-full bg-black px-5 text-white transition hover:bg-zinc-800 ${actionButtonClassName}`}
+                            onClick={handleRequestEmailCode}
+                            disabled={isSendingEmailCode}
+                            className={`inline-flex h-12 items-center justify-center rounded-full border border-black bg-black px-5 text-white transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:bg-zinc-700 ${actionButtonClassName}`}
                           >
-                            Save Account
+                            {isSendingEmailCode
+                              ? copy.checking
+                              : emailChallengeToken
+                                ? copy.resendCode
+                                : copy.sendCode}
                           </button>
-                          {authMessage ? (
-                            <div className="rounded-[16px] border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-700">
-                              {authMessage}
+                          <p className="text-xs leading-5 text-zinc-500">
+                            {emailChallengeToken
+                              ? copy.verificationHint(maskedEmailAddress || emailAddress)
+                              : copy.otpHint}
+                          </p>
+                          <input
+                            ref={otpInputRef}
+                            type="text"
+                            inputMode="numeric"
+                            value={emailOtp}
+                            onChange={(event) =>
+                              setEmailOtp(event.target.value.replace(/\D/g, '').slice(0, 6))
+                            }
+                            placeholder={copy.otpPlaceholder}
+                            className="h-12 rounded-[16px] border border-black/10 bg-[var(--surface)] px-4 text-sm tracking-[0.34em] outline-none transition focus:border-black"
+                          />
+                          <button
+                            type="button"
+                            onClick={handleVerifyEmailCode}
+                            disabled={isVerifyingEmailCode}
+                            className={`inline-flex h-12 items-center justify-center rounded-full bg-black px-5 text-white transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:bg-zinc-700 ${actionButtonClassName}`}
+                          >
+                            {isVerifyingEmailCode ? copy.checking : copy.verifyCode}
+                          </button>
+                          {authNotice ? (
+                            <div
+                              className={`rounded-[16px] px-4 py-3 text-sm ${
+                                authNotice.tone === 'success'
+                                  ? 'border border-emerald-200 bg-emerald-50 text-emerald-700'
+                                  : 'border border-amber-200 bg-amber-50 text-amber-700'
+                              }`}
+                            >
+                              {authNotice.message}
                             </div>
                           ) : null}
                         </div>
                       </div>
+                    ) : authNotice ? (
+                      <div
+                        className={`mt-4 rounded-[16px] px-4 py-3 text-sm ${
+                          authNotice.tone === 'success'
+                            ? 'border border-emerald-200 bg-emerald-50 text-emerald-700'
+                            : 'border border-amber-200 bg-amber-50 text-amber-700'
+                        }`}
+                      >
+                        {authNotice.message}
+                      </div>
                     ) : null}
-                  </div>
                 </div>
                 </>
               )}
