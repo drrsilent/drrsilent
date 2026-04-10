@@ -164,7 +164,7 @@ export default function Header() {
       <header
         className={`safe-top fixed inset-x-0 top-0 z-[100] border-b transition-all duration-300 ${headerClass}`}
       >
-        <div className="relative mx-auto flex h-[80px] max-w-7xl items-start justify-between px-3 pt-2 sm:px-4 md:h-[82px] md:items-center md:px-6 md:pt-0">
+        <div className="relative mx-auto flex h-[74px] max-w-7xl items-center justify-between px-3.5 sm:px-4 md:h-[82px] md:px-6">
           <div className="flex flex-1 items-center gap-2">
             <button
               type="button"
@@ -173,7 +173,7 @@ export default function Header() {
                 setIsMenuOpen(false);
                 setIsSearchOpen(true);
               }}
-              className={`flex h-9 w-9 items-center justify-center rounded-full border transition-all duration-300 md:h-11 md:w-11 ${iconClass}`}
+              className={`flex h-10 w-10 items-center justify-center rounded-full border transition-all duration-300 md:h-11 md:w-11 ${iconClass}`}
             >
               <Search size={17} strokeWidth={2.2} />
             </button>
@@ -183,14 +183,14 @@ export default function Header() {
                 type="button"
                 aria-label="Menu"
                 onClick={() => setIsMenuOpen((current) => !current)}
-                className={`flex h-9 w-9 items-center justify-center rounded-full border transition-all duration-300 md:h-11 md:w-11 ${iconClass}`}
+                className={`flex h-10 w-10 items-center justify-center rounded-full border transition-all duration-300 md:h-11 md:w-11 ${iconClass}`}
               >
                 <Menu size={17} strokeWidth={2.2} />
               </button>
             </div>
           </div>
 
-          <div className="absolute left-1/2 top-2.5 -translate-x-1/2 md:top-1/2 md:-translate-y-1/2">
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
             <Link href="/">
               <motion.div
                 whileHover={{ y: -1 }}
@@ -198,7 +198,7 @@ export default function Header() {
                 className="cursor-pointer text-center"
               >
                 <p
-                  className={`mb-0.5 text-[5px] md:mb-1 md:text-[8px] ${
+                  className={`mb-0.5 text-[4.5px] md:mb-1 md:text-[8px] ${
                     microLabelClassName
                   } ${
                     useLightHeader ? 'text-[var(--foreground-soft)]' : 'text-white/55'
@@ -207,7 +207,7 @@ export default function Header() {
                   Engineered Ease
                 </p>
                   <BrandWordmark
-                    className={`text-[24px] font-black tracking-[-0.08em] md:text-[34px] ${
+                    className={`text-[26px] font-black tracking-[-0.08em] md:text-[34px] ${
                       useLightHeader ? 'text-black' : 'text-white'
                     }`}
                   />
@@ -220,7 +220,7 @@ export default function Header() {
               type="button"
               onClick={toggleLocale}
               aria-label={dict.language}
-              className={`inline-flex h-9 min-w-[46px] items-center justify-center gap-1 rounded-full border px-2 transition-all duration-300 md:h-11 md:min-w-[60px] md:px-3 ${localeButtonClassName} ${iconClass}`}
+              className={`inline-flex h-10 min-w-[50px] items-center justify-center gap-1 rounded-full border px-2.5 transition-all duration-300 md:h-11 md:min-w-[60px] md:px-3 ${localeButtonClassName} ${iconClass}`}
             >
               <Languages className="hidden md:block" size={14} strokeWidth={2.1} />
               <span>{nextLocaleLabel}</span>
@@ -230,7 +230,7 @@ export default function Header() {
               type="button"
               onClick={toggleAccount}
               aria-label={dict.account}
-              className={`relative flex h-9 w-9 items-center justify-center rounded-full border transition-all duration-300 md:h-11 md:w-11 ${iconClass}`}
+              className={`relative flex h-10 w-10 items-center justify-center rounded-full border transition-all duration-300 md:h-11 md:w-11 ${iconClass}`}
             >
               <User2 size={17} strokeWidth={2.2} />
               {accountName ? (
@@ -247,7 +247,7 @@ export default function Header() {
               data-cart-button="true"
               animate={isCartPulsing ? { scale: [1, 1.12, 1] } : { scale: 1 }}
               transition={{ duration: 0.36, ease: [0.22, 1, 0.36, 1] }}
-              className={`relative flex h-9 w-9 items-center justify-center rounded-full border transition-all duration-300 md:h-11 md:w-11 ${iconClass}`}
+              className={`relative flex h-10 w-10 items-center justify-center rounded-full border transition-all duration-300 md:h-11 md:w-11 ${iconClass}`}
             >
               <ShoppingBag size={17} strokeWidth={2.2} />
 
