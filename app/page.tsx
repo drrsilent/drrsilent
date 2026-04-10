@@ -233,12 +233,12 @@ export default function Home() {
         id="lookbook"
         ref={lookbookRef}
         style={{ y: productsY }}
-        className="relative z-30 -mt-10 rounded-t-[36px] bg-[var(--surface)] px-3 pb-20 pt-12 shadow-[0_-26px_80px_rgba(0,0,0,0.08)] md:-mt-24 md:rounded-t-[36px] md:px-6 md:pb-24 md:pt-14"
+        className="relative z-30 -mt-4 rounded-t-[36px] bg-[var(--surface)] px-3 pb-20 pt-12 shadow-[0_-26px_80px_rgba(0,0,0,0.08)] md:-mt-24 md:rounded-t-[36px] md:px-6 md:pb-24 md:pt-14"
       >
-        <div className="pointer-events-none absolute inset-x-0 -top-16 h-28 md:hidden">
-          <div className="absolute inset-x-[4%] bottom-[62px] h-12 rounded-[999px] bg-[radial-gradient(circle_at_center,rgba(0,0,0,0.44),rgba(0,0,0,0)_72%)] blur-[18px] opacity-80" />
-          <div className="absolute left-1/2 bottom-[64px] h-9 w-[148px] -translate-x-1/2 rounded-full border border-[rgba(185,154,107,0.22)] bg-[linear-gradient(180deg,rgba(185,154,107,0.16),rgba(185,154,107,0.03))] shadow-[0_14px_30px_rgba(0,0,0,0.18)]" />
-          <div className="absolute left-1/2 bottom-[80px] h-px w-[92px] -translate-x-1/2 bg-gradient-to-r from-transparent via-[rgba(185,154,107,0.86)] to-transparent" />
+        <div className="pointer-events-none absolute inset-x-0 -top-12 h-24 md:hidden">
+          <div className="absolute inset-x-[4%] bottom-[54px] h-12 rounded-[999px] bg-[radial-gradient(circle_at_center,rgba(0,0,0,0.44),rgba(0,0,0,0)_72%)] blur-[18px] opacity-80" />
+          <div className="absolute left-1/2 bottom-[56px] h-9 w-[148px] -translate-x-1/2 rounded-full border border-[rgba(185,154,107,0.22)] bg-[linear-gradient(180deg,rgba(185,154,107,0.16),rgba(185,154,107,0.03))] shadow-[0_14px_30px_rgba(0,0,0,0.18)]" />
+          <div className="absolute left-1/2 bottom-[72px] h-px w-[92px] -translate-x-1/2 bg-gradient-to-r from-transparent via-[rgba(185,154,107,0.86)] to-transparent" />
           <div className="absolute inset-x-0 bottom-0 h-20 rounded-t-[36px] bg-[var(--surface)] shadow-[0_-20px_54px_rgba(0,0,0,0.2)]" />
           <div className="absolute inset-x-6 bottom-[18px] h-px bg-gradient-to-r from-transparent via-black/12 to-transparent" />
         </div>
