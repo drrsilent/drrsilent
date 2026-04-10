@@ -212,6 +212,7 @@ export default function AccountDrawer() {
   const [maskedEmailAddress, setMaskedEmailAddress] = useState('');
   const [isSendingEmailCode, setIsSendingEmailCode] = useState(false);
   const [isVerifyingEmailCode, setIsVerifyingEmailCode] = useState(false);
+  const [resendCooldown, setResendCooldown] = useState(0);
   const authFormRef = useRef<HTMLDivElement | null>(null);
   const emailInputRef = useRef<HTMLInputElement | null>(null);
   const otpInputRef = useRef<HTMLInputElement | null>(null);
@@ -234,6 +235,9 @@ export default function AccountDrawer() {
         : user?.provider === 'whatsapp'
           ? copy.phoneName
           : copy.dxlrName;
+  const resendCooldownLabel = isArabic
+    ? `إعادة الإرسال خلال ${resendCooldown}ث`
+    : `Resend in ${resendCooldown}s`;
 
   useEffect(() => {
     let cancelled = false;
@@ -312,8 +316,28 @@ export default function AccountDrawer() {
       setMaskedEmailAddress('');
       setIsSendingEmailCode(false);
       setIsVerifyingEmailCode(false);
+      setResendCooldown(0);
     }
   }, [session?.user]);
+
+  useEffect(() => {
+    if (resendCooldown <= 0) {
+      return;
+    }
+
+    const intervalId = window.setInterval(() => {
+      setResendCooldown((current) => {
+        if (current <= 1) {
+          window.clearInterval(intervalId);
+          return 0;
+        }
+
+        return current - 1;
+      });
+    }, 1000);
+
+    return () => window.clearInterval(intervalId);
+  }, [resendCooldown]);
 
   const setNotice = (tone: 'error' | 'success', message: string) => {
     setAuthNotice({ tone, message });
@@ -363,6 +387,10 @@ export default function AccountDrawer() {
   const handleRequestEmailCode = async () => {
     const normalizedEmail = emailAddress.trim().toLowerCase();
 
+    if (resendCooldown > 0) {
+      return;
+    }
+
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
       setNotice('error', copy.invalidEmail);
       return;
@@ -403,6 +431,7 @@ export default function AccountDrawer() {
       setEmailChallengeToken(data.challengeToken);
       setMaskedEmailAddress(data.maskedEmail ?? normalizedEmail);
       setEmailOtp('');
+      setResendCooldown(15);
       setNotice('success', copy.sentCode(data.maskedEmail ?? normalizedEmail));
 
       window.setTimeout(() => {
@@ -766,12 +795,14 @@ export default function AccountDrawer() {
                           <button
                             type="button"
                             onClick={handleRequestEmailCode}
-                            disabled={isSendingEmailCode}
+                            disabled={isSendingEmailCode || resendCooldown > 0}
                             className={`inline-flex h-12 items-center justify-center rounded-full border border-black bg-black px-5 text-white transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:bg-zinc-700 ${actionButtonClassName}`}
                           >
                             {isSendingEmailCode
                               ? copy.checking
-                              : emailChallengeToken
+                              : resendCooldown > 0
+                                ? resendCooldownLabel
+                                : emailChallengeToken
                                 ? copy.resendCode
                                 : copy.sendCode}
                           </button>
