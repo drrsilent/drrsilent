@@ -113,7 +113,7 @@ export default function Home() {
       <section ref={heroRef} className="relative h-[96svh] bg-black md:h-[175vh]">
         <motion.div
           style={{ scale: heroScale, y: heroY }}
-          className="safe-top sticky top-0 z-0 flex h-screen items-start justify-center overflow-hidden bg-black pt-72 md:items-center md:pt-0"
+          className="safe-top sticky top-0 z-0 flex h-screen items-start justify-center overflow-hidden bg-black pt-64 md:items-center md:pt-0"
         >
           <div className="absolute inset-0">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,var(--hero-gold),transparent_28%),radial-gradient(circle_at_20%_30%,var(--hero-glow),transparent_26%),linear-gradient(180deg,#060606,rgba(0,0,0,1))]" />
@@ -154,11 +154,11 @@ export default function Home() {
             variants={heroGroupVariants}
             initial="hidden"
             animate="show"
-            className="relative z-10 flex w-full max-w-md flex-col items-center px-4 pt-24 text-center text-white md:max-w-none md:px-4 md:pt-[6.5rem]"
+            className="relative z-10 flex w-full max-w-md flex-col items-center px-4 pt-16 text-center text-white md:max-w-none md:px-4 md:pt-[6.5rem]"
           >
             <motion.div
               variants={heroItemVariants}
-              className="relative mb-6 mt-1 flex w-full items-center justify-center md:mb-9 md:mt-5"
+              className="relative mb-5 mt-0 flex w-full items-center justify-center md:mb-9 md:mt-5"
             >
               <div className="absolute left-1/2 top-1/2 h-px w-[min(72vw,720px)] -translate-x-1/2 -translate-y-1/2 bg-gradient-to-r from-transparent via-white/14 to-transparent" />
               <div
