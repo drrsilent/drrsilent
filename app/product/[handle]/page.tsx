@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowLeft, ShoppingBag } from 'lucide-react';
 import { use, useRef, useState } from 'react';
-import { products } from '../../../data/products';
+import { getLocalizedProduct, products } from '../../../data/products';
 import { getDictionary } from '../../../lib/i18n';
 import { flyToCart } from '../../../lib/fly-to-cart';
 import { useCartStore } from '../../../store/useCartStore';
@@ -39,13 +39,13 @@ export default function ProductPage({
   params: Promise<{ handle: string }>;
 }) {
   const { handle } = use(params);
-  const product = products[handle];
   const heroRef = useRef<HTMLDivElement | null>(null);
   const productImageRef = useRef<HTMLDivElement | null>(null);
   const addToCart = useCartStore((state) => state.addToCart);
   const locale = useLocaleStore((state) => state.locale);
   const dict = getDictionary(locale).common;
   const isArabic = locale === 'ar';
+  const product = products[handle] ? getLocalizedProduct(handle, locale) : undefined;
   const [selectedSize, setSelectedSize] = useState(product?.sizes[0] ?? 'M');
 
   const { scrollYProgress } = useScroll({

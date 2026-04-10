@@ -46,11 +46,31 @@ export default function OpenGraphImage() {
             fontSize: 248,
             lineHeight: 0.82,
             fontWeight: 800,
-            letterSpacing: -12,
+            letterSpacing: -14,
             color: 'rgba(255,255,255,0.05)',
           }}
         >
-          DXLR.
+          D
+          <span
+            style={{
+              display: 'flex',
+              transform: 'scaleX(0.96) skewX(-6deg)',
+              marginLeft: '-0.05em',
+              marginRight: '-0.05em',
+            }}
+          >
+            X
+          </span>
+          <span style={{ display: 'flex', marginLeft: '-0.04em' }}>L</span>
+          <span
+            style={{
+              display: 'flex',
+              marginLeft: '-0.06em',
+              transform: 'scaleX(0.99)',
+            }}
+          >
+            R
+          </span>
         </div>
 
         <div
@@ -95,12 +115,32 @@ export default function OpenGraphImage() {
                   fontSize: 176,
                   lineHeight: 0.84,
                   fontWeight: 800,
-                  letterSpacing: -10,
+                  letterSpacing: -12,
                   color: '#ffffff',
                   textShadow: '0 18px 50px rgba(0,0,0,0.24)',
                 }}
               >
-                DXLR.
+                D
+                <span
+                  style={{
+                    display: 'flex',
+                    transform: 'scaleX(0.96) skewX(-6deg)',
+                    marginLeft: '-0.05em',
+                    marginRight: '-0.05em',
+                  }}
+                >
+                  X
+                </span>
+                <span style={{ display: 'flex', marginLeft: '-0.04em' }}>L</span>
+                <span
+                  style={{
+                    display: 'flex',
+                    marginLeft: '-0.06em',
+                    transform: 'scaleX(0.99)',
+                  }}
+                >
+                  R
+                </span>
               </div>
 
               <div

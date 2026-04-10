@@ -5,7 +5,8 @@ import Link from 'next/link';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowRight, Banknote, CreditCard, ShoppingBag, Smartphone, Trash2, X } from 'lucide-react';
 import { CartItem, PaymentMethod, useCartStore } from '../../store/useCartStore';
-import { products } from '../../data/products';
+import { getLocalizedProduct, products } from '../../data/products';
+import { useLocaleStore } from '../../store/useLocaleStore';
 
 export default function CartDrawer() {
   const items = useCartStore((state) => state.items);
@@ -16,6 +17,7 @@ export default function CartDrawer() {
   const updateItemSize = useCartStore((state) => state.updateItemSize);
   const updateItemQuantity = useCartStore((state) => state.updateItemQuantity);
   const setPaymentMethod = useCartStore((state) => state.setPaymentMethod);
+  const locale = useLocaleStore((state) => state.locale);
 
   const subtotal = items.reduce(
     (acc: number, item: CartItem) => acc + item.price * item.quantity,
@@ -97,7 +99,12 @@ export default function CartDrawer() {
             ) : (
               <>
                 <div className="flex-1 space-y-4 overflow-y-auto pr-1">
-                  {items.map((item: CartItem, index: number) => (
+                  {items.map((item: CartItem, index: number) => {
+                    const localizedTitle = products[item.id]
+                      ? getLocalizedProduct(item.id, locale).title
+                      : item.title;
+
+                    return (
                     <motion.div
                       key={`${item.id}-${item.size}`}
                       initial={{ opacity: 0, y: 18 }}
@@ -109,7 +116,7 @@ export default function CartDrawer() {
                         <div className="relative h-24 w-20 shrink-0 overflow-hidden rounded-[16px] bg-[#eceae3] md:h-28 md:w-24 md:rounded-[18px]">
                           <Image
                             src={item.image}
-                            alt={item.title}
+                            alt={localizedTitle}
                             fill
                             sizes="96px"
                             className="object-cover"
@@ -120,7 +127,7 @@ export default function CartDrawer() {
                           <div className="flex items-start justify-between gap-3">
                             <div className="min-w-0">
                               <h3 className="truncate text-sm font-bold uppercase tracking-[0.08em] text-black">
-                                {item.title}
+                                {localizedTitle}
                               </h3>
                               <div className="mt-3">
                                 <p className="mb-2 text-[10px] font-mono uppercase tracking-[0.2em] text-zinc-500">
@@ -155,7 +162,7 @@ export default function CartDrawer() {
                               type="button"
                               onClick={() => removeFromCart(item.id, item.size)}
                               className="flex h-9 w-9 items-center justify-center rounded-full text-zinc-400 transition hover:bg-red-50 hover:text-red-500"
-                              aria-label={`Remove ${item.title}`}
+                              aria-label={`Remove ${localizedTitle}`}
                             >
                               <Trash2 size={17} />
                             </button>
@@ -173,7 +180,7 @@ export default function CartDrawer() {
                                     updateItemQuantity(item.id, item.size, item.quantity - 1)
                                   }
                                   className="flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold text-black transition hover:bg-white"
-                                  aria-label={`Decrease quantity of ${item.title}`}
+                                  aria-label={`Decrease quantity of ${localizedTitle}`}
                                 >
                                   -
                                 </button>
@@ -186,7 +193,7 @@ export default function CartDrawer() {
                                     updateItemQuantity(item.id, item.size, item.quantity + 1)
                                   }
                                   className="flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold text-black transition hover:bg-white"
-                                  aria-label={`Increase quantity of ${item.title}`}
+                                  aria-label={`Increase quantity of ${localizedTitle}`}
                                 >
                                   +
                                 </button>
@@ -205,7 +212,8 @@ export default function CartDrawer() {
                         </div>
                       </div>
                     </motion.div>
-                  ))}
+                    );
+                  })}
                 </div>
 
                 <motion.div

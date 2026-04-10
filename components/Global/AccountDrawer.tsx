@@ -1,12 +1,13 @@
 'use client';
 
 import { AnimatePresence, motion } from 'framer-motion';
+import Image from 'next/image';
 import {
   AtSign,
+  Check,
+  ChevronDown,
   Clock3,
-  ExternalLink,
   LogOut,
-  Mail,
   MessageCircle,
   ShieldCheck,
   Smartphone,
@@ -19,14 +20,211 @@ import {
   signOut as authSignOut,
   useSession,
 } from 'next-auth/react';
-import { useEffect, useMemo, useState } from 'react';
-import { DXLR_WHATSAPP_NUMBER } from '../../lib/checkout';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useAccountStore } from '../../store/useAccountStore';
+
+type ConfiguredProviders = {
+  google: boolean;
+  apple: boolean;
+};
+
+type PhoneCountry = {
+  code: string;
+  dialCode: string;
+  label: string;
+  flagUrl: string;
+  pattern: RegExp;
+  placeholder: string;
+  hint: string;
+};
+
+const phoneCountries: PhoneCountry[] = [
+  {
+    code: 'EG',
+    dialCode: '+20',
+    label: 'Egypt',
+    flagUrl: 'https://flagcdn.com/w40/eg.png',
+    pattern: /^(10|11|12|15)\d{8}$/,
+    placeholder: '10XXXXXXXX',
+    hint: 'Use 10 digits starting with 10, 11, 12, or 15.',
+  },
+  {
+    code: 'SA',
+    dialCode: '+966',
+    label: 'Saudi Arabia',
+    flagUrl: 'https://flagcdn.com/w40/sa.png',
+    pattern: /^5\d{8}$/,
+    placeholder: '5XXXXXXXX',
+    hint: 'Use 9 digits starting with 5.',
+  },
+  {
+    code: 'AE',
+    dialCode: '+971',
+    label: 'UAE',
+    flagUrl: 'https://flagcdn.com/w40/ae.png',
+    pattern: /^5\d{8}$/,
+    placeholder: '5XXXXXXXX',
+    hint: 'Use 9 digits starting with 5.',
+  },
+  {
+    code: 'KW',
+    dialCode: '+965',
+    label: 'Kuwait',
+    flagUrl: 'https://flagcdn.com/w40/kw.png',
+    pattern: /^[569]\d{7}$/,
+    placeholder: 'XXXXXXXX',
+    hint: 'Use 8 digits starting with 5, 6, or 9.',
+  },
+  {
+    code: 'QA',
+    dialCode: '+974',
+    label: 'Qatar',
+    flagUrl: 'https://flagcdn.com/w40/qa.png',
+    pattern: /^(3|5|6|7)\d{7}$/,
+    placeholder: 'XXXXXXXX',
+    hint: 'Use 8 digits starting with 3, 5, 6, or 7.',
+  },
+  {
+    code: 'BH',
+    dialCode: '+973',
+    label: 'Bahrain',
+    flagUrl: 'https://flagcdn.com/w40/bh.png',
+    pattern: /^(3|6)\d{7}$/,
+    placeholder: 'XXXXXXXX',
+    hint: 'Use 8 digits starting with 3 or 6.',
+  },
+  {
+    code: 'OM',
+    dialCode: '+968',
+    label: 'Oman',
+    flagUrl: 'https://flagcdn.com/w40/om.png',
+    pattern: /^(7|9)\d{7}$/,
+    placeholder: 'XXXXXXXX',
+    hint: 'Use 8 digits starting with 7 or 9.',
+  },
+  {
+    code: 'JO',
+    dialCode: '+962',
+    label: 'Jordan',
+    flagUrl: 'https://flagcdn.com/w40/jo.png',
+    pattern: /^7\d{8}$/,
+    placeholder: '7XXXXXXXX',
+    hint: 'Use 9 digits starting with 7.',
+  },
+  {
+    code: 'LB',
+    dialCode: '+961',
+    label: 'Lebanon',
+    flagUrl: 'https://flagcdn.com/w40/lb.png',
+    pattern: /^(3|7|8|9)\d{6,7}$/,
+    placeholder: 'XXXXXXXX',
+    hint: 'Use a valid Lebanese mobile number.',
+  },
+  {
+    code: 'MA',
+    dialCode: '+212',
+    label: 'Morocco',
+    flagUrl: 'https://flagcdn.com/w40/ma.png',
+    pattern: /^(6|7)\d{8}$/,
+    placeholder: '6XXXXXXXX',
+    hint: 'Use 9 digits starting with 6 or 7.',
+  },
+  {
+    code: 'TR',
+    dialCode: '+90',
+    label: 'Turkey',
+    flagUrl: 'https://flagcdn.com/w40/tr.png',
+    pattern: /^5\d{9}$/,
+    placeholder: '5XXXXXXXXX',
+    hint: 'Use 10 digits starting with 5.',
+  },
+  {
+    code: 'US',
+    dialCode: '+1',
+    label: 'United States',
+    flagUrl: 'https://flagcdn.com/w40/us.png',
+    pattern: /^[2-9]\d{9}$/,
+    placeholder: '2015550123',
+    hint: 'Use a 10-digit mobile number.',
+  },
+  {
+    code: 'CA',
+    dialCode: '+1',
+    label: 'Canada',
+    flagUrl: 'https://flagcdn.com/w40/ca.png',
+    pattern: /^[2-9]\d{9}$/,
+    placeholder: '2045550123',
+    hint: 'Use a 10-digit mobile number.',
+  },
+  {
+    code: 'GB',
+    dialCode: '+44',
+    label: 'United Kingdom',
+    flagUrl: 'https://flagcdn.com/w40/gb.png',
+    pattern: /^7\d{9}$/,
+    placeholder: '7XXXXXXXXX',
+    hint: 'Use 10 digits starting with 7.',
+  },
+  {
+    code: 'DE',
+    dialCode: '+49',
+    label: 'Germany',
+    flagUrl: 'https://flagcdn.com/w40/de.png',
+    pattern: /^1\d{9,11}$/,
+    placeholder: '15XXXXXXXX',
+    hint: 'Use a valid German mobile number.',
+  },
+  {
+    code: 'FR',
+    dialCode: '+33',
+    label: 'France',
+    flagUrl: 'https://flagcdn.com/w40/fr.png',
+    pattern: /^(6|7)\d{8}$/,
+    placeholder: '6XXXXXXXX',
+    hint: 'Use 9 digits starting with 6 or 7.',
+  },
+  {
+    code: 'IT',
+    dialCode: '+39',
+    label: 'Italy',
+    flagUrl: 'https://flagcdn.com/w40/it.png',
+    pattern: /^3\d{8,10}$/,
+    placeholder: '3XXXXXXXXX',
+    hint: 'Use a valid Italian mobile number.',
+  },
+  {
+    code: 'ES',
+    dialCode: '+34',
+    label: 'Spain',
+    flagUrl: 'https://flagcdn.com/w40/es.png',
+    pattern: /^(6|7)\d{8}$/,
+    placeholder: '6XXXXXXXX',
+    hint: 'Use 9 digits starting with 6 or 7.',
+  },
+  {
+    code: 'AU',
+    dialCode: '+61',
+    label: 'Australia',
+    flagUrl: 'https://flagcdn.com/w40/au.png',
+    pattern: /^4\d{8}$/,
+    placeholder: '4XXXXXXXX',
+    hint: 'Use 9 digits starting with 4.',
+  },
+  {
+    code: 'IN',
+    dialCode: '+91',
+    label: 'India',
+    flagUrl: 'https://flagcdn.com/w40/in.png',
+    pattern: /^[6-9]\d{9}$/,
+    placeholder: '9XXXXXXXXX',
+    hint: 'Use 10 digits starting with 6, 7, 8, or 9.',
+  },
+];
 
 const socialProviders: Array<{
   label: string;
   value: 'google' | 'apple';
-  icon: typeof Mail;
+  icon: typeof AtSign;
   helper: string;
 }> = [
   {
@@ -49,11 +247,24 @@ export default function AccountDrawer() {
   const orders = useAccountStore((state) => state.orders);
   const closeAccount = useAccountStore((state) => state.closeAccount);
   const clearManualSignIn = useAccountStore((state) => state.signOut);
+  const manualSignIn = useAccountStore((state) => state.signIn);
   const { data: session } = useSession();
 
   const [availableProviders, setAvailableProviders] = useState<Record<string, unknown>>({});
+  const [configuredProviders, setConfiguredProviders] = useState<ConfiguredProviders>({
+    google: false,
+    apple: false,
+  });
   const [authMessage, setAuthMessage] = useState('');
-  const supportEmail = process.env.NEXT_PUBLIC_SUPPORT_EMAIL || 'orders@dxlr.store';
+  const [providersLoaded, setProvidersLoaded] = useState(false);
+  const [manualMode, setManualMode] = useState<'phone' | null>(null);
+  const [manualName, setManualName] = useState('');
+  const [manualCountryCode, setManualCountryCode] = useState('EG');
+  const [manualPhone, setManualPhone] = useState('');
+  const [isCountryMenuOpen, setIsCountryMenuOpen] = useState(false);
+  const countryMenuRef = useRef<HTMLDivElement | null>(null);
+  const manualFormRef = useRef<HTMLDivElement | null>(null);
+  const manualNameInputRef = useRef<HTMLInputElement | null>(null);
 
   const activeUser = session?.user
     ? {
@@ -71,35 +282,141 @@ export default function AccountDrawer() {
           : 'DXLR',
     [session, user]
   );
+  const selectedCountry =
+    phoneCountries.find((country) => country.code === manualCountryCode) ?? phoneCountries[0];
 
   useEffect(() => {
     let cancelled = false;
 
-    async function loadProviders() {
-      const availableProviders = await getProviders();
+    async function loadProviderState() {
+      try {
+        const configuredProvidersResponse = await Promise.race([
+          fetch('/api/auth/configured-providers', {
+            cache: 'no-store',
+          }),
+          new Promise<null>((resolve) => {
+            window.setTimeout(() => resolve(null), 4000);
+          }),
+        ]);
 
-      if (!cancelled) {
-        setAvailableProviders(availableProviders ?? {});
+        if (
+          configuredProvidersResponse &&
+          'ok' in configuredProvidersResponse &&
+          configuredProvidersResponse.ok
+        ) {
+          const data = (await configuredProvidersResponse.json()) as ConfiguredProviders;
+
+          if (!cancelled) {
+            setConfiguredProviders(data);
+          }
+        }
+
+        const availableProviders = await Promise.race([
+          getProviders(),
+          new Promise<null>((resolve) => {
+            window.setTimeout(() => resolve(null), 4000);
+          }),
+        ]);
+
+        if (!cancelled) {
+          setAvailableProviders(availableProviders ?? {});
+          setProvidersLoaded(true);
+        }
+      } catch {
+        if (!cancelled) {
+          setAvailableProviders({});
+          setProvidersLoaded(true);
+        }
       }
     }
 
-    loadProviders();
+    void loadProviderState();
     return () => {
       cancelled = true;
     };
   }, []);
 
+  useEffect(() => {
+    if (!isCountryMenuOpen) return;
+
+    const handlePointerDown = (event: MouseEvent) => {
+      if (!countryMenuRef.current?.contains(event.target as Node)) {
+        setIsCountryMenuOpen(false);
+      }
+    };
+
+    window.addEventListener('mousedown', handlePointerDown);
+    return () => window.removeEventListener('mousedown', handlePointerDown);
+  }, [isCountryMenuOpen]);
+
+  useEffect(() => {
+    if (manualMode !== 'phone') return;
+
+    const scrollTimeout = window.setTimeout(() => {
+      manualFormRef.current?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',
+      });
+      manualNameInputRef.current?.focus();
+    }, 120);
+
+    return () => window.clearTimeout(scrollTimeout);
+  }, [manualMode]);
+
   const handleOAuthSignIn = (provider: 'google' | 'apple') => {
-    const providerIsAvailable = Boolean(availableProviders[provider]);
+    const providerIsConfigured = configuredProviders[provider];
+    const providerIsAvailable =
+      providerIsConfigured && (Boolean(availableProviders[provider]) || !providersLoaded);
     const providerLabel = provider === 'google' ? 'Google' : 'Apple';
 
-    if (!providerIsAvailable) {
+    if (!providerIsConfigured) {
       setAuthMessage(`${providerLabel} sign-in is not configured yet.`);
+      return;
+    }
+
+    if (!providerIsAvailable) {
+      setAuthMessage(`${providerLabel} sign-in is temporarily unavailable. Please try again.`);
       return;
     }
 
     setAuthMessage('');
     void oauthSignIn(provider, { callbackUrl: '/' });
+  };
+
+  const resetManualFields = () => {
+    setManualMode(null);
+    setManualName('');
+    setManualCountryCode('EG');
+    setManualPhone('');
+    setIsCountryMenuOpen(false);
+  };
+
+  const handleManualSignIn = () => {
+    const trimmedName = manualName.trim();
+    const normalizedPhone = manualPhone.replace(/\D/g, '');
+    if (!trimmedName) {
+      setAuthMessage('Add your name first.');
+      return;
+    }
+
+    if (!normalizedPhone) {
+      setAuthMessage('Add your phone number to continue.');
+      return;
+    }
+
+    if (!selectedCountry.pattern.test(normalizedPhone)) {
+      setAuthMessage(`This phone number does not match ${selectedCountry.label}. ${selectedCountry.hint}`);
+      return;
+    }
+
+    manualSignIn({
+      name: trimmedName,
+      email: '',
+      phone: `${selectedCountry.dialCode}${normalizedPhone}`,
+      provider: 'whatsapp',
+    });
+    setAuthMessage('');
+    resetManualFields();
   };
 
   return (
@@ -270,7 +587,17 @@ export default function AccountDrawer() {
                   <div className="mt-3 grid grid-cols-2 gap-2.5">
                   {socialProviders.map((provider) => {
                     const Icon = provider.icon;
-                    const providerIsAvailable = Boolean(availableProviders[provider.value]);
+                    const providerIsConfigured = configuredProviders[provider.value];
+                    const providerIsAvailable =
+                      providerIsConfigured &&
+                      (Boolean(availableProviders[provider.value]) || !providersLoaded);
+                    const providerStatus = !providersLoaded
+                      ? 'Checking'
+                      : providerIsAvailable
+                        ? 'Continue'
+                        : providerIsConfigured
+                          ? 'Retry'
+                          : 'Needs Setup';
 
                     return (
                       <button
@@ -280,7 +607,9 @@ export default function AccountDrawer() {
                         className={`rounded-[20px] border p-4 text-left transition ${
                           providerIsAvailable
                             ? 'border-black/8 bg-white text-black hover:border-black/14'
-                            : 'border-black/8 bg-[#f7f4ee] text-black/75'
+                            : providerIsConfigured
+                              ? 'border-amber-200 bg-amber-50 text-black'
+                              : 'border-black/8 bg-[#f7f4ee] text-black/75'
                         }`}
                       >
                         <div
@@ -297,65 +626,155 @@ export default function AccountDrawer() {
                           {provider.helper}
                         </p>
                         <p className="mt-3 text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--accent-soft-strong)]">
-                          {providerIsAvailable ? 'Ready' : 'Needs Setup'}
+                          {providerStatus}
                         </p>
                       </button>
                     );
                   })}
                 </div>
 
-                  {authMessage ? (
-                    <div className="mt-5 rounded-[18px] border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-700">
-                      {authMessage}
-                    </div>
-                  ) : null}
-
                   <div className="mt-6">
                     <p className="text-[10px] font-mono uppercase tracking-[0.28em] text-zinc-500">
                       Direct Contact
                     </p>
 
-                    <div className="mt-3 grid grid-cols-2 gap-2.5">
-                      <a
-                        href={`https://wa.me/${DXLR_WHATSAPP_NUMBER}`}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="rounded-[20px] border border-black/8 bg-white p-4 text-left transition hover:border-black/14"
+                    <div className="mt-3">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setAuthMessage('');
+                          setManualMode((current) => (current === 'phone' ? null : 'phone'));
+                        }}
+                        className="w-full rounded-[20px] border border-black/8 bg-white p-4 text-left transition hover:border-black/14"
                       >
                         <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--surface)] text-black">
                           <MessageCircle size={16} />
                         </div>
                         <h4 className="mt-3 text-sm font-bold uppercase tracking-[0.16em]">
-                          WhatsApp
+                          Phone
                         </h4>
                         <p className="mt-2 text-xs leading-5 text-[var(--foreground-soft)]">
-                          Open WhatsApp directly for DXLR support and order help.
+                          Create your account with your phone number inside DXLR.
                         </p>
-                        <p className="mt-3 inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--accent-soft-strong)]">
-                          Open App
-                          <ExternalLink size={12} />
+                        <p className="mt-3 text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--accent-soft-strong)]">
+                          {manualMode === 'phone' ? 'Close Form' : 'Continue'}
                         </p>
-                      </a>
-
-                      <a
-                        href={`mailto:${supportEmail}?subject=${encodeURIComponent('DXLR Account Support')}`}
-                        className="rounded-[20px] border border-black/8 bg-white p-4 text-left transition hover:border-black/14"
-                      >
-                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--surface)] text-black">
-                          <Mail size={16} />
-                        </div>
-                        <h4 className="mt-3 text-sm font-bold uppercase tracking-[0.16em]">
-                          Email
-                        </h4>
-                        <p className="mt-2 text-xs leading-5 text-[var(--foreground-soft)]">
-                          Open your mail app and contact DXLR account support directly.
-                        </p>
-                        <p className="mt-3 inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--accent-soft-strong)]">
-                          Open Mail
-                          <ExternalLink size={12} />
-                        </p>
-                      </a>
+                      </button>
                     </div>
+
+                    {manualMode ? (
+                      <div
+                        ref={manualFormRef}
+                        className="mt-4 rounded-[24px] border border-black/8 bg-white p-4 shadow-[0_12px_40px_rgba(0,0,0,0.04)]"
+                      >
+                        <p className="text-[10px] font-mono uppercase tracking-[0.28em] text-zinc-500">
+                          Phone Sign In
+                        </p>
+                        <div className="mt-4 grid gap-3">
+                          <input
+                            ref={manualNameInputRef}
+                            type="text"
+                            value={manualName}
+                            onChange={(event) => setManualName(event.target.value)}
+                            placeholder="Your name"
+                            className="h-12 rounded-[16px] border border-black/10 bg-[var(--surface)] px-4 text-sm outline-none transition focus:border-black"
+                          />
+                          <div className="grid gap-3">
+                            <div ref={countryMenuRef} className="relative">
+                              <button
+                                type="button"
+                                onClick={() => setIsCountryMenuOpen((current) => !current)}
+                                className="flex h-13 w-full items-center gap-3 rounded-[16px] border border-black/10 bg-[var(--surface)] px-4 text-left text-sm text-black transition hover:border-black/20"
+                              >
+                                <Image
+                                  src={selectedCountry.flagUrl}
+                                  alt={`${selectedCountry.label} flag`}
+                                  width={28}
+                                  height={20}
+                                  className="h-5 w-7 rounded-[4px] object-cover shadow-sm"
+                                />
+                                <div className="min-w-0 flex-1">
+                                  <p className="truncate text-sm font-medium text-black">
+                                    {selectedCountry.label}
+                                  </p>
+                                  <p className="text-xs text-zinc-500">
+                                    {selectedCountry.dialCode}
+                                  </p>
+                                </div>
+                                <ChevronDown
+                                  size={18}
+                                  className={`shrink-0 text-zinc-500 transition ${isCountryMenuOpen ? 'rotate-180' : ''}`}
+                                />
+                              </button>
+
+                              {isCountryMenuOpen ? (
+                                <div className="absolute left-0 right-0 top-[calc(100%+8px)] z-20 max-h-72 overflow-y-auto rounded-[18px] border border-black/10 bg-white p-2 shadow-[0_24px_60px_rgba(0,0,0,0.14)]">
+                                  {phoneCountries.map((country) => {
+                                    const isSelected = country.code === manualCountryCode;
+
+                                    return (
+                                      <button
+                                        key={country.code}
+                                        type="button"
+                                        onClick={() => {
+                                          setManualCountryCode(country.code);
+                                          setIsCountryMenuOpen(false);
+                                        }}
+                                        className={`flex w-full items-center gap-3 rounded-[14px] px-3 py-2.5 text-left transition ${
+                                          isSelected ? 'bg-black text-white' : 'hover:bg-[var(--surface)]'
+                                        }`}
+                                      >
+                                        <Image
+                                          src={country.flagUrl}
+                                          alt={`${country.label} flag`}
+                                          width={28}
+                                          height={20}
+                                          className="h-5 w-7 rounded-[4px] object-cover shadow-sm"
+                                        />
+                                        <div className="min-w-0 flex-1">
+                                          <p className="truncate text-sm font-medium">
+                                            {country.label}
+                                          </p>
+                                          <p className={`text-xs ${isSelected ? 'text-white/70' : 'text-zinc-500'}`}>
+                                            {country.dialCode}
+                                          </p>
+                                        </div>
+                                        {isSelected ? <Check size={16} className="shrink-0" /> : null}
+                                      </button>
+                                    );
+                                  })}
+                                </div>
+                              ) : null}
+                            </div>
+                            <input
+                              type="tel"
+                              inputMode="numeric"
+                              value={manualPhone}
+                              onChange={(event) =>
+                                setManualPhone(event.target.value.replace(/[^\d\s()-]/g, ''))
+                              }
+                              placeholder={selectedCountry.placeholder}
+                              className="h-12 rounded-[16px] border border-black/10 bg-[var(--surface)] px-4 text-sm outline-none transition focus:border-black"
+                            />
+                          </div>
+                          <p className="text-xs leading-5 text-zinc-500">
+                            {selectedCountry.hint}
+                          </p>
+                          <button
+                            type="button"
+                            onClick={handleManualSignIn}
+                            className="inline-flex h-12 items-center justify-center rounded-full bg-black px-5 text-[10px] font-bold uppercase tracking-[0.18em] text-white transition hover:bg-zinc-800"
+                          >
+                            Save Account
+                          </button>
+                          {authMessage ? (
+                            <div className="rounded-[16px] border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-700">
+                              {authMessage}
+                            </div>
+                          ) : null}
+                        </div>
+                      </div>
+                    ) : null}
                   </div>
                 </div>
                 </>

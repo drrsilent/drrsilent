@@ -5,6 +5,7 @@ export interface CheckoutCustomer {
   lastName: string;
   email: string;
   phone: string;
+  location: string;
   address: string;
   city: string;
   notes: string;
@@ -46,6 +47,7 @@ export function buildWhatsappOrderUrl({
     `Phone: ${customer.phone}`,
     `Email: ${customer.email || 'Not provided'}`,
     `City: ${customer.city}`,
+    `Location: ${customer.location || 'Not provided'}`,
     `Address: ${customer.address}`,
     `Payment: ${paymentMethod === 'cash_on_delivery' ? 'Cash on Delivery' : paymentMethod}`,
     '',

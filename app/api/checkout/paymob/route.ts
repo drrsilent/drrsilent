@@ -42,6 +42,8 @@ export async function POST(request: Request) {
     const paymentMethodId =
       body.paymentMethod === 'apple_pay' ? applePayIntegrationId : cardIntegrationId;
     const orderReference = `DXLR-${Date.now()}`;
+    const abortController = new AbortController();
+    const timeoutId = setTimeout(() => abortController.abort(), 12000);
 
     const paymobResponse = await fetch('https://accept.paymob.com/v1/intention/', {
       method: 'POST',
@@ -61,7 +63,7 @@ export async function POST(request: Request) {
           phone_number: phone,
           apartment: 'NA',
           floor: 'NA',
-          street: body.customer.address || 'NA',
+          street: [body.customer.address, body.customer.location].filter(Boolean).join(' | ') || 'NA',
           building: 'NA',
           shipping_method: 'DXLR',
           postal_code: '00000',
@@ -76,7 +78,8 @@ export async function POST(request: Request) {
           quantity: item.quantity,
         })),
       }),
-    });
+      signal: abortController.signal,
+    }).finally(() => clearTimeout(timeoutId));
 
     const data = (await paymobResponse.json()) as {
       client_secret?: string;
@@ -103,9 +106,11 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         message:
-          error instanceof Error
-            ? error.message
-            : 'Unable to initialize online payment.',
+          error instanceof Error && error.name === 'AbortError'
+            ? 'Paymob took too long to respond. Please try again.'
+            : error instanceof Error
+              ? error.message
+              : 'Unable to initialize online payment.',
       },
       { status: 500 }
     );

@@ -5,7 +5,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { AtSign, MessageCircle, PhoneCall } from 'lucide-react';
 import { useRef } from 'react';
-import { featuredProducts } from '../data/products';
+import BrandWordmark from '../components/Global/BrandWordmark';
+import { getLocalizedFeaturedProducts } from '../data/products';
 import { getDictionary } from '../lib/i18n';
 import { flyToCart } from '../lib/fly-to-cart';
 import { useCartStore } from '../store/useCartStore';
@@ -53,6 +54,7 @@ export default function Home() {
   const locale = useLocaleStore((state) => state.locale);
   const dict = getDictionary(locale).common;
   const isArabic = locale === 'ar';
+  const featuredProducts = getLocalizedFeaturedProducts(locale);
 
   const { scrollYProgress } = useScroll({
     target: heroRef,
@@ -111,7 +113,6 @@ export default function Home() {
               }}
               className="absolute right-[14%] top-[30%] h-24 w-24 rounded-full bg-white/10 blur-3xl md:h-40 md:w-40"
             />
-            <div className="absolute inset-x-[8%] top-48 h-px bg-gradient-to-r from-transparent via-white/16 to-transparent md:inset-x-[10%] md:top-24" />
           </div>
 
           <motion.div
@@ -119,35 +120,41 @@ export default function Home() {
             variants={heroGroupVariants}
             initial="hidden"
             animate="show"
-            className="relative z-10 flex w-full max-w-md flex-col items-center px-4 pt-30 text-center text-white md:max-w-none md:px-4 md:pt-12"
+            className="relative z-10 flex w-full max-w-md flex-col items-center px-4 pt-30 text-center text-white md:max-w-none md:px-4 md:pt-[6.5rem]"
           >
             <motion.div
               variants={heroItemVariants}
-              className="mb-4 inline-flex items-center rounded-full border border-white/12 bg-white/7 px-4 py-2 text-[9px] uppercase tracking-[0.22em] text-white/76 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.02)] backdrop-blur-md md:mb-5 md:px-4 md:py-2.5 md:text-[10px] md:tracking-[0.32em]"
+              className="relative mb-7 mt-4 flex w-full items-center justify-center md:mb-9 md:mt-5"
             >
-              {dict.summerProtocol}
+              <div className="absolute left-1/2 top-1/2 h-px w-[min(72vw,720px)] -translate-x-1/2 -translate-y-1/2 bg-gradient-to-r from-transparent via-white/14 to-transparent" />
+              <div className="relative inline-flex items-center rounded-full border border-white/8 bg-[rgba(255,255,255,0.045)] px-5 py-2.5 text-[9px] uppercase tracking-[0.18em] text-white/72 shadow-[0_10px_28px_rgba(0,0,0,0.16),inset_0_0_0_1px_rgba(255,255,255,0.02)] backdrop-blur-md md:px-7 md:py-3 md:text-[10px] md:tracking-[0.24em]">
+                {dict.summerProtocol}
+              </div>
             </motion.div>
 
             <motion.p
               variants={heroItemVariants}
-              className="mb-3 text-[9px] font-mono uppercase tracking-[0.26em] text-[var(--accent-soft)] md:mb-4 md:text-[10px] md:tracking-[0.48em]"
+              className="mb-7 text-[9px] font-mono uppercase tracking-[0.22em] text-[var(--accent-soft)] md:mb-9 md:text-[10px] md:tracking-[0.36em]"
             >
               {dict.cairoEdition}
             </motion.p>
 
-            <motion.h1
+            <motion.div
               variants={heroItemVariants}
-              className="mt-8 bg-[linear-gradient(180deg,#ffffff_0%,rgba(255,255,255,0.82)_100%)] bg-clip-text text-[82px] font-extrabold leading-[0.88] tracking-[-0.11em] text-transparent drop-shadow-[0_16px_34px_rgba(0,0,0,0.34)] sm:text-[96px] md:mt-0 md:text-[180px]"
+              className="mx-auto flex w-full justify-center drop-shadow-[0_18px_40px_rgba(0,0,0,0.36)]"
             >
-              DXLR.
-            </motion.h1>
+              <BrandWordmark
+                className="text-[92px] font-black tracking-[-0.1em] text-white sm:text-[108px] md:text-[198px]"
+                letterClassName="drop-shadow-[0_0_16px_rgba(255,255,255,0.08)]"
+              />
+            </motion.div>
 
             <motion.p
               variants={heroItemVariants}
-              className="mt-5 max-w-[336px] text-[10px] font-mono uppercase tracking-[0.16em] text-white/60 sm:max-w-xl sm:text-[10px] sm:tracking-[0.3em] md:mt-6 md:text-[11px] md:tracking-[0.42em]"
-              >
-                {dict.heroTagline}
-              </motion.p>
+              className="mx-auto mt-6 max-w-[336px] text-center text-[10px] font-mono uppercase tracking-[0.14em] text-white/60 sm:max-w-xl sm:text-[10px] sm:tracking-[0.24em] md:mt-7 md:text-[11px] md:tracking-[0.36em]"
+            >
+              {dict.heroTagline}
+            </motion.p>
 
             <motion.div
               variants={heroItemVariants}

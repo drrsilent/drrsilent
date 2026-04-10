@@ -7,7 +7,8 @@ import { useSession } from 'next-auth/react';
 import { useEffect, useRef, useState } from 'react';
 import { Languages, Menu, Search, ShoppingBag, User2, X } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { products, shopCategories } from '../../data/products';
+import BrandWordmark from './BrandWordmark';
+import { getLocalizedProducts, shopCategories } from '../../data/products';
 import { getCategoryLabel, getDictionary } from '../../lib/i18n';
 import { useAccountStore } from '../../store/useAccountStore';
 import { useCartStore } from '../../store/useCartStore';
@@ -25,6 +26,8 @@ export default function Header() {
   const toggleLocale = useLocaleStore((state) => state.toggleLocale);
   const dict = getDictionary(locale).common;
   const isArabic = locale === 'ar';
+  const nextLocaleLabel = isArabic ? dict.english : dict.arabic;
+  const localizedProducts = getLocalizedProducts(locale);
   const isHome = pathname === '/';
   const isProductPage = pathname.startsWith('/product/');
   const useLightHeader = isProductPage ? false : !isHome || isScrolled;
@@ -124,7 +127,7 @@ export default function Header() {
       ? 'border-white/14 bg-white/8 text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.02)] hover:bg-white hover:text-black'
       : 'border-white/16 bg-white/12 text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.02)] hover:bg-white hover:text-black';
 
-  const searchResults = Object.values(products).filter((product) => {
+  const searchResults = localizedProducts.filter((product) => {
     const query = searchQuery.trim().toLowerCase();
 
     if (!query) return true;
@@ -145,7 +148,7 @@ export default function Header() {
       <header
         className={`safe-top fixed inset-x-0 top-0 z-[100] border-b transition-all duration-300 ${headerClass}`}
       >
-        <div className="relative mx-auto flex h-[108px] max-w-7xl items-start justify-between px-3 pt-4 sm:px-4 md:h-[82px] md:items-center md:px-6 md:pt-0">
+        <div className="relative mx-auto flex h-[80px] max-w-7xl items-start justify-between px-3 pt-2 sm:px-4 md:h-[82px] md:items-center md:px-6 md:pt-0">
           <div className="flex flex-1 items-center gap-2">
             <button
               type="button"
@@ -154,9 +157,9 @@ export default function Header() {
                 setIsMenuOpen(false);
                 setIsSearchOpen(true);
               }}
-              className={`flex h-10 w-10 items-center justify-center rounded-full border transition-all duration-300 md:h-11 md:w-11 ${iconClass}`}
+              className={`flex h-9 w-9 items-center justify-center rounded-full border transition-all duration-300 md:h-11 md:w-11 ${iconClass}`}
             >
-              <Search size={18} strokeWidth={2.2} />
+              <Search size={17} strokeWidth={2.2} />
             </button>
 
             <div ref={menuRef} className="relative">
@@ -164,14 +167,14 @@ export default function Header() {
                 type="button"
                 aria-label="Menu"
                 onClick={() => setIsMenuOpen((current) => !current)}
-                className={`flex h-10 w-10 items-center justify-center rounded-full border transition-all duration-300 md:h-11 md:w-11 ${iconClass}`}
+                className={`flex h-9 w-9 items-center justify-center rounded-full border transition-all duration-300 md:h-11 md:w-11 ${iconClass}`}
               >
-                <Menu size={18} strokeWidth={2.2} />
+                <Menu size={17} strokeWidth={2.2} />
               </button>
             </div>
           </div>
 
-          <div className="absolute left-1/2 top-5 -translate-x-1/2 md:top-1/2 md:-translate-y-1/2">
+          <div className="absolute left-1/2 top-2.5 -translate-x-1/2 md:top-1/2 md:-translate-y-1/2">
             <Link href="/">
               <motion.div
                 whileHover={{ y: -1 }}
@@ -179,15 +182,17 @@ export default function Header() {
                 className="cursor-pointer text-center"
               >
                 <p
-                  className={`mb-1 text-[6px] font-mono uppercase tracking-[0.22em] md:text-[8px] md:tracking-[0.45em] ${
+                  className={`mb-0.5 text-[5px] font-mono uppercase tracking-[0.2em] md:mb-1 md:text-[8px] md:tracking-[0.45em] ${
                     useLightHeader ? 'text-[var(--foreground-soft)]' : 'text-white/55'
                   }`}
                 >
                   Engineered Ease
                 </p>
-                <h2 className="text-[24px] font-extrabold leading-none tracking-[-0.09em] md:text-[40px]">
-                  DXLR.
-                </h2>
+                  <BrandWordmark
+                    className={`text-[24px] font-black tracking-[-0.08em] md:text-[34px] ${
+                      useLightHeader ? 'text-black' : 'text-white'
+                    }`}
+                  />
               </motion.div>
             </Link>
           </div>
@@ -197,19 +202,19 @@ export default function Header() {
               type="button"
               onClick={toggleLocale}
               aria-label={dict.language}
-              className={`inline-flex h-10 min-w-[50px] items-center justify-center gap-1 rounded-full border px-2.5 text-[9px] font-bold uppercase tracking-[0.12em] transition-all duration-300 md:h-11 md:min-w-[60px] md:px-3 md:text-[10px] md:tracking-[0.18em] ${iconClass}`}
+              className={`inline-flex h-9 min-w-[46px] items-center justify-center gap-1 rounded-full border px-2 text-[9px] font-bold uppercase tracking-[0.1em] transition-all duration-300 md:h-11 md:min-w-[60px] md:px-3 md:text-[10px] md:tracking-[0.18em] ${iconClass}`}
             >
               <Languages className="hidden md:block" size={14} strokeWidth={2.1} />
-              <span>{isArabic ? dict.arabic : dict.english}</span>
+              <span>{nextLocaleLabel}</span>
             </button>
 
             <button
               type="button"
               onClick={toggleAccount}
               aria-label={dict.account}
-              className={`relative flex h-10 w-10 items-center justify-center rounded-full border transition-all duration-300 md:h-11 md:w-11 ${iconClass}`}
+              className={`relative flex h-9 w-9 items-center justify-center rounded-full border transition-all duration-300 md:h-11 md:w-11 ${iconClass}`}
             >
-              <User2 size={18} strokeWidth={2.2} />
+              <User2 size={17} strokeWidth={2.2} />
               {accountName ? (
                 <span className="absolute -right-1 -top-1 flex h-5 min-w-[20px] items-center justify-center rounded-full bg-black px-1 text-[9px] font-bold uppercase text-white ring-2 ring-[var(--surface-strong)]">
                   {accountName.slice(0, 1)}
@@ -224,9 +229,9 @@ export default function Header() {
               data-cart-button="true"
               animate={isCartPulsing ? { scale: [1, 1.12, 1] } : { scale: 1 }}
               transition={{ duration: 0.36, ease: [0.22, 1, 0.36, 1] }}
-              className={`relative flex h-10 w-10 items-center justify-center rounded-full border transition-all duration-300 md:h-11 md:w-11 ${iconClass}`}
+              className={`relative flex h-9 w-9 items-center justify-center rounded-full border transition-all duration-300 md:h-11 md:w-11 ${iconClass}`}
             >
-              <ShoppingBag size={18} strokeWidth={2.2} />
+              <ShoppingBag size={17} strokeWidth={2.2} />
 
               <AnimatePresence>
                 {itemCount > 0 && (
@@ -274,13 +279,9 @@ export default function Header() {
                     <X size={22} strokeWidth={1.8} />
                   </button>
 
-                  <Link
-                    href="/"
-                    onClick={() => setIsMenuOpen(false)}
-                    className="text-[28px] font-extrabold leading-none tracking-[-0.09em] text-black"
-                  >
-                    DXLR.
-                  </Link>
+                    <Link href="/" onClick={() => setIsMenuOpen(false)}>
+                      <BrandWordmark className="text-[28px] font-black tracking-[-0.08em] text-black" />
+                    </Link>
                 </div>
 
                 <div className="mt-7 rounded-[28px] border border-black/8 bg-[radial-gradient(circle_at_top,rgba(185,154,107,0.14),transparent_40%),linear-gradient(145deg,#111111_0%,#1d1a16_100%)] p-5 text-white shadow-[0_18px_50px_rgba(0,0,0,0.14)]">

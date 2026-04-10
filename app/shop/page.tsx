@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowLeft, ShoppingBag } from 'lucide-react';
 import { use } from 'react';
-import { productCards, shopCategories } from '../../data/products';
+import { getLocalizedProductCards, shopCategories } from '../../data/products';
 import { getCategoryLabel, getDictionary } from '../../lib/i18n';
 import { flyToCart } from '../../lib/fly-to-cart';
 import { useCartStore } from '../../store/useCartStore';
@@ -43,6 +43,7 @@ export default function ShopPage({
   const locale = useLocaleStore((state) => state.locale);
   const dict = getDictionary(locale).common;
   const isArabic = locale === 'ar';
+  const productCards = getLocalizedProductCards(locale);
   const activeCategory = shopCategories.find((item) => item.slug === category);
 
   const collectionProducts =

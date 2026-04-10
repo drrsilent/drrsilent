@@ -2,11 +2,13 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, ArrowRight, Banknote, CreditCard, ShoppingBag, Smartphone } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Banknote, CreditCard, LocateFixed, ShoppingBag, Smartphone } from 'lucide-react';
 import { FormEvent, useEffect, useMemo, useState } from 'react';
 import { buildWhatsappOrderUrl, getCartItemCount, getCartSubtotal } from '../../lib/checkout';
+import { getLocalizedProduct, products } from '../../data/products';
 import { PaymentMethod, useCartStore } from '../../store/useCartStore';
 import { useAccountStore } from '../../store/useAccountStore';
+import { useLocaleStore } from '../../store/useLocaleStore';
 
 const paymentMethods: Array<{
   label: string;
@@ -42,21 +44,37 @@ export default function CheckoutPage() {
   const clearCart = useCartStore((state) => state.clearCart);
   const accountUser = useAccountStore((state) => state.user);
   const addOrder = useAccountStore((state) => state.addOrder);
+  const locale = useLocaleStore((state) => state.locale);
 
   const [customer, setCustomer] = useState({
     firstName: '',
     lastName: '',
     email: '',
     phone: '',
+    location: '',
     address: '',
     city: '',
     notes: '',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLocating, setIsLocating] = useState(false);
   const [checkoutError, setCheckoutError] = useState('');
+  const [paymentConfig, setPaymentConfig] = useState({
+    paymobConfigured: false,
+    applePayConfigured: false,
+    loaded: false,
+  });
 
   const subtotal = useMemo(() => getCartSubtotal(items), [items]);
   const itemCount = useMemo(() => getCartItemCount(items), [items]);
+  const localizedItems = useMemo(
+    () =>
+      items.map((item) => ({
+        ...item,
+        title: products[item.id] ? getLocalizedProduct(item.id, locale).title : item.title,
+      })),
+    [items, locale]
+  );
 
   useEffect(() => {
     if (!accountUser) {
@@ -73,16 +91,107 @@ export default function CheckoutPage() {
     }));
   }, [accountUser]);
 
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadPaymentConfig() {
+      try {
+        const response = await fetch('/api/checkout/configured-providers', {
+          cache: 'no-store',
+        });
+
+        if (!response.ok) {
+          throw new Error('Unable to load payment settings.');
+        }
+
+        const data = (await response.json()) as {
+          paymobConfigured: boolean;
+          applePayConfigured: boolean;
+        };
+
+        if (!cancelled) {
+          setPaymentConfig({
+            ...data,
+            loaded: true,
+          });
+        }
+      } catch {
+        if (!cancelled) {
+          setPaymentConfig({
+            paymobConfigured: false,
+            applePayConfigured: false,
+            loaded: true,
+          });
+          setPaymentMethod('cash_on_delivery');
+        }
+      }
+    }
+
+    void loadPaymentConfig();
+    return () => {
+      cancelled = true;
+    };
+  }, [setPaymentMethod]);
+
+  useEffect(() => {
+    if (!paymentConfig.loaded) return;
+
+    if (
+      (paymentMethod === 'card' && !paymentConfig.paymobConfigured) ||
+      (paymentMethod === 'apple_pay' && !paymentConfig.applePayConfigured)
+    ) {
+      setPaymentMethod('cash_on_delivery');
+    }
+  }, [paymentConfig, paymentMethod, setPaymentMethod]);
+
   const updateField = (field: keyof typeof customer, value: string) => {
     setCustomer((current) => ({ ...current, [field]: value }));
+  };
+
+  const handleUseCurrentLocation = () => {
+    if (!navigator.geolocation) {
+      setCheckoutError('Location is not supported on this device.');
+      return;
+    }
+
+    setCheckoutError('');
+    setIsLocating(true);
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        const mapsUrl = `https://maps.google.com/?q=${latitude},${longitude}`;
+
+        setCustomer((current) => ({
+          ...current,
+          location: mapsUrl,
+        }));
+        setIsLocating(false);
+      },
+      () => {
+        setCheckoutError('Unable to get your location. Please allow location access and try again.');
+        setIsLocating(false);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0,
+      }
+    );
   };
 
   const isFormValid =
     customer.firstName.trim() &&
     customer.lastName.trim() &&
     customer.phone.trim() &&
+    customer.location.trim() &&
     customer.address.trim() &&
     customer.city.trim();
+  const visiblePaymentMethods = paymentMethods.filter((method) => {
+    if (method.value === 'card') return paymentConfig.paymobConfigured;
+    if (method.value === 'apple_pay') return paymentConfig.applePayConfigured;
+    return true;
+  });
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -103,22 +212,26 @@ export default function CheckoutPage() {
         itemCount,
         paymentMethod,
         status: 'confirmed',
-        items,
+        items: localizedItems,
       });
 
       const url = buildWhatsappOrderUrl({
         customer,
-        items,
+        items: localizedItems,
         paymentMethod,
       });
 
       clearCart();
       window.open(url, '_blank', 'noopener,noreferrer');
       router.push('/');
+      setIsSubmitting(false);
       return;
     }
 
     try {
+      const abortController = new AbortController();
+      const timeoutId = window.setTimeout(() => abortController.abort(), 15000);
+
       addOrder({
         id: crypto.randomUUID(),
         createdAt: new Date().toISOString(),
@@ -126,7 +239,7 @@ export default function CheckoutPage() {
         itemCount,
         paymentMethod,
         status: 'awaiting_payment',
-        items,
+        items: localizedItems,
       });
 
       const response = await fetch('/api/checkout/paymob', {
@@ -134,12 +247,13 @@ export default function CheckoutPage() {
         headers: {
           'Content-Type': 'application/json',
         },
+        signal: abortController.signal,
         body: JSON.stringify({
           customer,
-          items,
+          items: localizedItems,
           paymentMethod,
         }),
-      });
+      }).finally(() => window.clearTimeout(timeoutId));
 
       const data = (await response.json()) as {
         redirectUrl?: string;
@@ -153,7 +267,11 @@ export default function CheckoutPage() {
       window.location.href = data.redirectUrl;
     } catch (error) {
       setCheckoutError(
-        error instanceof Error ? error.message : 'Unable to start payment right now.'
+        error instanceof Error && error.name === 'AbortError'
+          ? 'Payment setup took too long. Please try again.'
+          : error instanceof Error
+            ? error.message
+            : 'Unable to start payment right now.'
       );
       setIsSubmitting(false);
     }
@@ -239,6 +357,23 @@ export default function CheckoutPage() {
               placeholder="City"
               className="h-14 rounded-[20px] border border-[var(--line)] bg-[var(--surface)] px-4 text-sm outline-none transition focus:border-black"
             />
+            <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_220px]">
+              <input
+                value={customer.location}
+                onChange={(event) => updateField('location', event.target.value)}
+                placeholder="Google Maps location"
+                className="h-14 flex-1 rounded-[20px] border border-[var(--line)] bg-[var(--surface)] px-4 text-sm outline-none transition focus:border-black"
+              />
+              <button
+                type="button"
+                onClick={handleUseCurrentLocation}
+                disabled={isLocating}
+                className="inline-flex h-14 w-full shrink-0 items-center justify-center gap-2 rounded-[20px] border border-black bg-black px-4 text-[10px] font-bold uppercase tracking-[0.18em] text-white transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                <LocateFixed size={16} />
+                {isLocating ? 'Locating...' : 'Use my location'}
+              </button>
+            </div>
             <input
               value={customer.address}
               onChange={(event) => updateField('address', event.target.value)}
@@ -259,7 +394,7 @@ export default function CheckoutPage() {
             </p>
 
             <div className="mt-3 grid gap-3 md:grid-cols-3">
-              {paymentMethods.map((method) => {
+              {visiblePaymentMethods.map((method) => {
                 const Icon = method.icon;
                 const isSelected = paymentMethod === method.value;
 
@@ -296,6 +431,12 @@ export default function CheckoutPage() {
               })}
             </div>
           </div>
+
+          {paymentConfig.loaded && !paymentConfig.paymobConfigured ? (
+            <div className="mt-5 rounded-[20px] border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-700">
+              Online payment is temporarily unavailable. Cash on Delivery is active right now.
+            </div>
+          ) : null}
 
           {checkoutError ? (
             <div className="mt-5 rounded-[20px] border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
@@ -334,7 +475,7 @@ export default function CheckoutPage() {
           </div>
 
           <div className="mt-6 space-y-3">
-            {items.map((item) => (
+            {localizedItems.map((item) => (
               <div
                 key={`${item.id}-${item.size}`}
                 className="rounded-[22px] border border-[var(--line)] bg-[var(--surface)] px-4 py-4"

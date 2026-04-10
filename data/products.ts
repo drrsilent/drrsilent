@@ -1,3 +1,5 @@
+import type { Locale } from '../lib/i18n';
+
 export type Product = {
   id: string;
   title: string;
@@ -117,6 +119,136 @@ export const products: Record<string, Product> = {
   },
 };
 
+const productCopy: Record<
+  string,
+  {
+    title: Record<Locale, string>;
+    description: Record<Locale, string>;
+  }
+> = {
+  'v1-hoodie': {
+    title: {
+      en: 'V1 Heavy Hoodie',
+      ar: 'هودي V1 الثقيل',
+    },
+    description: {
+      en: 'Heavyweight cotton hoodie with a structured silhouette, brushed interior, and a clean technical finish made for daily rotation.',
+      ar: 'هودي قطن ثقيل بقصة واضحة من الداخل المبطن بملمس ناعم وتشطيب نظيف مناسب للاستخدام اليومي.',
+    },
+  },
+  'protocol-tshirt': {
+    title: {
+      en: 'Protocol Zip Hoodie',
+      ar: 'هودي بروتوكول بسحاب',
+    },
+    description: {
+      en: 'Midweight zip hoodie with a sharp front line, soft brushed backing, and an easy oversized drape for layered everyday wear.',
+      ar: 'هودي بسحاب بخامة متوسطة الوزن مع خط أمامي حاد وملمس داخلي ناعم وقصة واسعة مريحة للبس اليومي.',
+    },
+  },
+  'dxlr-cap': {
+    title: {
+      en: 'Signature Washed Hoodie',
+      ar: 'الهودي المغسول المميز',
+    },
+    description: {
+      en: 'Washed fleece hoodie with a softened vintage finish, roomy hood shape, and a relaxed fit that feels broken-in from day one.',
+      ar: 'هودي فليس بتشطيب مغسول بطابع فينتاج ناعم مع كبّ واسع وقصة مريحة تعطي إحساسًا جاهزًا من أول لبسة.',
+    },
+  },
+  'cargo-pants': {
+    title: {
+      en: 'Utility Oversized Hoodie',
+      ar: 'هودي يوتيليتي أوفرسايز',
+    },
+    description: {
+      en: 'Oversized heavyweight hoodie with clean seam lines, a boxy shoulder, and dense fabric made for a structured street silhouette.',
+      ar: 'هودي أوفرسايز ثقيل بخطوط خياطة نظيفة وكتف صندوقي وخامة كثيفة تعطي شكل ستريت واضح ومتماسك.',
+    },
+  },
+  'shadow-core-hoodie': {
+    title: {
+      en: 'Shadow Core Hoodie',
+      ar: 'هودي شادو كور',
+    },
+    description: {
+      en: 'Dense brushed hoodie with a darker washed tone, dropped shoulders, and a clean front built for a minimal heavy look.',
+      ar: 'هودي مبطن بكثافة مع درجة غسيل أغمق وأكتاف ساقطة وواجهة نظيفة لستايل هادئ وثقيل.',
+    },
+  },
+  'midnight-pullover': {
+    title: {
+      en: 'Midnight Pullover Hoodie',
+      ar: 'هودي ميدنايت بولوفر',
+    },
+    description: {
+      en: 'Relaxed pullover hoodie with a soft interior, oversized hood volume, and a smoother silhouette for everyday layering.',
+      ar: 'هودي بولوفر بقصة مريحة وملمس داخلي ناعم وكبّ واسع مع شكل انسيابي مناسب للطبقات اليومية.',
+    },
+  },
+  'studio-fleece-hoodie': {
+    title: {
+      en: 'Studio Heavy Tee',
+      ar: 'تي شيرت ستوديو الثقيل',
+    },
+    description: {
+      en: 'Structured heavyweight tee with a boxy body, clean neckline, and a minimal fit built for daily layering.',
+      ar: 'تي شيرت ثقيل بقصة صندوقية ورقبة نظيفة وفِت بسيط مناسب للبس اليومي والطبقات.',
+    },
+  },
+  'mono-street-hoodie': {
+    title: {
+      en: 'Mono Street Tee',
+      ar: 'تي شيرت مونو ستريت',
+    },
+    description: {
+      en: 'Monochrome oversized tee with a heavier cotton feel and a clean front made for a sharp streetwear profile.',
+      ar: 'تي شيرت أوفرسايز بلون موحد وإحساس قطن أثقل مع واجهة نظيفة تعطي حضور ستريتوير واضح.',
+    },
+  },
+  'vector-cargo-pants': {
+    title: {
+      en: 'Vector Cargo Pants',
+      ar: 'بنطال فيكتور كارجو',
+    },
+    description: {
+      en: 'Relaxed cargo pants with utility pocketing, a strong leg line, and durable fabric built for everyday movement.',
+      ar: 'بنطال كارجو بقصة مريحة مع جيوب عملية وخط رجل واضح وخامة متينة للحركة اليومية.',
+    },
+  },
+  'core-track-pants': {
+    title: {
+      en: 'Core Track Pants',
+      ar: 'بنطال كور تراك',
+    },
+    description: {
+      en: 'Straight-leg track pants with a clean drape, soft technical feel, and an easy silhouette for daily rotation.',
+      ar: 'بنطال تراك بقصة مستقيمة وانسدال نظيف وإحساس تقني ناعم مع شكل سهل للاستخدام اليومي.',
+    },
+  },
+};
+
+export function getLocalizedProduct(productOrId: Product | string, locale: Locale): Product {
+  const product =
+    typeof productOrId === 'string' ? products[productOrId] : productOrId;
+
+  if (!product) {
+    throw new Error(`Unknown product: ${String(productOrId)}`);
+  }
+
+  const copy = productCopy[product.id];
+
+  return {
+    ...product,
+    title: copy?.title[locale] ?? product.title,
+    description: copy?.description[locale] ?? product.description,
+  };
+}
+
+export function getLocalizedProducts(locale: Locale) {
+  return Object.values(products).map((product) => getLocalizedProduct(product, locale));
+}
+
 export const productCards = Object.values(products).map(
   ({ id, title, category, price, image }) => ({
     id,
@@ -128,3 +260,18 @@ export const productCards = Object.values(products).map(
 );
 
 export const featuredProducts = productCards.slice(0, 4);
+
+export function getLocalizedProductCards(locale: Locale) {
+  return productCards.map((product) => {
+    const localizedProduct = getLocalizedProduct(product.id, locale);
+
+    return {
+      ...product,
+      title: localizedProduct.title,
+    };
+  });
+}
+
+export function getLocalizedFeaturedProducts(locale: Locale) {
+  return getLocalizedProductCards(locale).slice(0, 4);
+}
