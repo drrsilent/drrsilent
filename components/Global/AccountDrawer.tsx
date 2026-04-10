@@ -4,7 +4,6 @@ import { AnimatePresence, motion } from 'framer-motion';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import {
-  AtSign,
   Clock3,
   LogOut,
   Mail,
@@ -13,9 +12,7 @@ import {
   User2,
   X,
 } from 'lucide-react';
-import type { LucideIcon } from 'lucide-react';
 import {
-  getProviders,
   signIn as authSignIn,
   signOut as authSignOut,
   useSession,
@@ -29,16 +26,8 @@ import { useAccountStore } from '../../store/useAccountStore';
 import { useCartStore } from '../../store/useCartStore';
 
 type ConfiguredProviders = {
-  google: boolean;
   email: boolean;
   apple?: boolean;
-};
-
-type ProviderCard = {
-  label: string;
-  value: 'google' | 'email';
-  icon: LucideIcon;
-  helper: string;
 };
 
 type AuthNotice = {
@@ -180,31 +169,9 @@ export default function AccountDrawer() {
   const actionButtonClassName = isArabic
     ? 'text-[13px] tracking-normal'
     : 'text-[10px] font-bold uppercase tracking-[0.18em]';
-  const providerCardTitleClassName = isArabic
-    ? 'text-[15px] tracking-normal'
-    : 'text-sm font-bold uppercase tracking-[0.16em]';
-  const providerCards: ProviderCard[] = [
-    {
-      label: copy.googleName,
-      value: 'google',
-      icon: AtSign,
-      helper: copy.googleHelper,
-    },
-    {
-      label: copy.emailName,
-      value: 'email',
-      icon: Mail,
-      helper: copy.emailHelper,
-    },
-  ];
-
-  const [availableProviders, setAvailableProviders] = useState<Record<string, unknown>>({});
   const [configuredProviders, setConfiguredProviders] = useState<ConfiguredProviders>({
-    google: false,
     email: false,
   });
-  const [providersLoaded, setProvidersLoaded] = useState(false);
-  const [authMode, setAuthMode] = useState<'email' | null>(null);
   const [authNotice, setAuthNotice] = useState<AuthNotice>(null);
   const [emailAddress, setEmailAddress] = useState('');
   const [emailOtp, setEmailOtp] = useState('');
@@ -224,20 +191,23 @@ export default function AccountDrawer() {
         phone: '',
       }
     : user;
-  const signedInProviderName = session?.user?.provider
-    ? session.user.provider === 'google'
-      ? copy.googleName
-      : copy.emailName
-    : user?.provider === 'google'
-      ? copy.googleName
-      : user?.provider === 'email'
-        ? copy.emailName
-        : user?.provider === 'whatsapp'
-          ? copy.phoneName
-          : copy.dxlrName;
+  const hasActiveUser = Boolean(session?.user || user);
+  const signedInProviderName =
+    session?.user?.provider === 'email' || user?.provider === 'email'
+      ? copy.emailName
+      : user?.provider === 'whatsapp'
+        ? copy.phoneName
+        : copy.dxlrName;
   const resendCooldownLabel = isArabic
     ? `إعادة الإرسال خلال ${resendCooldown}ث`
     : `Resend in ${resendCooldown}s`;
+  const emailOnlyHint = isArabic
+    ? 'سجل دخولك بكود تحقق يصل إلى إيميلك، واحتفظ بحساب DXLR للطلب وسجل الشراء.'
+    : 'Sign in with a one-time code sent to your email, then keep your DXLR profile for checkout and order history.';
+  const emailAccessHeading = isArabic ? 'التحقق عبر الإيميل' : 'Email Verification';
+  const emailAccessHint = isArabic
+    ? 'اكتب إيميلك ليصلك كود تحقق، ثم أدخله هنا لإكمال الدخول داخل DXLR.'
+    : 'Enter your email to receive a one-time verification code, then enter it here to complete sign in.';
 
   useEffect(() => {
     let cancelled = false;
@@ -264,22 +234,9 @@ export default function AccountDrawer() {
             setConfiguredProviders(data);
           }
         }
-
-        const availableProviders = await Promise.race([
-          getProviders(),
-          new Promise<null>((resolve) => {
-            window.setTimeout(() => resolve(null), 4000);
-          }),
-        ]);
-
-        if (!cancelled) {
-          setAvailableProviders(availableProviders ?? {});
-          setProvidersLoaded(true);
-        }
       } catch {
         if (!cancelled) {
-          setAvailableProviders({});
-          setProvidersLoaded(true);
+          setConfiguredProviders({ email: false });
         }
       }
     }
@@ -291,24 +248,7 @@ export default function AccountDrawer() {
   }, []);
 
   useEffect(() => {
-    if (authMode !== 'email') {
-      return;
-    }
-
-    const scrollTimeout = window.setTimeout(() => {
-      authFormRef.current?.scrollIntoView({
-        behavior: 'smooth',
-        block: 'nearest',
-      });
-      emailInputRef.current?.focus();
-    }, 120);
-
-    return () => window.clearTimeout(scrollTimeout);
-  }, [authMode]);
-
-  useEffect(() => {
     if (session?.user) {
-      setAuthMode(null);
       setAuthNotice(null);
       setEmailAddress('');
       setEmailOtp('');
@@ -343,49 +283,27 @@ export default function AccountDrawer() {
     setAuthNotice({ tone, message });
   };
 
-  const getProviderAvailability = (provider: 'google' | 'email') => {
-    const providerKey = provider === 'email' ? 'email-otp' : provider;
-    const providerIsConfigured = configuredProviders[provider];
-    const providerIsAvailable =
-      providerIsConfigured && (Boolean(availableProviders[providerKey]) || !providersLoaded);
+  useEffect(() => {
+    if (isOpen && !hasActiveUser) {
+      const focusTimeout = window.setTimeout(() => {
+        authFormRef.current?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'nearest',
+        });
+        emailInputRef.current?.focus();
+      }, 120);
 
-    return {
-      providerIsConfigured,
-      providerIsAvailable,
-    };
-  };
-
-  const handleGoogleSignIn = () => {
-    const { providerIsConfigured, providerIsAvailable } = getProviderAvailability('google');
-
-    if (!providerIsConfigured) {
-      setNotice('error', copy.googleSetupMissing);
-      return;
+      return () => window.clearTimeout(focusTimeout);
     }
-
-    if (!providerIsAvailable) {
-      setNotice('error', copy.googleUnavailable);
-      return;
-    }
-
-    setAuthNotice(null);
-    void authSignIn('google', { callbackUrl: '/' });
-  };
-
-  const handleToggleEmailForm = () => {
-    const { providerIsConfigured } = getProviderAvailability('email');
-
-    if (!providerIsConfigured) {
-      setNotice('error', copy.emailSetupMissing);
-      return;
-    }
-
-    setAuthNotice(null);
-    setAuthMode((current) => (current === 'email' ? null : 'email'));
-  };
+  }, [hasActiveUser, isOpen]);
 
   const handleRequestEmailCode = async () => {
     const normalizedEmail = emailAddress.trim().toLowerCase();
+
+    if (!configuredProviders.email) {
+      setNotice('error', copy.emailSetupMissing);
+      return;
+    }
 
     if (resendCooldown > 0) {
       return;
@@ -702,150 +620,74 @@ export default function AccountDrawer() {
                   <h3 className="mt-3 text-[30px] font-semibold leading-tight tracking-[-0.05em]">
                     {copy.signInHeadline}
                   </h3>
-                  <p className="mt-3 text-sm leading-6 text-white/72">{copy.signInHint}</p>
+                  <p className="mt-3 text-sm leading-6 text-white/72">{emailOnlyHint}</p>
                 </div>
 
-                <div className="mt-5">
-                  <p className={`text-zinc-500 ${labelClassName}`}>{copy.signInOptions}</p>
+                <div
+                  ref={authFormRef}
+                  className="mt-5 rounded-[26px] border border-black/8 bg-white p-5 shadow-[0_18px_50px_rgba(0,0,0,0.05)]"
+                >
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-black text-white shadow-[0_10px_30px_rgba(0,0,0,0.18)]">
+                    <Mail size={18} />
+                  </div>
+                  <p className={`mt-4 text-zinc-500 ${labelClassName}`}>{emailAccessHeading}</p>
+                  <h4 className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-black">
+                    {copy.emailSignIn}
+                  </h4>
+                  <p className="mt-3 text-sm leading-6 text-[var(--foreground-soft)]">
+                    {emailAccessHint}
+                  </p>
 
-                  <div className="mt-3 grid grid-cols-2 gap-2.5">
-                  {providerCards.map((provider) => {
-                    const Icon = provider.icon;
-                    const { providerIsConfigured, providerIsAvailable } = getProviderAvailability(
-                      provider.value
-                    );
-                    const providerStatus =
-                      provider.value === 'email' && authMode === 'email'
-                        ? copy.closeForm
-                        : !providersLoaded
-                          ? copy.checking
-                          : providerIsAvailable
-                            ? copy.continue
-                            : providerIsConfigured
-                              ? copy.retry
-                              : copy.needsSetup;
-
-                    return (
-                      <button
-                        key={provider.value}
-                        type="button"
-                        onClick={() =>
-                          provider.value === 'email' ? handleToggleEmailForm() : handleGoogleSignIn()
-                        }
-                        className={`rounded-[20px] border p-4 text-left transition ${
-                          provider.value === 'email' && authMode === 'email'
-                            ? 'border-black bg-black text-white'
-                            : providerIsAvailable
-                              ? 'border-black/8 bg-white text-black hover:border-black/14'
-                              : providerIsConfigured
-                                ? 'border-amber-200 bg-amber-50 text-black'
-                                : 'border-black/8 bg-[#f7f4ee] text-black/75'
-                        }`}
-                      >
-                        <div
-                          className={`flex h-10 w-10 items-center justify-center rounded-full ${
-                            provider.value === 'email' && authMode === 'email'
-                              ? 'bg-white text-black'
-                              : 'bg-[var(--surface)] text-black'
-                          }`}
-                        >
-                          <Icon size={16} />
-                        </div>
-                        <h4 className={`mt-3 ${providerCardTitleClassName}`}>
-                          {provider.label}
-                        </h4>
-                        <p
-                          className={`mt-2 text-xs leading-5 ${
-                            provider.value === 'email' && authMode === 'email'
-                              ? 'text-white/72'
-                              : 'text-[var(--foreground-soft)]'
-                          }`}
-                        >
-                          {provider.helper}
-                        </p>
-                        <p
-                          className={`mt-3 ${
-                            provider.value === 'email' && authMode === 'email'
-                              ? `text-white/80 ${badgeClassName}`
-                              : `text-[var(--accent-soft-strong)] ${badgeClassName}`
-                          }`}
-                        >
-                          {providerStatus}
-                        </p>
-                      </button>
-                    );
-                  })}
-                </div>
-
-                  {authMode === 'email' ? (
+                  <div className="mt-5 grid gap-3">
+                    <input
+                      ref={emailInputRef}
+                      type="email"
+                      value={emailAddress}
+                      onChange={(event) => setEmailAddress(event.target.value)}
+                      placeholder={copy.emailPlaceholder}
+                      className="h-12 rounded-[16px] border border-black/10 bg-[var(--surface)] px-4 text-sm outline-none transition focus:border-black"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleRequestEmailCode}
+                      disabled={!configuredProviders.email || isSendingEmailCode || resendCooldown > 0}
+                      className={`inline-flex h-12 items-center justify-center rounded-full border border-black bg-black px-5 text-white transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:bg-zinc-700 ${actionButtonClassName}`}
+                    >
+                      {isSendingEmailCode
+                        ? copy.checking
+                        : resendCooldown > 0
+                          ? resendCooldownLabel
+                          : emailChallengeToken
+                            ? copy.resendCode
+                            : copy.sendCode}
+                    </button>
+                    <p className="text-xs leading-5 text-zinc-500">
+                      {emailChallengeToken
+                        ? copy.verificationHint(maskedEmailAddress || emailAddress)
+                        : copy.otpHint}
+                    </p>
+                    <input
+                      ref={otpInputRef}
+                      type="text"
+                      inputMode="numeric"
+                      value={emailOtp}
+                      onChange={(event) =>
+                        setEmailOtp(event.target.value.replace(/\D/g, '').slice(0, 6))
+                      }
+                      placeholder={copy.otpPlaceholder}
+                      className="h-12 rounded-[16px] border border-black/10 bg-[var(--surface)] px-4 text-sm tracking-[0.34em] outline-none transition focus:border-black"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleVerifyEmailCode}
+                      disabled={!configuredProviders.email || isVerifyingEmailCode}
+                      className={`inline-flex h-12 items-center justify-center rounded-full bg-black px-5 text-white transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:bg-zinc-700 ${actionButtonClassName}`}
+                    >
+                      {isVerifyingEmailCode ? copy.checking : copy.verifyCode}
+                    </button>
+                    {authNotice ? (
                       <div
-                        ref={authFormRef}
-                        className="mt-4 rounded-[24px] border border-black/8 bg-white p-4 shadow-[0_12px_40px_rgba(0,0,0,0.04)]"
-                      >
-                        <p className={`text-zinc-500 ${labelClassName}`}>{copy.emailSignIn}</p>
-                        <div className="mt-4 grid gap-3">
-                          <input
-                            ref={emailInputRef}
-                            type="email"
-                            value={emailAddress}
-                            onChange={(event) => setEmailAddress(event.target.value)}
-                            placeholder={copy.emailPlaceholder}
-                            className="h-12 rounded-[16px] border border-black/10 bg-[var(--surface)] px-4 text-sm outline-none transition focus:border-black"
-                          />
-                          <button
-                            type="button"
-                            onClick={handleRequestEmailCode}
-                            disabled={isSendingEmailCode || resendCooldown > 0}
-                            className={`inline-flex h-12 items-center justify-center rounded-full border border-black bg-black px-5 text-white transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:bg-zinc-700 ${actionButtonClassName}`}
-                          >
-                            {isSendingEmailCode
-                              ? copy.checking
-                              : resendCooldown > 0
-                                ? resendCooldownLabel
-                                : emailChallengeToken
-                                ? copy.resendCode
-                                : copy.sendCode}
-                          </button>
-                          <p className="text-xs leading-5 text-zinc-500">
-                            {emailChallengeToken
-                              ? copy.verificationHint(maskedEmailAddress || emailAddress)
-                              : copy.otpHint}
-                          </p>
-                          <input
-                            ref={otpInputRef}
-                            type="text"
-                            inputMode="numeric"
-                            value={emailOtp}
-                            onChange={(event) =>
-                              setEmailOtp(event.target.value.replace(/\D/g, '').slice(0, 6))
-                            }
-                            placeholder={copy.otpPlaceholder}
-                            className="h-12 rounded-[16px] border border-black/10 bg-[var(--surface)] px-4 text-sm tracking-[0.34em] outline-none transition focus:border-black"
-                          />
-                          <button
-                            type="button"
-                            onClick={handleVerifyEmailCode}
-                            disabled={isVerifyingEmailCode}
-                            className={`inline-flex h-12 items-center justify-center rounded-full bg-black px-5 text-white transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:bg-zinc-700 ${actionButtonClassName}`}
-                          >
-                            {isVerifyingEmailCode ? copy.checking : copy.verifyCode}
-                          </button>
-                          {authNotice ? (
-                            <div
-                              className={`rounded-[16px] px-4 py-3 text-sm ${
-                                authNotice.tone === 'success'
-                                  ? 'border border-emerald-200 bg-emerald-50 text-emerald-700'
-                                  : 'border border-amber-200 bg-amber-50 text-amber-700'
-                              }`}
-                            >
-                              {authNotice.message}
-                            </div>
-                          ) : null}
-                        </div>
-                      </div>
-                    ) : authNotice ? (
-                      <div
-                        className={`mt-4 rounded-[16px] px-4 py-3 text-sm ${
+                        className={`rounded-[16px] px-4 py-3 text-sm ${
                           authNotice.tone === 'success'
                             ? 'border border-emerald-200 bg-emerald-50 text-emerald-700'
                             : 'border border-amber-200 bg-amber-50 text-amber-700'
@@ -854,6 +696,7 @@ export default function AccountDrawer() {
                         {authNotice.message}
                       </div>
                     ) : null}
+                  </div>
                 </div>
                 </>
               )}
