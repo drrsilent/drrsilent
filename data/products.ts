@@ -6,6 +6,7 @@ export type Product = {
   category: 'hoodies' | 't-shirts' | 'pants';
   price: number;
   image: string;
+  views: string[];
   description: string;
   sizes: string[];
 };
@@ -16,105 +17,121 @@ export const shopCategories = [
   { label: 'Pants', slug: 'pants' },
 ] as const;
 
+const makeViews = (slug: string) =>
+  [1, 2, 3, 4].map((frame) => `/products/dxlr-360/${slug}/${String(frame).padStart(2, '0')}.jpg`);
+
+const productImage = (slug: string, frame = 1) =>
+  `/products/dxlr-360/${slug}/${String(frame).padStart(2, '0')}.jpg`;
+
 export const products: Record<string, Product> = {
-  'v1-hoodie': {
-    id: 'v1-hoodie',
-    title: 'V1 Heavy Hoodie',
-    category: 'hoodies',
-    price: 1800,
-    image: '/products/hoodie-rack.jpg',
-    description:
-      'Heavyweight cotton hoodie with a structured silhouette, brushed interior, and a clean technical finish made for daily rotation.',
-    sizes: ['S', 'M', 'L', 'XL'],
-  },
-  'protocol-tshirt': {
-    id: 'protocol-tshirt',
-    title: 'Protocol Zip Hoodie',
-    category: 'hoodies',
-    price: 1650,
-    image: '/products/hoodie-collection.jpg',
-    description:
-      'Midweight zip hoodie with a sharp front line, soft brushed backing, and an easy oversized drape for layered everyday wear.',
-    sizes: ['S', 'M', 'L', 'XL'],
-  },
-  'dxlr-cap': {
-    id: 'dxlr-cap',
-    title: 'Signature Washed Hoodie',
-    category: 'hoodies',
-    price: 1550,
-    image: '/products/sweatshirt-studio.jpg',
-    description:
-      'Washed fleece hoodie with a softened vintage finish, roomy hood shape, and a relaxed fit that feels broken-in from day one.',
-    sizes: ['S', 'M', 'L', 'XL'],
-  },
-  'cargo-pants': {
-    id: 'cargo-pants',
-    title: 'Utility Oversized Hoodie',
-    category: 'hoodies',
-    price: 1750,
-    image: '/products/hoodie-rack.jpg',
-    description:
-      'Oversized heavyweight hoodie with clean seam lines, a boxy shoulder, and dense fabric made for a structured street silhouette.',
-    sizes: ['S', 'M', 'L', 'XL'],
-  },
-  'shadow-core-hoodie': {
-    id: 'shadow-core-hoodie',
-    title: 'Shadow Core Hoodie',
-    category: 'hoodies',
-    price: 1890,
-    image: '/products/sweatshirt-studio.jpg',
-    description:
-      'Dense brushed hoodie with a darker washed tone, dropped shoulders, and a clean front built for a minimal heavy look.',
-    sizes: ['S', 'M', 'L', 'XL'],
-  },
-  'midnight-pullover': {
-    id: 'midnight-pullover',
-    title: 'Midnight Pullover Hoodie',
-    category: 'hoodies',
-    price: 1720,
-    image: '/products/hoodie-collection.jpg',
-    description:
-      'Relaxed pullover hoodie with a soft interior, oversized hood volume, and a smoother silhouette for everyday layering.',
-    sizes: ['S', 'M', 'L', 'XL'],
-  },
-  'studio-fleece-hoodie': {
-    id: 'studio-fleece-hoodie',
-    title: 'Studio Heavy Tee',
+  'black-premium-tshirt': {
+    id: 'black-premium-tshirt',
+    title: 'Black Premium T-Shirt',
     category: 't-shirts',
     price: 980,
-    image: '/products/tee-pair.jpg',
+    image: '/products/dxlr-360/black-premium-tshirt/hero.jpg',
+    views: makeViews('black-premium-tshirt'),
     description:
-      'Structured heavyweight tee with a boxy body, clean neckline, and a minimal fit built for daily layering.',
+      'Minimal black tonal-embroidered tee in luxury heavy-weight cotton with a clean ghost-mannequin shape and a quiet DXLR finish.',
     sizes: ['S', 'M', 'L', 'XL'],
   },
-  'mono-street-hoodie': {
-    id: 'mono-street-hoodie',
-    title: 'Mono Street Tee',
+  'white-premium-tshirt': {
+    id: 'white-premium-tshirt',
+    title: 'White Premium T-Shirt',
     category: 't-shirts',
-    price: 920,
-    image: '/products/tee-minimal.jpg',
+    price: 980,
+    image: productImage('white-premium-tshirt'),
+    views: makeViews('white-premium-tshirt'),
     description:
-      'Monochrome oversized tee with a heavier cotton feel and a clean front made for a sharp streetwear profile.',
+      'Crisp white premium tee with tonal detailing, heavy cotton structure, and a clean 360-ready silhouette for everyday rotation.',
     sizes: ['S', 'M', 'L', 'XL'],
   },
-  'vector-cargo-pants': {
-    id: 'vector-cargo-pants',
-    title: 'Vector Cargo Pants',
+  'beige-oversized-tshirt': {
+    id: 'beige-oversized-tshirt',
+    title: 'Beige Oversized T-Shirt',
+    category: 't-shirts',
+    price: 1050,
+    image: '/products/dxlr-360/beige-oversized-tshirt/hero.jpg',
+    views: makeViews('beige-oversized-tshirt'),
+    description:
+      'Beige oversized tee with a soft premium drape, tonal chest embroidery, and a relaxed minimalist luxury profile.',
+    sizes: ['S', 'M', 'L', 'XL'],
+  },
+  'black-ghost-hoodie': {
+    id: 'black-ghost-hoodie',
+    title: 'Black Ghost Hoodie',
+    category: 'hoodies',
+    price: 1800,
+    image: productImage('black-ghost-hoodie'),
+    views: makeViews('black-ghost-hoodie'),
+    description:
+      'Black heavyweight hoodie presented in full ghost-mannequin 360 views with a deep tone, pouch pocket, and structured hood.',
+    sizes: ['S', 'M', 'L', 'XL'],
+  },
+  'white-ghost-hoodie': {
+    id: 'white-ghost-hoodie',
+    title: 'White Ghost Hoodie',
+    category: 'hoodies',
+    price: 1750,
+    image: productImage('white-ghost-hoodie'),
+    views: makeViews('white-ghost-hoodie'),
+    description:
+      'Clean white pullover hoodie with a smooth ghost-mannequin profile, soft volume, and a minimal premium streetwear finish.',
+    sizes: ['S', 'M', 'L', 'XL'],
+  },
+  'olive-cargo-pants': {
+    id: 'olive-cargo-pants',
+    title: 'Olive Cargo Pants',
     category: 'pants',
     price: 2100,
-    image: '/products/pants-sweat.jpg',
+    image: productImage('olive-cargo-pants'),
+    views: makeViews('olive-cargo-pants'),
     description:
-      'Relaxed cargo pants with utility pocketing, a strong leg line, and durable fabric built for everyday movement.',
+      'Olive cargo pants with utility pockets, a clean tapered leg, and four-direction 360 product views for confident sizing.',
     sizes: ['S', 'M', 'L', 'XL'],
   },
-  'core-track-pants': {
-    id: 'core-track-pants',
-    title: 'Core Track Pants',
+  'denim-360-pants': {
+    id: 'denim-360-pants',
+    title: 'Denim 360 Pants',
     category: 'pants',
-    price: 1850,
-    image: '/products/pants-denim.jpg',
+    price: 2050,
+    image: productImage('denim-360-pants'),
+    views: makeViews('denim-360-pants'),
     description:
-      'Straight-leg track pants with a clean drape, soft technical feel, and an easy silhouette for daily rotation.',
+      'Dark denim pants with a clean straight profile, visible stitching, and front, side, and back views inside the 360 viewer.',
+    sizes: ['S', 'M', 'L', 'XL'],
+  },
+  'grey-sweatpants': {
+    id: 'grey-sweatpants',
+    title: 'Grey Sweatpants',
+    category: 'pants',
+    price: 1650,
+    image: productImage('grey-sweatpants'),
+    views: makeViews('grey-sweatpants'),
+    description:
+      'Grey fleece sweatpants with an easy tapered fit, elastic cuffs, and a clean 360 product spin for every angle.',
+    sizes: ['S', 'M', 'L', 'XL'],
+  },
+  'black-sweatpants': {
+    id: 'black-sweatpants',
+    title: 'Black Sweatpants',
+    category: 'pants',
+    price: 1650,
+    image: productImage('black-sweatpants'),
+    views: makeViews('black-sweatpants'),
+    description:
+      'Black fleece sweatpants with a minimal athletic profile, soft daily comfort, and 360 views across front, sides, and back.',
+    sizes: ['S', 'M', 'L', 'XL'],
+  },
+  'navy-sweatpants': {
+    id: 'navy-sweatpants',
+    title: 'Navy Sweatpants',
+    category: 'pants',
+    price: 1650,
+    image: productImage('navy-sweatpants'),
+    views: makeViews('navy-sweatpants'),
+    description:
+      'Navy sweatpants in a soft heavyweight fleece with a relaxed taper and a complete 360 ghost-mannequin product view.',
     sizes: ['S', 'M', 'L', 'XL'],
   },
 };
@@ -126,104 +143,104 @@ const productCopy: Record<
     description: Record<Locale, string>;
   }
 > = {
-  'v1-hoodie': {
+  'black-premium-tshirt': {
     title: {
-      en: 'V1 Heavy Hoodie',
-      ar: 'هودي V1 الثقيل',
+      en: 'Black Premium T-Shirt',
+      ar: 'تي شيرت بريميوم أسود',
     },
     description: {
-      en: 'Heavyweight cotton hoodie with a structured silhouette, brushed interior, and a clean technical finish made for daily rotation.',
-      ar: 'هودي قطن ثقيل بقصة واضحة، من الداخل مبطن بملمس ناعم وتشطيب نظيف مناسب للاستخدام اليومي.',
+      en: products['black-premium-tshirt'].description,
+      ar: 'تي شيرت أسود Minimalist بتطريز هادئ وخامة قطن ثقيلة فاخرة، بقصة نظيفة وملمس مناسب للاستخدام اليومي.',
     },
   },
-  'protocol-tshirt': {
+  'white-premium-tshirt': {
     title: {
-      en: 'Protocol Zip Hoodie',
-      ar: 'هودي بروتوكول بسحاب',
+      en: 'White Premium T-Shirt',
+      ar: 'تي شيرت بريميوم أبيض',
     },
     description: {
-      en: 'Midweight zip hoodie with a sharp front line, soft brushed backing, and an easy oversized drape for layered everyday wear.',
-      ar: 'هودي بسحاب بخامة متوسطة الوزن مع خط أمامي حاد وملمس داخلي ناعم وقصة واسعة مريحة للبس اليومي.',
+      en: products['white-premium-tshirt'].description,
+      ar: 'تي شيرت أبيض بخامة قطن ثقيلة وتفاصيل هادئة، مصمم بشكل نظيف مع معاينة 360 للقطعة من كل زاوية.',
     },
   },
-  'dxlr-cap': {
+  'beige-oversized-tshirt': {
     title: {
-      en: 'Signature Washed Hoodie',
-      ar: 'الهودي المغسول المميز',
+      en: 'Beige Oversized T-Shirt',
+      ar: 'تي شيرت بيج أوفرسايز',
     },
     description: {
-      en: 'Washed fleece hoodie with a softened vintage finish, roomy hood shape, and a relaxed fit that feels broken-in from day one.',
-      ar: 'هودي فليس بتشطيب مغسول بطابع فينتاج ناعم مع كب واسع وقصة مريحة تعطي إحساسًا جاهزًا من أول لبسة.',
+      en: products['beige-oversized-tshirt'].description,
+      ar: 'تي شيرت بيج أوفرسايز بقصة مريحة وانسدال ناعم، مع تطريز بسيط على الصدر وإحساس luxury هادئ.',
     },
   },
-  'cargo-pants': {
+  'black-ghost-hoodie': {
     title: {
-      en: 'Utility Oversized Hoodie',
-      ar: 'هودي يوتيليتي أوفرسايز',
+      en: 'Black Ghost Hoodie',
+      ar: 'هودي جوست أسود',
     },
     description: {
-      en: 'Oversized heavyweight hoodie with clean seam lines, a boxy shoulder, and dense fabric made for a structured street silhouette.',
-      ar: 'هودي أوفرسايز ثقيل بخطوط خياطة نظيفة وكتف صندوقي وخامة كثيفة تعطي شكل ستريت واضح ومتماسك.',
+      en: products['black-ghost-hoodie'].description,
+      ar: 'هودي أسود ثقيل بمعاينة Ghost Mannequin بزاوية 360، مع كاب ثابت وجيب أمامي وشكل قوي وواضح.',
     },
   },
-  'shadow-core-hoodie': {
+  'white-ghost-hoodie': {
     title: {
-      en: 'Shadow Core Hoodie',
-      ar: 'هودي شادو كور',
+      en: 'White Ghost Hoodie',
+      ar: 'هودي جوست أبيض',
     },
     description: {
-      en: 'Dense brushed hoodie with a darker washed tone, dropped shoulders, and a clean front built for a minimal heavy look.',
-      ar: 'هودي مبطن بكثافة مع درجة غسيل أغمق وأكتاف ساقطة وواجهة نظيفة لستايل هادئ وثقيل.',
+      en: products['white-ghost-hoodie'].description,
+      ar: 'هودي أبيض نظيف بقصة مريحة وحجم كاب متوازن، مع عرض 360 يوضح الواجهة والجنب والظهر.',
     },
   },
-  'midnight-pullover': {
+  'olive-cargo-pants': {
     title: {
-      en: 'Midnight Pullover Hoodie',
-      ar: 'هودي ميدنايت بولوفر',
+      en: 'Olive Cargo Pants',
+      ar: 'بنطال كارجو زيتوني',
     },
     description: {
-      en: 'Relaxed pullover hoodie with a soft interior, oversized hood volume, and a smoother silhouette for everyday layering.',
-      ar: 'هودي بولوفر بقصة مريحة وملمس داخلي ناعم وكب واسع مع شكل انسيابي مناسب للطبقات اليومية.',
+      en: products['olive-cargo-pants'].description,
+      ar: 'بنطال كارجو زيتوني بجيوب عملية وقصة مستقيمة مريحة، مع معاينة 360 تساعد العميل يشوف التفاصيل بوضوح.',
     },
   },
-  'studio-fleece-hoodie': {
+  'denim-360-pants': {
     title: {
-      en: 'Studio Heavy Tee',
-      ar: 'تي شيرت ستوديو الثقيل',
+      en: 'Denim 360 Pants',
+      ar: 'بنطال دينم 360',
     },
     description: {
-      en: 'Structured heavyweight tee with a boxy body, clean neckline, and a minimal fit built for daily layering.',
-      ar: 'تي شيرت ثقيل بقصة صندوقية ورقبة نظيفة وفيت بسيط مناسب للبس اليومي والطبقات.',
+      en: products['denim-360-pants'].description,
+      ar: 'بنطال دينم داكن بخياطة واضحة وقصة نظيفة، مع عرض أمامي وجانبي وخلفي داخل عارض 360.',
     },
   },
-  'mono-street-hoodie': {
+  'grey-sweatpants': {
     title: {
-      en: 'Mono Street Tee',
-      ar: 'تي شيرت مونو ستريت',
+      en: 'Grey Sweatpants',
+      ar: 'سويت بانتس رمادي',
     },
     description: {
-      en: 'Monochrome oversized tee with a heavier cotton feel and a clean front made for a sharp streetwear profile.',
-      ar: 'تي شيرت أوفرسايز بلون موحد وإحساس قطن أثقل مع واجهة نظيفة تعطي حضور ستريت وير واضح.',
+      en: products['grey-sweatpants'].description,
+      ar: 'سويت بانتس رمادي بخامة فليس ناعمة وقصة مريحة، مع زوايا 360 توضح الشكل قبل الشراء.',
     },
   },
-  'vector-cargo-pants': {
+  'black-sweatpants': {
     title: {
-      en: 'Vector Cargo Pants',
-      ar: 'بنطال فيكتور كارجو',
+      en: 'Black Sweatpants',
+      ar: 'سويت بانتس أسود',
     },
     description: {
-      en: 'Relaxed cargo pants with utility pocketing, a strong leg line, and durable fabric built for everyday movement.',
-      ar: 'بنطال كارجو بقصة مريحة مع جيوب عملية وخط رجل واضح وخامة متينة للحركة اليومية.',
+      en: products['black-sweatpants'].description,
+      ar: 'سويت بانتس أسود بتصميم minimal وراحة يومية، مع عرض 360 للواجهة والجنب والظهر.',
     },
   },
-  'core-track-pants': {
+  'navy-sweatpants': {
     title: {
-      en: 'Core Track Pants',
-      ar: 'بنطال كور تراك',
+      en: 'Navy Sweatpants',
+      ar: 'سويت بانتس كحلي',
     },
     description: {
-      en: 'Straight-leg track pants with a clean drape, soft technical feel, and an easy silhouette for daily rotation.',
-      ar: 'بنطال تراك بقصة مستقيمة وانسدال نظيف وإحساس تقني ناعم مع شكل سهل للاستخدام اليومي.',
+      en: products['navy-sweatpants'].description,
+      ar: 'سويت بانتس كحلي بخامة فليس ثقيلة وقصة مريحة، مع معاينة 360 كاملة للقطعة.',
     },
   },
 };

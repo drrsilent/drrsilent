@@ -2,15 +2,16 @@
 
 import { AnimatePresence, motion, useMotionTemplate, useSpring } from 'framer-motion';
 import Image from 'next/image';
-import { ScanSearch, X } from 'lucide-react';
-import { useEffect, useState, type RefObject } from 'react';
+import { ChevronLeft, ChevronRight, RotateCw, ScanSearch, X } from 'lucide-react';
 import { createPortal } from 'react-dom';
+import { useEffect, useRef, useState, type RefObject } from 'react';
 
 type ProductImageViewerProps = {
   image: string;
   title: string;
   isArabic: boolean;
   imageFrameRef: RefObject<HTMLDivElement | null>;
+  views?: string[];
 };
 
 const springConfig = {
@@ -19,23 +20,36 @@ const springConfig = {
   mass: 0.6,
 };
 
+const angleLabels = ['12:00', '3:00', '6:00', '9:00'];
+
 export default function ProductImageViewer({
   image,
   title,
   isArabic,
   imageFrameRef,
+  views,
 }: ProductImageViewerProps) {
+  const frames = views?.length ? views : [image];
+  const frameCount = frames.length;
   const [isOpen, setIsOpen] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const dragStartXRef = useRef<number | null>(null);
+  const dragStepRef = useRef(0);
   const rotateX = useSpring(0, springConfig);
   const rotateY = useSpring(0, springConfig);
   const glareX = useSpring(50, springConfig);
   const glareY = useSpring(28, springConfig);
-  const glareBackground = useMotionTemplate`radial-gradient(circle at ${glareX}% ${glareY}%, rgba(255,255,255,0.32), transparent 34%)`;
+  const glareBackground = useMotionTemplate`radial-gradient(circle at ${glareX}% ${glareY}%, rgba(255,255,255,0.34), transparent 34%)`;
 
-  const lensLabel = isArabic ? 'عرض 3D' : '3D view';
-  const dragHint = isArabic ? 'حرّك المؤشر أو اسحب لمعاينة القطعة.' : 'Move around to inspect the garment.';
+  const activeImage = frames[activeIndex] ?? image;
+  const lensLabel = isArabic ? 'عرض 360' : '360 view';
+  const dragHint = isArabic
+    ? 'اسحب يمين أو شمال ولف المنتج 360 درجة.'
+    : 'Drag left or right to spin the product 360 degrees.';
   const closeLabel = isArabic ? 'إغلاق المعاينة' : 'Close preview';
-  const previewTag = isArabic ? 'معاينة 3D' : '3D preview';
+  const previewTag = isArabic ? 'معاينة 360 درجة' : '360 product viewer';
+  const nextLabel = isArabic ? 'الزاوية التالية' : 'Next angle';
+  const previousLabel = isArabic ? 'الزاوية السابقة' : 'Previous angle';
 
   useEffect(() => {
     if (!isOpen) {
@@ -49,6 +63,18 @@ export default function ProductImageViewer({
       if (event.key === 'Escape') {
         setIsOpen(false);
       }
+
+      if (event.key === 'ArrowRight') {
+        setActiveIndex((current) => (
+          current + (isArabic ? -1 : 1) + frameCount * 10
+        ) % frameCount);
+      }
+
+      if (event.key === 'ArrowLeft') {
+        setActiveIndex((current) => (
+          current + (isArabic ? 1 : -1) + frameCount * 10
+        ) % frameCount);
+      }
     };
 
     window.addEventListener('keydown', handleKeyDown);
@@ -57,7 +83,7 @@ export default function ProductImageViewer({
       document.body.style.overflow = previousOverflow;
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [isOpen]);
+  }, [frameCount, isArabic, isOpen]);
 
   const resetTilt = () => {
     rotateX.set(0);
@@ -70,10 +96,20 @@ export default function ProductImageViewer({
     const x = (clientX - rect.left) / rect.width;
     const y = (clientY - rect.top) / rect.height;
 
-    rotateY.set((x - 0.5) * 18);
-    rotateX.set((0.5 - y) * 16);
+    rotateY.set((x - 0.5) * 14);
+    rotateX.set((0.5 - y) * 12);
     glareX.set(x * 100);
     glareY.set(y * 100);
+  };
+
+  const rotateFrame = (direction: number) => {
+    setActiveIndex((current) => (current + direction + frameCount * 10) % frameCount);
+  };
+
+  const resetDrag = () => {
+    dragStartXRef.current = null;
+    dragStepRef.current = 0;
+    resetTilt();
   };
 
   return (
@@ -91,6 +127,7 @@ export default function ProductImageViewer({
             fill
             preload
             sizes="(max-width: 768px) 100vw, 55vw"
+            draggable={false}
             className="object-contain p-5 drop-shadow-[0_24px_45px_rgba(0,0,0,0.22)] md:p-12"
           />
         </div>
@@ -99,7 +136,10 @@ export default function ProductImageViewer({
 
         <button
           type="button"
-          onClick={() => setIsOpen(true)}
+          onClick={() => {
+            setActiveIndex(0);
+            setIsOpen(true);
+          }}
           aria-label={lensLabel}
           className={`absolute top-3 z-20 inline-flex items-center gap-2 rounded-full border border-white/60 bg-black/55 px-3 py-2 text-white shadow-[0_18px_45px_rgba(0,0,0,0.22)] backdrop-blur-md transition hover:border-white hover:bg-black/75 md:top-5 md:px-4 md:py-2.5 ${isArabic ? 'left-3 md:left-5' : 'right-3 md:right-5'}`}
         >
@@ -123,7 +163,7 @@ export default function ProductImageViewer({
                   className="fixed inset-0 z-[120] bg-black/72 backdrop-blur-md"
                   onClick={() => {
                     setIsOpen(false);
-                    resetTilt();
+                    resetDrag();
                   }}
                 >
                   <div className="flex min-h-full items-center justify-center px-4 py-8 md:px-8">
@@ -152,7 +192,7 @@ export default function ProductImageViewer({
                           type="button"
                           onClick={() => {
                             setIsOpen(false);
-                            resetTilt();
+                            resetDrag();
                           }}
                           aria-label={closeLabel}
                           className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/14 bg-white/6 text-white transition hover:bg-white/12"
@@ -164,22 +204,58 @@ export default function ProductImageViewer({
                       <div className="relative overflow-hidden rounded-[24px] border border-white/10 bg-[radial-gradient(circle_at_top,rgba(185,154,107,0.14),transparent_34%),linear-gradient(180deg,#181714,#0f0f0d)] p-4 md:rounded-[30px] md:p-8">
                         <div className="absolute inset-x-[14%] bottom-5 h-10 rounded-full bg-black/60 blur-3xl md:bottom-10 md:h-12" />
 
+                        <button
+                          type="button"
+                          aria-label={previousLabel}
+                          onClick={() => rotateFrame(isArabic ? 1 : -1)}
+                          className="absolute left-3 top-1/2 z-20 inline-flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/12 bg-black/35 text-white backdrop-blur-md transition hover:bg-black/55 md:left-5 md:h-12 md:w-12"
+                        >
+                          <ChevronLeft size={18} />
+                        </button>
+
+                        <button
+                          type="button"
+                          aria-label={nextLabel}
+                          onClick={() => rotateFrame(isArabic ? -1 : 1)}
+                          className="absolute right-3 top-1/2 z-20 inline-flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/12 bg-black/35 text-white backdrop-blur-md transition hover:bg-black/55 md:right-5 md:h-12 md:w-12"
+                        >
+                          <ChevronRight size={18} />
+                        </button>
+
                         <div
-                          className="relative mx-auto aspect-[4/5] w-full max-w-[560px] [perspective:1600px]"
+                          className="relative mx-auto aspect-[4/5] w-full max-w-[560px] cursor-grab touch-pan-y select-none [perspective:1600px] active:cursor-grabbing"
+                          onPointerDown={(event) => {
+                            dragStartXRef.current = event.clientX;
+                            dragStepRef.current = 0;
+                            event.currentTarget.setPointerCapture(event.pointerId);
+                          }}
                           onPointerMove={(event) => {
                             const rect = event.currentTarget.getBoundingClientRect();
                             updateTilt(event.clientX, event.clientY, rect);
-                          }}
-                          onPointerLeave={resetTilt}
-                          onTouchMove={(event) => {
-                            const touch = event.touches[0];
-                            if (!touch) {
+
+                            if (dragStartXRef.current === null) {
                               return;
                             }
-                            const rect = event.currentTarget.getBoundingClientRect();
-                            updateTilt(touch.clientX, touch.clientY, rect);
+
+                            const step = Math.trunc((event.clientX - dragStartXRef.current) / 34);
+
+                            if (step === dragStepRef.current) {
+                              return;
+                            }
+
+                            rotateFrame(step - dragStepRef.current);
+                            dragStepRef.current = step;
                           }}
-                          onTouchEnd={resetTilt}
+                          onPointerUp={(event) => {
+                            resetDrag();
+                            event.currentTarget.releasePointerCapture(event.pointerId);
+                          }}
+                          onPointerCancel={resetDrag}
+                          onPointerLeave={() => {
+                            if (dragStartXRef.current === null) {
+                              resetTilt();
+                            }
+                          }}
                         >
                           <motion.div
                             style={{ rotateX, rotateY, transformStyle: 'preserve-3d' }}
@@ -192,16 +268,49 @@ export default function ProductImageViewer({
                               style={{ backgroundImage: glareBackground, transformStyle: 'preserve-3d' }}
                               className="absolute inset-0 overflow-hidden rounded-[30px] border border-white/10 [transform:translateZ(42px)]"
                             >
-                              <Image
-                                src={image}
-                                alt={title}
-                                fill
-                                sizes="(max-width: 768px) 92vw, 50vw"
-                                className="object-contain p-8 drop-shadow-[0_30px_52px_rgba(0,0,0,0.28)] md:p-12"
-                              />
+                              <AnimatePresence mode="wait">
+                                <motion.div
+                                  key={activeImage}
+                                  initial={{ opacity: 0, scale: 0.985, filter: 'blur(6px)' }}
+                                  animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
+                                  exit={{ opacity: 0, scale: 1.01, filter: 'blur(6px)' }}
+                                  transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
+                                  className="absolute inset-0"
+                                >
+                                  <Image
+                                    src={activeImage}
+                                    alt={`${title} ${angleLabels[activeIndex] ?? activeIndex + 1}`}
+                                    fill
+                                    sizes="(max-width: 768px) 92vw, 50vw"
+                                    draggable={false}
+                                    className="object-contain p-7 drop-shadow-[0_30px_52px_rgba(0,0,0,0.28)] md:p-12"
+                                  />
+                                </motion.div>
+                              </AnimatePresence>
                               <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.14),rgba(255,255,255,0.02)_35%,rgba(0,0,0,0.12))]" />
                             </motion.div>
                           </motion.div>
+                        </div>
+
+                        <div className="relative z-20 mt-4 flex flex-wrap items-center justify-center gap-2">
+                          <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.06] px-3 py-2 text-[11px] text-white/70">
+                            <RotateCw size={13} />
+                            360°
+                          </span>
+                          {frames.map((frame, index) => (
+                            <button
+                              key={frame}
+                              type="button"
+                              onClick={() => setActiveIndex(index)}
+                              className={`rounded-full border px-3 py-2 text-[11px] transition ${
+                                activeIndex === index
+                                  ? 'border-white bg-white text-black'
+                                  : 'border-white/12 bg-white/[0.05] text-white/68 hover:border-white/40 hover:text-white'
+                              }`}
+                            >
+                              {angleLabels[index] ?? `${index + 1}`}
+                            </button>
+                          ))}
                         </div>
                       </div>
                     </motion.div>
