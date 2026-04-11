@@ -130,7 +130,6 @@ export default function ProductPage({
                 title={product.title}
                 isArabic={isArabic}
                 imageFrameRef={productImageRef}
-                model={product.model}
                 views={product.views}
               />
             </motion.div>

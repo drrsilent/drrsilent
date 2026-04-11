@@ -31,7 +31,6 @@ import { getLocalizedProduct, products } from '../../data/products';
 import { useLocaleStore } from '../../store/useLocaleStore';
 import { useAccountStore } from '../../store/useAccountStore';
 import { useCartStore } from '../../store/useCartStore';
-import ProductModelCanvas from '../Product/ProductModelCanvas';
 
 type ConfiguredProviders = {
   email: boolean;
@@ -982,7 +981,6 @@ export default function AccountDrawer() {
                               const localizedItem = products[item.id]
                                 ? getLocalizedProduct(item.id, locale)
                                 : item;
-                              const productModel = products[item.id]?.model;
 
                               return (
                                 <div
@@ -990,17 +988,13 @@ export default function AccountDrawer() {
                                   className="flex items-center gap-3 rounded-[18px] bg-[var(--surface)] p-3"
                                 >
                                   <div className="relative h-18 w-16 shrink-0 overflow-hidden rounded-[14px] bg-[var(--surface-muted)]">
-                                    {productModel ? (
-                                      <ProductModelCanvas model={productModel} interactive={false} />
-                                    ) : (
-                                      <Image
-                                        src={item.image}
-                                        alt={localizedItem.title}
-                                        fill
-                                        sizes="64px"
-                                        className="object-cover"
-                                      />
-                                    )}
+                                    <Image
+                                      src={item.image}
+                                      alt={localizedItem.title}
+                                      fill
+                                      sizes="64px"
+                                      className="object-contain p-1.5"
+                                    />
                                   </div>
                                   <div className="min-w-0 flex-1">
                                     <p className="truncate text-sm font-semibold text-black">

@@ -7,15 +7,8 @@ export type Product = {
   price: number;
   image: string;
   views: string[];
-  model: ProductModel;
   description: string;
   sizes: string[];
-};
-
-export type ProductModel = {
-  kind: 'hoodie' | 'pants' | 'tshirt';
-  color: string;
-  accent?: string;
 };
 
 export const shopCategories = [
@@ -36,9 +29,8 @@ export const products: Record<string, Product> = {
     title: 'Black Premium T-Shirt',
     category: 't-shirts',
     price: 980,
-    image: '/products/dxlr-360/black-premium-tshirt/hero.jpg',
+    image: productImage('black-premium-tshirt'),
     views: makeViews('black-premium-tshirt'),
-    model: { kind: 'tshirt', color: '#111111', accent: '#2c2c2c' },
     description:
       'Minimal black tonal-embroidered tee in luxury heavy-weight cotton with a clean ghost-mannequin shape and a quiet DXLR finish.',
     sizes: ['S', 'M', 'L', 'XL'],
@@ -50,7 +42,6 @@ export const products: Record<string, Product> = {
     price: 980,
     image: productImage('white-premium-tshirt'),
     views: makeViews('white-premium-tshirt'),
-    model: { kind: 'tshirt', color: '#f3f1eb', accent: '#1f3a65' },
     description:
       'Crisp white premium tee with tonal detailing, heavy cotton structure, and a clean 360-ready silhouette for everyday rotation.',
     sizes: ['S', 'M', 'L', 'XL'],
@@ -60,9 +51,8 @@ export const products: Record<string, Product> = {
     title: 'Beige Oversized T-Shirt',
     category: 't-shirts',
     price: 1050,
-    image: '/products/dxlr-360/beige-oversized-tshirt/hero.jpg',
+    image: productImage('beige-oversized-tshirt'),
     views: makeViews('beige-oversized-tshirt'),
-    model: { kind: 'tshirt', color: '#c8b99d', accent: '#8f805f' },
     description:
       'Beige oversized tee with a soft premium drape, tonal chest embroidery, and a relaxed minimalist luxury profile.',
     sizes: ['S', 'M', 'L', 'XL'],
@@ -74,7 +64,6 @@ export const products: Record<string, Product> = {
     price: 1800,
     image: productImage('black-ghost-hoodie'),
     views: makeViews('black-ghost-hoodie'),
-    model: { kind: 'hoodie', color: '#101010', accent: '#f2f2f2' },
     description:
       'Black heavyweight hoodie presented in full ghost-mannequin 360 views with a deep tone, pouch pocket, and structured hood.',
     sizes: ['S', 'M', 'L', 'XL'],
@@ -86,7 +75,6 @@ export const products: Record<string, Product> = {
     price: 1750,
     image: productImage('white-ghost-hoodie'),
     views: makeViews('white-ghost-hoodie'),
-    model: { kind: 'hoodie', color: '#f2f1ed', accent: '#1f3a65' },
     description:
       'Clean white pullover hoodie with a smooth ghost-mannequin profile, soft volume, and a minimal premium streetwear finish.',
     sizes: ['S', 'M', 'L', 'XL'],
@@ -98,7 +86,6 @@ export const products: Record<string, Product> = {
     price: 2100,
     image: productImage('olive-cargo-pants'),
     views: makeViews('olive-cargo-pants'),
-    model: { kind: 'pants', color: '#3f4633', accent: '#24291f' },
     description:
       'Olive cargo pants with utility pockets, a clean tapered leg, and four-direction 360 product views for confident sizing.',
     sizes: ['S', 'M', 'L', 'XL'],
@@ -110,7 +97,6 @@ export const products: Record<string, Product> = {
     price: 2050,
     image: productImage('denim-360-pants'),
     views: makeViews('denim-360-pants'),
-    model: { kind: 'pants', color: '#1d3550', accent: '#7d5234' },
     description:
       'Dark denim pants with a clean straight profile, visible stitching, and front, side, and back views inside the 360 viewer.',
     sizes: ['S', 'M', 'L', 'XL'],
@@ -122,7 +108,6 @@ export const products: Record<string, Product> = {
     price: 1650,
     image: productImage('grey-sweatpants'),
     views: makeViews('grey-sweatpants'),
-    model: { kind: 'pants', color: '#b7b7b3', accent: '#72726f' },
     description:
       'Grey fleece sweatpants with an easy tapered fit, elastic cuffs, and a clean 360 product spin for every angle.',
     sizes: ['S', 'M', 'L', 'XL'],
@@ -134,7 +119,6 @@ export const products: Record<string, Product> = {
     price: 1650,
     image: productImage('black-sweatpants'),
     views: makeViews('black-sweatpants'),
-    model: { kind: 'pants', color: '#111111', accent: '#2c2c2c' },
     description:
       'Black fleece sweatpants with a minimal athletic profile, soft daily comfort, and 360 views across front, sides, and back.',
     sizes: ['S', 'M', 'L', 'XL'],
@@ -146,7 +130,6 @@ export const products: Record<string, Product> = {
     price: 1650,
     image: productImage('navy-sweatpants'),
     views: makeViews('navy-sweatpants'),
-    model: { kind: 'pants', color: '#202b50', accent: '#11192f' },
     description:
       'Navy sweatpants in a soft heavyweight fleece with a relaxed taper and a complete 360 ghost-mannequin product view.',
     sizes: ['S', 'M', 'L', 'XL'],
@@ -284,13 +267,12 @@ export function getLocalizedProducts(locale: Locale) {
 }
 
 export const productCards = Object.values(products).map(
-  ({ id, title, category, price, image, model }) => ({
+  ({ id, title, category, price, image }) => ({
     id,
     title,
     category,
     price,
     image,
-    model,
   })
 );
 

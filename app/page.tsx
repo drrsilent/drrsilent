@@ -1,11 +1,11 @@
 'use client';
 
 import { motion, useScroll, useTransform } from 'framer-motion';
+import Image from 'next/image';
 import Link from 'next/link';
 import { AtSign, MessageCircle, PhoneCall } from 'lucide-react';
 import { useRef } from 'react';
 import BrandWordmark from '../components/Global/BrandWordmark';
-import ProductModelCanvas from '../components/Product/ProductModelCanvas';
 import { getLocalizedFeaturedProducts } from '../data/products';
 import { formatPrice } from '../lib/currency';
 import { getDictionary } from '../lib/translations';
@@ -296,7 +296,14 @@ export default function Home() {
                   transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
                   className="absolute inset-0"
                 >
-                  <ProductModelCanvas model={product.model} interactive={false} />
+                  <Image
+                    src={product.image}
+                    alt={product.title}
+                    fill
+                    sizes="(max-width: 768px) 50vw, 25vw"
+                    draggable={false}
+                    className="object-contain p-4 md:p-5"
+                  />
                 </motion.div>
 
                 <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,transparent,rgba(0,0,0,0.1))] opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
@@ -307,11 +314,12 @@ export default function Home() {
                     event.preventDefault();
                     event.stopPropagation();
                     const card = event.currentTarget.closest('article');
+                    const image = card?.querySelector('img');
 
                     addToCart({ ...product, size: 'L', quantity: 1 });
                     flyToCart({
                       imageSrc: product.image,
-                      sourceRect: card?.getBoundingClientRect(),
+                      sourceRect: image?.getBoundingClientRect(),
                     });
                   }}
                   className={`absolute bottom-2 left-2 right-2 z-20 rounded-full border border-white/70 bg-white/95 py-2 text-black shadow-[0_14px_30px_rgba(0,0,0,0.12)] backdrop-blur-md transition-all duration-300 opacity-100 md:bottom-4 md:left-4 md:right-4 md:translate-y-3 md:py-3 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100 hover:bg-[var(--surface-muted)] ${quickAddClassName}`}

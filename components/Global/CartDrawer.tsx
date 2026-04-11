@@ -9,7 +9,6 @@ import { getLocalizedProduct, products } from '../../data/products';
 import { formatPrice } from '../../lib/currency';
 import { getDictionary } from '../../lib/translations';
 import { useLocaleStore } from '../../store/useLocaleStore';
-import ProductModelCanvas from '../Product/ProductModelCanvas';
 
 export default function CartDrawer() {
   const items = useCartStore((state) => state.items);
@@ -129,7 +128,6 @@ export default function CartDrawer() {
                     const localizedTitle = products[item.id]
                       ? getLocalizedProduct(item.id, locale).title
                       : item.title;
-                    const productModel = products[item.id]?.model;
 
                     return (
                     <motion.div
@@ -141,17 +139,13 @@ export default function CartDrawer() {
                     >
                       <div className="flex gap-3 md:gap-4">
                         <div className="relative h-24 w-20 shrink-0 overflow-hidden rounded-[16px] bg-[#eceae3] md:h-28 md:w-24 md:rounded-[18px]">
-                          {productModel ? (
-                            <ProductModelCanvas model={productModel} interactive={false} />
-                          ) : (
-                            <Image
-                              src={item.image}
-                              alt={localizedTitle}
-                              fill
-                              sizes="96px"
-                              className="object-cover"
-                            />
-                          )}
+                          <Image
+                            src={item.image}
+                            alt={localizedTitle}
+                            fill
+                            sizes="96px"
+                            className="object-contain p-2"
+                          />
                         </div>
 
                         <div className="flex min-w-0 flex-1 flex-col">

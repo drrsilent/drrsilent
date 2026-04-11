@@ -1,10 +1,10 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowLeft, ShoppingBag } from 'lucide-react';
 import { use } from 'react';
-import ProductModelCanvas from '../../components/Product/ProductModelCanvas';
 import { getLocalizedProductCards, shopCategories } from '../../data/products';
 import { formatPrice } from '../../lib/currency';
 import { getCategoryLabel, getDictionary } from '../../lib/translations';
@@ -193,7 +193,14 @@ export default function ShopPage({
                   transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
                   className="absolute inset-0"
                 >
-                  <ProductModelCanvas model={product.model} interactive={false} />
+                  <Image
+                    src={product.image}
+                    alt={product.title}
+                    fill
+                    sizes="(max-width: 768px) 50vw, 25vw"
+                    draggable={false}
+                    className="object-contain p-4 md:p-5"
+                  />
                 </motion.div>
 
                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
@@ -204,11 +211,12 @@ export default function ShopPage({
                     event.preventDefault();
                     event.stopPropagation();
                     const card = event.currentTarget.closest('article');
+                    const image = card?.querySelector('img');
 
                     addToCart({ ...product, size: 'L', quantity: 1 });
                     flyToCart({
                       imageSrc: product.image,
-                      sourceRect: card?.getBoundingClientRect(),
+                      sourceRect: image?.getBoundingClientRect(),
                     });
                   }}
                   className={`absolute bottom-2 left-2 right-2 z-20 inline-flex items-center justify-center gap-1 rounded-full border border-white/70 bg-white/95 py-2 text-black opacity-100 shadow-[0_14px_30px_rgba(0,0,0,0.1)] backdrop-blur-md transition-all duration-300 hover:bg-[var(--surface-muted)] md:bottom-4 md:left-4 md:right-4 md:translate-y-3 md:gap-2 md:py-3 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100 ${quickAddClassName}`}
