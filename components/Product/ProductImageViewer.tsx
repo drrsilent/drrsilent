@@ -133,7 +133,7 @@ export default function ProductImageViewer({
           preload
           sizes="(max-width: 768px) 100vw, 55vw"
           draggable={false}
-          className="object-contain p-5 drop-shadow-[0_24px_45px_rgba(0,0,0,0.2)] md:p-12"
+          className="scale-[1.04] object-cover drop-shadow-[0_24px_45px_rgba(0,0,0,0.18)]"
         />
 
         <div className="pointer-events-none absolute inset-x-[16%] bottom-5 h-9 rounded-full bg-black/16 blur-2xl md:bottom-10 md:h-12" />

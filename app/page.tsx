@@ -302,7 +302,7 @@ export default function Home() {
                     fill
                     sizes="(max-width: 768px) 50vw, 25vw"
                     draggable={false}
-                    className="object-contain p-4 md:p-5"
+                    className="scale-[1.3] object-cover"
                   />
                 </motion.div>
 

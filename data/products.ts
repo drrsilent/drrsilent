@@ -20,8 +20,7 @@ export const shopCategories = [
 const makeViews = (slug: string) =>
   [1, 2, 3, 4].map((frame) => `/products/dxlr-360/${slug}/${String(frame).padStart(2, '0')}.jpg`);
 
-const productImage = (slug: string, frame = 1) =>
-  `/products/dxlr-360/${slug}/${String(frame).padStart(2, '0')}.jpg`;
+const displayImage = (slug: string) => `/products/display/${slug}.jpg`;
 
 export const products: Record<string, Product> = {
   'black-premium-tshirt': {
@@ -29,7 +28,7 @@ export const products: Record<string, Product> = {
     title: 'Black Premium T-Shirt',
     category: 't-shirts',
     price: 980,
-    image: productImage('black-premium-tshirt'),
+    image: displayImage('black-premium-tshirt'),
     views: makeViews('black-premium-tshirt'),
     description:
       'Minimal black tonal-embroidered tee in luxury heavy-weight cotton with a clean ghost-mannequin shape and a quiet DXLR finish.',
@@ -40,7 +39,7 @@ export const products: Record<string, Product> = {
     title: 'White Premium T-Shirt',
     category: 't-shirts',
     price: 980,
-    image: productImage('white-premium-tshirt'),
+    image: displayImage('white-premium-tshirt'),
     views: makeViews('white-premium-tshirt'),
     description:
       'Crisp white premium tee with tonal detailing, heavy cotton structure, and a clean 360-ready silhouette for everyday rotation.',
@@ -51,7 +50,7 @@ export const products: Record<string, Product> = {
     title: 'Beige Oversized T-Shirt',
     category: 't-shirts',
     price: 1050,
-    image: productImage('beige-oversized-tshirt'),
+    image: displayImage('beige-oversized-tshirt'),
     views: makeViews('beige-oversized-tshirt'),
     description:
       'Beige oversized tee with a soft premium drape, tonal chest embroidery, and a relaxed minimalist luxury profile.',
@@ -62,7 +61,7 @@ export const products: Record<string, Product> = {
     title: 'Black Ghost Hoodie',
     category: 'hoodies',
     price: 1800,
-    image: productImage('black-ghost-hoodie'),
+    image: displayImage('black-ghost-hoodie'),
     views: makeViews('black-ghost-hoodie'),
     description:
       'Black heavyweight hoodie presented in full ghost-mannequin 360 views with a deep tone, pouch pocket, and structured hood.',
@@ -73,7 +72,7 @@ export const products: Record<string, Product> = {
     title: 'White Ghost Hoodie',
     category: 'hoodies',
     price: 1750,
-    image: productImage('white-ghost-hoodie'),
+    image: displayImage('white-ghost-hoodie'),
     views: makeViews('white-ghost-hoodie'),
     description:
       'Clean white pullover hoodie with a smooth ghost-mannequin profile, soft volume, and a minimal premium streetwear finish.',
@@ -84,7 +83,7 @@ export const products: Record<string, Product> = {
     title: 'Olive Cargo Pants',
     category: 'pants',
     price: 2100,
-    image: productImage('olive-cargo-pants'),
+    image: displayImage('olive-cargo-pants'),
     views: makeViews('olive-cargo-pants'),
     description:
       'Olive cargo pants with utility pockets, a clean tapered leg, and four-direction 360 product views for confident sizing.',
@@ -95,7 +94,7 @@ export const products: Record<string, Product> = {
     title: 'Denim 360 Pants',
     category: 'pants',
     price: 2050,
-    image: productImage('denim-360-pants'),
+    image: displayImage('denim-360-pants'),
     views: makeViews('denim-360-pants'),
     description:
       'Dark denim pants with a clean straight profile, visible stitching, and front, side, and back views inside the 360 viewer.',
@@ -106,7 +105,7 @@ export const products: Record<string, Product> = {
     title: 'Grey Sweatpants',
     category: 'pants',
     price: 1650,
-    image: productImage('grey-sweatpants'),
+    image: displayImage('grey-sweatpants'),
     views: makeViews('grey-sweatpants'),
     description:
       'Grey fleece sweatpants with an easy tapered fit, elastic cuffs, and a clean 360 product spin for every angle.',
@@ -117,7 +116,7 @@ export const products: Record<string, Product> = {
     title: 'Black Sweatpants',
     category: 'pants',
     price: 1650,
-    image: productImage('black-sweatpants'),
+    image: displayImage('black-sweatpants'),
     views: makeViews('black-sweatpants'),
     description:
       'Black fleece sweatpants with a minimal athletic profile, soft daily comfort, and 360 views across front, sides, and back.',
@@ -128,7 +127,7 @@ export const products: Record<string, Product> = {
     title: 'Navy Sweatpants',
     category: 'pants',
     price: 1650,
-    image: productImage('navy-sweatpants'),
+    image: displayImage('navy-sweatpants'),
     views: makeViews('navy-sweatpants'),
     description:
       'Navy sweatpants in a soft heavyweight fleece with a relaxed taper and a complete 360 ghost-mannequin product view.',

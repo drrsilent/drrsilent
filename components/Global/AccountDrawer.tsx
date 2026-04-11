@@ -993,7 +993,7 @@ export default function AccountDrawer() {
                                       alt={localizedItem.title}
                                       fill
                                       sizes="64px"
-                                      className="object-contain p-1.5"
+                                      className="object-cover"
                                     />
                                   </div>
                                   <div className="min-w-0 flex-1">

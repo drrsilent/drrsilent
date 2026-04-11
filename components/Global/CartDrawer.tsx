@@ -144,7 +144,7 @@ export default function CartDrawer() {
                             alt={localizedTitle}
                             fill
                             sizes="96px"
-                            className="object-contain p-2"
+                            className="object-cover"
                           />
                         </div>
 
